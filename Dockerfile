@@ -1,8 +1,10 @@
-FROM node:16.10.0
+FROM node:16-alpine
 WORKDIR /app
-COPY package.json yarn.lock /app
+COPY package.json yarn.lock ./
 RUN yarn install
-COPY . /app
+COPY . ./
+RUN yarn build
 ENV PORT=3001
 EXPOSE 3001
-CMD npm run start:prod
+CMD [ "npm", "run", "start:prod" ]
+
