@@ -35,13 +35,8 @@ export class TransactionService {
   }
 
   async getNFTs(id: string): Promise<any> {
-    console.log(`Requesting NFTs from the wallet ${id} ......`);
-    const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
-
     // Initialize an alchemy-web3 instance:
-    const web3 = createAlchemyWeb3(
-      `https://eth-rinkeby.alchemyapi.io/v2/9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2/${apiKey}`,
-    );
+    const web3 = createAlchemyWeb3(process.env.ALCHEMY_RPC_URL);
 
     const nfts = await web3.alchemy.getNfts({
       owner: id,
@@ -139,9 +134,7 @@ export class TransactionService {
     //   .catch((error) => console.log('error', error));
     // return null;
 
-    const web3 = createAlchemyWeb3(
-      process.env.NETWORK_URL + process.env.API_KEY,
-    );
+    const web3 = createAlchemyWeb3(process.env.ALCHEMY_RPC_URL);
 
     // const contract_addresses = [
     //   '0x7af963cF6D228E564e2A0aA0DdBF06210B38615D',
@@ -186,7 +179,7 @@ export class TransactionService {
 
   async getAssetTransfers(id: string): Promise<any> {
     // Replace with your Alchemy api key:
-    const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
+    //const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
 
     // Initialize an alchemy-web3 instance:
     // const web3 = createAlchemyWeb3(
@@ -214,7 +207,7 @@ export class TransactionService {
     });
     var config = {
       method: 'post',
-      url: process.env.NETWORK_URL + process.env.API_KEY,
+      url: process.env.ALCHEMY_RPC_URL,
       headers: {
         'Content-Type': 'application/json',
       },

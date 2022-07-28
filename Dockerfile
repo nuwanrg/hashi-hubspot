@@ -3,5 +3,6 @@ WORKDIR /app
 COPY package.json yarn.lock /app
 RUN yarn install
 COPY . /app
-EXPOSE 3000
+ENV PORT=3001
+EXPOSE 3001
 CMD npm run start:prod

@@ -33,20 +33,8 @@ export class TransactionController {
   @Get('/getNFTs/:id')
   async getNFTs(@Param('id') id: string): Promise<any> {
     console.log(`Requesting NFTs from the wallet ${id} ......`);
-    const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
 
-    // Initialize an alchemy-web3 instance:
-    const web3 = createAlchemyWeb3(
-      `https://eth-rinkeby.alchemyapi.io/v2/9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2/${apiKey}`,
-    );
-
-    const nfts = await web3.alchemy.getNfts({
-      owner: id,
-    });
-
-    console.log(nfts);
-
-    return nfts;
+    return this.transactionService.getNFTs(id);
   }
 
   @Get('/getBalance/:id')
