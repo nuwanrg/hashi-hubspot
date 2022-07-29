@@ -198,7 +198,7 @@ export class TransactionService {
           // "contractAddresses": [
           //   "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
           // ],
-          maxCount: '0x20',
+          //maxCount: '0x20',
           excludeZeroValue: true,
           category: ['external', 'internal', 'erc20', 'erc721'],
           withMetadata: true,
