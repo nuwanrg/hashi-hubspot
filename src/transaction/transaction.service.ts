@@ -200,7 +200,7 @@ export class TransactionService {
           // ],
           maxCount: '0x20',
           excludeZeroValue: true,
-          category: ['external', 'internal', 'erc20'],
+          category: ['external', 'internal', 'erc20', 'erc721'],
           withMetadata: true,
         },
       ],
