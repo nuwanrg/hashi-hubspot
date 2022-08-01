@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
+const Moralis = require('moralis/node');
 
 @Injectable()
 export class TransactionService {
@@ -177,7 +178,33 @@ export class TransactionService {
     return tokenBalanceDtos;
   }
 
-  async getAssetTransfers(id: string): Promise<any> {
+  async getAssetTransfers(id: string, limit: string): Promise<any> {
+    //moraliz api key rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD
+
+    const serverUrl = 'https://shzzwqifgpc8.usemoralis.com:2053/server'; //"https://xxxxx/server";
+    const appId = 'bc85c2rEtYwdp87r7tNXkNGzL6384dXEw2QEtxBP';
+    const masterKey = 'JEds8iBaxBhbYMDHWMuSfEhphqVESSQvLhrIB6BI';
+
+    await Moralis.start({ serverUrl, appId });
+
+    const options = {
+      chain: 'eth',
+      address: id,
+      order: 'desc',
+      from_block: '0',
+    };
+
+    const transactions = await Moralis.Web3API.account.getTransactions({
+      chain: 'eth',
+      address: id,
+      from_block: '0',
+      limit: limit,
+    });
+    console.log(transactions);
+    return transactions;
+  }
+
+  /*   async getAssetTransfers(id: string): Promise<any> {
     // Replace with your Alchemy api key:
     //const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
 
@@ -195,12 +222,10 @@ export class TransactionService {
           fromBlock: '0x0',
           //"toBlock": "0xA97CAC",
           fromAddress: id,
-          // "contractAddresses": [
-          //   "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
-          // ],
+          //contractAddresses: [id],
           //maxCount: '0x20',
-          excludeZeroValue: true,
-          category: ['external', 'internal', 'erc20', 'erc721'],
+          excludeZeroValue: false,
+          category: ['ERC20'],
           withMetadata: true,
         },
       ],
@@ -240,7 +265,7 @@ export class TransactionService {
     // // Print response:
     // console.log(data);
     // return data;
-  }
+  } */
 
   async getETHBalance(id: string): Promise<String> {
     console.log(`Requesting balance for the wallet ${id} ......`);

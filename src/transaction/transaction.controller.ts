@@ -24,10 +24,14 @@ export class TransactionController {
     return this.transactionService.getTransactionHistory(id, count);
   }
 
-  @Get('/assetTransfers/:id')
-  async getAssetTransfers(@Param('id') id: string): Promise<any> {
+  @Get('/assetTransfers/:id/:limit')
+  async getAssetTransfers(
+    @Param('id') id: string,
+    @Param('offset') offset: string,
+    @Param('limit') limit: string,
+  ): Promise<any> {
     console.log(`Fetching assets tranfers ${id} ...`);
-    return this.transactionService.getAssetTransfers(id);
+    return this.transactionService.getAssetTransfers(id, limit);
   }
 
   @Get('/getNFTs/:id')
