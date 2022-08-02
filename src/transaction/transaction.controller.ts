@@ -24,14 +24,15 @@ export class TransactionController {
     return this.transactionService.getTransactionHistory(id, count);
   }
 
-  @Get('/assetTransfers/:id/:limit')
+  @Get('/assetTransfers/:chain/:id/:limit/:cursor')
   async getAssetTransfers(
+    @Param('chain') chain: string,
     @Param('id') id: string,
-    @Param('offset') offset: string,
     @Param('limit') limit: string,
+    @Param('cursor') cursor: string,
   ): Promise<any> {
     console.log(`Fetching assets tranfers ${id} ...`);
-    return this.transactionService.getAssetTransfers(id, limit);
+    return this.transactionService.getAssetTransfers(chain, id, limit, cursor);
   }
 
   @Get('/getNFTs/:id')

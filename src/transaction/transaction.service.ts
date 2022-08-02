@@ -178,7 +178,12 @@ export class TransactionService {
     return tokenBalanceDtos;
   }
 
-  async getAssetTransfers(id: string, limit: string): Promise<any> {
+  async getAssetTransfers(
+    chain: string,
+    id: string,
+    limit: string,
+    cursor: string,
+  ): Promise<any> {
     //moraliz api key rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD
 
     const serverUrl = 'https://shzzwqifgpc8.usemoralis.com:2053/server'; //"https://xxxxx/server";
