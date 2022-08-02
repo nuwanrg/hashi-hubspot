@@ -42,18 +42,34 @@ export class TransactionController {
     return this.transactionService.getNFTs(id);
   }
 
-  @Get('/getBalance/:id')
-  async getBalance(@Param('id') id: string): Promise<any> {
+  @Get('/getBalance/:chain/:id')
+  async getBalance(
+    @Param('chain') chain: string,
+    @Param('id') id: string,
+  ): Promise<any> {
     console.log(`Requesting balance for the wallet ${id} ......`);
 
-    return this.transactionService.getTokenBalances(id);
+    return this.transactionService.getTokenBalances(chain, id);
   }
 
   @Get('/getETHBalance/:id')
-  async getETHBalance(@Param('id') id: string): Promise<String> {
+  async getETHBalance(
+    @Param('chain') chain: string,
+    @Param('id') id: string,
+  ): Promise<String> {
     console.log(`Requesting ETH balance for the wallet ${id} ......`);
 
-    return this.transactionService.getETHBalance(id);
+    return this.transactionService.getETHBalance(chain, id);
+  }
+
+  @Get('/getNativeBalance/:chain/:id')
+  async getNativeBalance(
+    @Param('chain') chain: string,
+    @Param('id') id: string,
+  ): Promise<String> {
+    console.log(`Requesting ETH balance for the wallet ${id} ......`);
+
+    return this.transactionService.getNativeBalance(chain, id);
   }
 
   @Get()
