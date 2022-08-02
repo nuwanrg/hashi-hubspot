@@ -10,6 +10,11 @@ import { ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 const Moralis = require('moralis/node');
 
+let chains = new Map<string, string>([
+  ['eth', 'value1'],
+  ['bsc', 'value2'],
+]);
+
 @Injectable()
 export class TransactionService {
   async getTransactionHistory(id: string, count: string): Promise<any> {
@@ -182,29 +187,40 @@ export class TransactionService {
     chain: string,
     id: string,
     limit: string,
-    cursor: string,
+    cursor?: string | number,
   ): Promise<any> {
     //moraliz api key rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD
 
-    const serverUrl = 'https://shzzwqifgpc8.usemoralis.com:2053/server'; //"https://xxxxx/server";
-    const appId = 'bc85c2rEtYwdp87r7tNXkNGzL6384dXEw2QEtxBP';
-    const masterKey = 'JEds8iBaxBhbYMDHWMuSfEhphqVESSQvLhrIB6BI';
+    const moralis_serverUrl = process.env.moralis_serverUrl;
+    const moralis_appId = process.env.moralis_appId;
 
-    await Moralis.start({ serverUrl, appId });
+    await Moralis.start({
+      serverUrl: moralis_serverUrl,
+      appId: moralis_appId,
+    });
+
+    if (cursor === '0') {
+      cursor = null;
+    }
 
     const options = {
-      chain: 'eth',
-      address: id,
-      order: 'desc',
-      from_block: '0',
-    };
-
-    const transactions = await Moralis.Web3API.account.getTransactions({
-      chain: 'eth',
+      chain: chain,
       address: id,
       from_block: '0',
       limit: limit,
-    });
+      cursor: cursor,
+    };
+
+    // const transactions = await Moralis.Web3API.account.getTransactions({
+    //   chain: chain,
+    //   address: id,
+    //   from_block: '0',
+    //   limit: limit,
+    //   cursor: cursor,
+    // });
+
+    const transactions = await Moralis.Web3API.account.getTransactions(options);
+
     console.log(transactions);
     return transactions;
   }

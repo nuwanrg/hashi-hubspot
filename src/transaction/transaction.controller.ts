@@ -29,7 +29,7 @@ export class TransactionController {
     @Param('chain') chain: string,
     @Param('id') id: string,
     @Param('limit') limit: string,
-    @Param('cursor') cursor: string,
+    @Param('cursor') cursor: string | number,
   ): Promise<any> {
     console.log(`Fetching assets tranfers ${id} ...`);
     return this.transactionService.getAssetTransfers(chain, id, limit, cursor);
