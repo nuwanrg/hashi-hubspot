@@ -219,7 +219,9 @@ export class TransactionService {
     //   cursor: cursor,
     // });
 
-    const transactions = await Moralis.Web3API.account.getTransactions(options);
+    const transactions = await Moralis.Web3API.account.getTokenTransfers(
+      options,
+    );
 
     console.log(transactions);
     return transactions;
