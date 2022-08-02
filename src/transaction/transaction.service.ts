@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
+import { ERC20Transactions } from './erc20Transactions.dto';
 const Moralis = require('moralis/node');
 
 let chains = new Map<string, string>([
@@ -17,6 +18,15 @@ let chains = new Map<string, string>([
 
 @Injectable()
 export class TransactionService {
+  constructor() {
+    const moralis_serverUrl = process.env.moralis_serverUrl;
+    const moralis_appId = process.env.moralis_appId;
+    Moralis.start({
+      serverUrl: moralis_serverUrl,
+      appId: moralis_appId,
+    });
+  }
+
   async getTransactionHistory(id: string, count: string): Promise<any> {
     console.log(
       `Requesting ${count} of latest transactions from the wallet ${id} ......`,
@@ -53,16 +63,34 @@ export class TransactionService {
     return nfts;
   }
 
+  async getTokenMetadata(chain: string, id: string): Promise<any> {
+    // const moralis_serverUrl = process.env.moralis_serverUrl;
+    // const moralis_appId = process.env.moralis_appId;
+
+    // await Moralis.start({
+    //   serverUrl: moralis_serverUrl,
+    //   appId: moralis_appId,
+    // });
+
+    const options = {
+      chain: chain,
+      addresses: [id],
+    };
+    const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(options);
+
+    return tokenMetadata;
+  }
+
   async getTokenBalances(chain: string, id: string): Promise<any> {
     const contract_addresses = JSON.parse(process.env.CONTRACT_ADDRESSES);
     console.log('contract_addresses ', contract_addresses);
-    const moralis_serverUrl = process.env.moralis_serverUrl;
-    const moralis_appId = process.env.moralis_appId;
+    // const moralis_serverUrl = process.env.moralis_serverUrl;
+    // const moralis_appId = process.env.moralis_appId;
 
-    await Moralis.start({
-      serverUrl: moralis_serverUrl,
-      appId: moralis_appId,
-    });
+    // await Moralis.start({
+    //   serverUrl: moralis_serverUrl,
+    //   appId: moralis_appId,
+    // });
 
     const options = {
       chain: chain,
@@ -83,13 +111,13 @@ export class TransactionService {
   ): Promise<any> {
     //moraliz api key rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD
 
-    const moralis_serverUrl = process.env.moralis_serverUrl;
-    const moralis_appId = process.env.moralis_appId;
+    // const moralis_serverUrl = process.env.moralis_serverUrl;
+    // const moralis_appId = process.env.moralis_appId;
 
-    await Moralis.start({
-      serverUrl: moralis_serverUrl,
-      appId: moralis_appId,
-    });
+    // await Moralis.start({
+    //   serverUrl: moralis_serverUrl,
+    //   appId: moralis_appId,
+    // });
 
     if (cursor === '0') {
       cursor = null;
@@ -115,8 +143,21 @@ export class TransactionService {
       options,
     );
 
-    console.log(transactions);
-    return transactions;
+    //console.log(transactions);
+    let transferMetadata: Array<any> = new Array();
+    for (const transfer of transactions.result) {
+      const metadata = await this.getTokenMetadata(chain, transfer.address);
+      transferMetadata.push(metadata);
+      //console.log('transferMetadata: ', transferMetadata);
+    }
+
+    let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
+    eRC20Transactions.transfers = transactions;
+    eRC20Transactions.metadata = transferMetadata;
+
+    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
+
+    return eRC20Transactions;
   }
 
   /*   async getAssetTransfers(id: string): Promise<any> {
@@ -202,13 +243,13 @@ export class TransactionService {
 
   async getNativeBalance(chain: string, id: string): Promise<String> {
     console.log(`Requesting native balance for the wallet ${id} ......`);
-    const moralis_serverUrl = process.env.moralis_serverUrl;
-    const moralis_appId = process.env.moralis_appId;
+    // const moralis_serverUrl = process.env.moralis_serverUrl;
+    // const moralis_appId = process.env.moralis_appId;
 
-    await Moralis.start({
-      serverUrl: moralis_serverUrl,
-      appId: moralis_appId,
-    });
+    // await Moralis.start({
+    //   serverUrl: moralis_serverUrl,
+    //   appId: moralis_appId,
+    // });
     const options = {
       chain: chain,
       address: id,
