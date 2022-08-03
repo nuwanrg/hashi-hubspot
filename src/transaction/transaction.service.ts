@@ -147,6 +147,9 @@ export class TransactionService {
     let transferMetadata: Array<any> = new Array();
     for (const transfer of transactions.result) {
       const metadata = await this.getTokenMetadata(chain, transfer.address);
+
+      let temp = transfer;
+      temp["meta"] = metadata[0];
       transferMetadata.push(metadata);
       //console.log('transferMetadata: ', transferMetadata);
     }
