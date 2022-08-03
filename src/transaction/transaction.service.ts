@@ -50,15 +50,22 @@ export class TransactionService {
     return transactions;
   }
 
-  async getNFTs(id: string): Promise<any> {
+  async getNFTs(chain: string, id: string): Promise<any> {
     // Initialize an alchemy-web3 instance:
-    const web3 = createAlchemyWeb3(process.env.ALCHEMY_RPC_URL);
+    /*  const web3 = createAlchemyWeb3(process.env.ALCHEMY_RPC_URL);
 
     const nfts = await web3.alchemy.getNfts({
       owner: id,
     });
 
     console.log(nfts);
+*/
+
+    const options = {
+      chain: chain,
+      address: id,
+    };
+    const nfts = await Moralis.Web3API.account.getNFTs(options);
 
     return nfts;
   }
