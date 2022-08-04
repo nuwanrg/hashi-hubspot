@@ -66,8 +66,9 @@ export class TransactionService {
       address: id,
     };
     const nfts = await Moralis.Web3API.account.getNFTs(options);
+    console.log('NFTs : ', nfts);
 
-    return nfts;
+    return JSON.stringify(nfts);
   }
 
   async getTokenMetadata(chain: string, id: string): Promise<any> {
@@ -156,7 +157,7 @@ export class TransactionService {
       const metadata = await this.getTokenMetadata(chain, transfer.address);
 
       let temp = transfer;
-      temp["meta"] = metadata[0];
+      temp['meta'] = metadata[0];
       transferMetadata.push(metadata);
       //console.log('transferMetadata: ', transferMetadata);
     }
