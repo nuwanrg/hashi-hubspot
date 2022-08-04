@@ -35,11 +35,22 @@ export class TransactionController {
     return this.transactionService.getAssetTransfers(chain, id, limit, cursor);
   }
 
-  @Get('/getNFTs/:id')
-  async getNFTs(@Param('id') id: string): Promise<any> {
+  //Depreciated
+  //   @Get('/getNFTs/:id')
+  //   async getNFTs(@Param('id') id: string): Promise<any> {
+  //     console.log(`Requesting NFTs from the wallet ${id} ......`);
+
+  //     return this.transactionService.getNFTs(id);
+  //   }
+
+  @Get('/getNFTs/:chain/:id')
+  async getNFTs(
+    @Param('chain') chain: string,
+    @Param('id') id: string,
+  ): Promise<any> {
     console.log(`Requesting NFTs from the wallet ${id} ......`);
 
-    return this.transactionService.getNFTs(id);
+    return this.transactionService.getNFTs(chain, id);
   }
 
   @Get('/getBalance/:chain/:id')
