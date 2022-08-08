@@ -9,6 +9,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
+import { WalletStatsResponse } from 'src/types/types';
 const Moralis = require('moralis/node');
 
 let chains = new Map<string, string>([
@@ -18,6 +19,7 @@ let chains = new Map<string, string>([
 
 @Injectable()
 export class TransactionService {
+  stats: any;
   constructor() {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;
@@ -252,7 +254,10 @@ export class TransactionService {
     return ethers.utils.formatEther(balance);
   }
 
-  async getNativeBalance(chain: string, id: string): Promise<String> {
+  async getNativeBalance(
+    chain: string,
+    id: string,
+  ): Promise<WalletStatsResponse> {
     console.log(`Requesting native balance for the wallet ${id} ......`);
     // const moralis_serverUrl = process.env.moralis_serverUrl;
     // const moralis_appId = process.env.moralis_appId;
@@ -261,11 +266,87 @@ export class TransactionService {
     //   serverUrl: moralis_serverUrl,
     //   appId: moralis_appId,
     // });
+
+    // export class WalletStatsResponse {
+    //   balance?: number = 0;
+    //   totalReceive?: number = 0;
+    //   totalSpent?: number = 0;
+    //   firstBalanceChange?: Date = null;
+    //   lastBalanceChange?: Date = null;
+    //   transactionCount?: number = null;
+    // }
+
+    let walletStatsResponse: WalletStatsResponse = new WalletStatsResponse();
+
     const options = {
       chain: chain,
       address: id,
+      from_block: '0',
     };
+
+    let stats = {
+      sent: 0,
+      receive: 0,
+    };
+
+    const transfers = await Moralis.Web3API.account.getTransactions(options);
+    let ethSent: number = 0;
+    let ethReveived: number = 0;
+    for (const transfer of transfers.result) {
+      if (transfer.value !== null) {
+        if (transfer.from_address == id) {
+          ethSent = ethSent + Number(transfer.value);
+          if (walletStatsResponse.lastBalanceChange == null) {
+            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+          }
+
+          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+        } else {
+          ethReveived = ethReveived + Number(transfer.value);
+          if (walletStatsResponse.lastBalanceChange == null) {
+            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+          }
+          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+        }
+      }
+    }
+    walletStatsResponse.transactionCount = transfers.total;
+    walletStatsResponse.totalSpent = ethSent;
+    walletStatsResponse.totalReceive = ethReveived;
+
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
-    return balance;
+    walletStatsResponse.balance = balance.balance;
+    return walletStatsResponse;
+  }
+
+  async getAllTransfers(chain: string, id: string): Promise<any> {
+    const options = {
+      chain: chain,
+      address: id,
+      from_block: '0',
+    };
+
+    let stats = {
+      sent: 0,
+      receive: 0,
+    };
+
+    const transfers = await Moralis.Web3API.account.getTransactions(options);
+    let ethSent: number = 0;
+    let ethReveived: number = 0;
+
+    for (const transfer of transfers.result) {
+      if (transfer.from_address == id) {
+        ethSent = ethSent + Number(transfer.value);
+      } else {
+        ethReveived = ethReveived + Number(transfer.value);
+      }
+    }
+    //convert to usdt
+    stats.sent = ethSent;
+    stats.receive = ethReveived;
+
+    console.log('stats ', JSON.stringify(stats));
+    return stats;
   }
 }

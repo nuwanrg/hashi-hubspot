@@ -7,6 +7,7 @@ import {
 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { TransactionService } from './transaction.service';
+import { WalletStatsResponse } from 'src/types/types';
 const rpcURL = 'https://goerli.prylabs.net/'; //'https://rinkeby.infura.io/';
 const provider = new ethers.providers.JsonRpcProvider(rpcURL);
 //const network =
@@ -63,21 +64,21 @@ export class TransactionController {
     return this.transactionService.getTokenBalances(chain, id);
   }
 
-  @Get('/getETHBalance/:id')
-  async getETHBalance(
-    @Param('chain') chain: string,
-    @Param('id') id: string,
-  ): Promise<String> {
-    console.log(`Requesting ETH balance for the wallet ${id} ......`);
+  //   @Get('/getETHBalance/:id')
+  //   async getETHBalance(
+  //     @Param('chain') chain: string,
+  //     @Param('id') id: string,
+  //   ): Promise<String> {
+  //     console.log(`Requesting ETH balance for the wallet ${id} ......`);
 
-    return this.transactionService.getETHBalance(chain, id);
-  }
+  //     return this.transactionService.getETHBalance(chain, id);
+  //   }
 
   @Get('/getNativeBalance/:chain/:id')
   async getNativeBalance(
     @Param('chain') chain: string,
     @Param('id') id: string,
-  ): Promise<String> {
+  ): Promise<WalletStatsResponse> {
     console.log(`Requesting ETH balance for the wallet ${id} ......`);
 
     return this.transactionService.getNativeBalance(chain, id);
