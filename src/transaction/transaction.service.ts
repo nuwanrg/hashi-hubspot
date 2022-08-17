@@ -293,8 +293,8 @@ export class TransactionService {
     let ethSent: number = 0;
     let ethReveived: number = 0;
     for (const transfer of transfers.result) {
-      if (transfer.value !== null) {
-        if (transfer.from_address == id) {
+      if (transfer.value !== '0') {
+        if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
           ethSent = ethSent + Number(transfer.value);
           if (walletStatsResponse.lastBalanceChange == null) {
             walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
@@ -316,7 +316,32 @@ export class TransactionService {
 
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
     walletStatsResponse.balance = balance.balance;
+
+    //fetch usd price
+
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+
+    if (chain === 'eth') {
+      const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+      walletStatsResponse.balance_usd =
+        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice;
+
+      walletStatsResponse.totalReceive_usd =
+        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice;
+
+      walletStatsResponse.totalSpent_usd =
+        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+    }
+
     return walletStatsResponse;
+  }
+
+  formatVal(e, decimals) {
+    let divisor = 10 ** decimals;
+    return e / divisor;
   }
 
   async getAllTransfers(chain: string, id: string): Promise<any> {
