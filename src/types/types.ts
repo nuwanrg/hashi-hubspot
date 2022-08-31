@@ -9,3 +9,7 @@ export class WalletStatsResponse {
   lastBalanceChange?: Date = null;
   transactionCount?: number = null;
 }
+
+export class WalletStatsResponseHub {
+  results?: WalletStatsResponse[] = [];
+}

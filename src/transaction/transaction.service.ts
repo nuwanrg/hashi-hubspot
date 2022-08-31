@@ -4,12 +4,12 @@ import {
   AssetTransfersResponse,
   AssetTransfersOrder,
 } from '@alch/alchemy-web3';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
-import { WalletStatsResponse } from 'src/types/types';
+import { WalletStatsResponse, WalletStatsResponseHub } from 'src/types/types';
 const Moralis = require('moralis/node');
 
 let chains = new Map<string, string>([
@@ -373,5 +373,79 @@ export class TransactionService {
 
     console.log('stats ', JSON.stringify(stats));
     return stats;
+  }
+
+  async getNativeBalanceHub(
+    @Req() req,
+    chain: string,
+    id1: string,
+  ): Promise<WalletStatsResponseHub> {
+    let id = req.query.annualrevenue;
+    console.log(`Requesting native balance for the wallet ${id} ......`);
+
+    let walletStatsResponse: WalletStatsResponse = new WalletStatsResponse();
+
+    const options = {
+      chain: chain,
+      address: id,
+      from_block: '0',
+    };
+
+    let stats = {
+      sent: 0,
+      receive: 0,
+    };
+
+    const transfers = await Moralis.Web3API.account.getTransactions(options);
+    let ethSent: number = 0;
+    let ethReveived: number = 0;
+    for (const transfer of transfers.result) {
+      if (transfer.value !== '0') {
+        if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
+          ethSent = ethSent + Number(transfer.value);
+          if (walletStatsResponse.lastBalanceChange == null) {
+            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+          }
+
+          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+        } else {
+          ethReveived = ethReveived + Number(transfer.value);
+          if (walletStatsResponse.lastBalanceChange == null) {
+            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+          }
+          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+        }
+      }
+    }
+    walletStatsResponse.transactionCount = transfers.total;
+    walletStatsResponse.totalSpent = ethSent;
+    walletStatsResponse.totalReceive = ethReveived;
+
+    const balance = await Moralis.Web3API.account.getNativeBalance(options);
+    walletStatsResponse.balance = balance.balance;
+
+    //fetch usd price
+
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+
+    if (chain === 'eth') {
+      const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+      walletStatsResponse.balance_usd =
+        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice;
+
+      walletStatsResponse.totalReceive_usd =
+        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice;
+
+      walletStatsResponse.totalSpent_usd =
+        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+    }
+
+    const walletStatsResponseHub: WalletStatsResponseHub =
+      new WalletStatsResponseHub();
+    walletStatsResponseHub.results.push(walletStatsResponse);
+    return walletStatsResponseHub;
   }
 }

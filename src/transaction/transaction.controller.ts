@@ -100,8 +100,9 @@ export class TransactionController {
         "transactionCount": 21
     }]
     }`;
-    return JSON.stringify(res);
-    //return this.transactionService.getNativeBalance(chain, id);
+
+    //return JSON.stringify(res);
+    return this.transactionService.getNativeBalanceHub(req, chain, id);
   }
 
   @Get()
