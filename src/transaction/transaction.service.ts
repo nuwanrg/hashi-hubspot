@@ -442,7 +442,7 @@ export class TransactionService {
       walletStatsResponse.totalSpent_usd =
         this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
     }
-
+    walletStatsResponse.walletID = id;
     const walletStatsResponseHub: WalletStatsResponseHub =
       new WalletStatsResponseHub();
     walletStatsResponseHub.results.push(walletStatsResponse);

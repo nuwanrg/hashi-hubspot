@@ -8,6 +8,8 @@ export class WalletStatsResponse {
   firstBalanceChange?: Date = null;
   lastBalanceChange?: Date = null;
   transactionCount?: number = null;
+  walletID?: string = null;
+  title: string = 'Wallet Balance';
 }
 
 export class WalletStatsResponseHub {
