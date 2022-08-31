@@ -1,6 +1,6 @@
 import { Injectable, Req } from '@nestjs/common';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import { WalletStatsResponse, WalletStatsResponseHub } from 'src/types/types';
@@ -414,7 +414,7 @@ export class TransactionService {
     }
     walletStatsResponse.transactionCount = transfers.total;
     walletStatsResponse.totalSpent = ethSent;
-    const ethRec = ethers.utils.formatEther(ethReveived);
+    const ethRec = ethers.utils.formatEther(ethReveived.toString());
     walletStatsResponse.totalReceive = parseFloat(ethRec);
 
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
