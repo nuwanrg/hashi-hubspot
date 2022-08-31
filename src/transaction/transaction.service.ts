@@ -1,9 +1,3 @@
-import {
-  createAlchemyWeb3,
-  AssetTransfersCategory,
-  AssetTransfersResponse,
-  AssetTransfersOrder,
-} from '@alch/alchemy-web3';
 import { Injectable, Req } from '@nestjs/common';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -420,11 +414,13 @@ export class TransactionService {
     }
     walletStatsResponse.transactionCount = transfers.total;
     walletStatsResponse.totalSpent = ethSent;
-    walletStatsResponse.totalReceive = ethReveived;
+    const ethRec = ethers.utils.formatEther(ethReveived);
+    walletStatsResponse.totalReceive = parseFloat(ethRec);
 
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
-    walletStatsResponse.balance = balance.balance;
 
+    const ethValue = ethers.utils.formatEther(balance.balance);
+    walletStatsResponse.balance = parseFloat(ethValue);
     //fetch usd price
 
     const usdoptions = {
