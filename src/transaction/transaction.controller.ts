@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import {
   createAlchemyWeb3,
   AssetTransfersCategory,
@@ -74,14 +74,33 @@ export class TransactionController {
   //     return this.transactionService.getETHBalance(chain, id);
   //   }
 
-  @Get('/getNativeBalance/:chain/:id')
+  @Get('/getNativeBalanceHub/:chain/:id')
   async getNativeBalance(
+    @Req() req,
     @Param('chain') chain: string,
     @Param('id') id: string,
-  ): Promise<WalletStatsResponse> {
+  ): Promise<any> {
+    console.log(`Req...`, req.query.walletID);
     console.log(`Requesting ETH balance for the wallet ${id} ......`);
 
-    return this.transactionService.getNativeBalance(chain, id);
+    return `{
+      "results": [{
+        "objectId": 101,
+        "walletID": ${req.query.walletID},
+        "email": ${req.query.email},
+        "title": "Wallet Balance",
+        "balance": "0.0017 ETH",
+        "balance_usd": 269.0446810728103,
+        "totalReceive": "0.0017 ETH",
+        "totalSpent": 0,
+        "totalReceive_usd": 269.0446810728103,
+        "totalSpent_usd": 0,
+        "firstBalanceChange": "2022-03-14T00:31:22.000Z",
+        "lastBalanceChange": "2022-05-26T01:43:09.000Z",
+        "transactionCount": 21
+    }]
+    }`;
+    //return this.transactionService.getNativeBalance(chain, id);
   }
 
   @Get()

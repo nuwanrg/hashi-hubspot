@@ -12,7 +12,8 @@ let SCOPES = 'crm.objects.contacts.read';
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-const REDIRECT_URI = `https://muffintech.xyz/auth/oauthcallback`;
+//const REDIRECT_URI = `https://muffintech.xyz/auth/oauthcallback`;
+const REDIRECT_URI = `http://localhost:3000/auth/oauthcallback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
