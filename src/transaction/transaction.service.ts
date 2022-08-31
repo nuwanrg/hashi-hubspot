@@ -381,6 +381,7 @@ export class TransactionService {
     id1: string,
   ): Promise<WalletStatsResponseHub> {
     let id = req.query.annualrevenue;
+    let objectId = req.query.associatedObjectId;
     console.log(`Requesting native balance for the wallet ${id} ......`);
 
     let walletStatsResponse: WalletStatsResponse = new WalletStatsResponse();
@@ -443,6 +444,7 @@ export class TransactionService {
         this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
     }
     walletStatsResponse.walletID = id;
+    walletStatsResponse.objectId = objectId;
     const walletStatsResponseHub: WalletStatsResponseHub =
       new WalletStatsResponseHub();
     walletStatsResponseHub.results.push(walletStatsResponse);

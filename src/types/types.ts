@@ -10,6 +10,7 @@ export class WalletStatsResponse {
   transactionCount?: number = null;
   walletID?: string = null;
   title: string = 'Wallet Balance';
+  objectId?: number = null;
 }
 
 export class WalletStatsResponseHub {
