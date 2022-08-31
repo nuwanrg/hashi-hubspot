@@ -83,7 +83,7 @@ export class TransactionController {
     console.log(`Req...`, req.query.walletID);
     console.log(`Requesting ETH balance for the wallet ${id} ......`);
 
-    return `{
+    const res = `{
       "results": [{
         "objectId": 101,
         "walletID": ${req.query.walletID},
@@ -100,7 +100,9 @@ export class TransactionController {
         "transactionCount": 21
     }]
     }`;
-    //return this.transactionService.getNativeBalance(chain, id);
+
+    //return JSON.stringify(res);
+    return this.transactionService.getNativeBalanceHub(req, chain, id);
   }
 
   @Get()
