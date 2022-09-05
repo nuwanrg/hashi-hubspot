@@ -374,7 +374,7 @@ export class TransactionService {
     chain: string,
     id1: string,
   ): Promise<WalletStatsResponseHub> {
-    let id = req.query.annualrevenue;
+    let id = req.query.wallet_address;
     let objectId = req.query.associatedObjectId;
     console.log(`Requesting native balance for the wallet ${id} ......`);
 

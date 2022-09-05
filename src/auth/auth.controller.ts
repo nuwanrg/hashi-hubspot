@@ -63,6 +63,7 @@ export class AuthController {
       '===> Step 4: Exchanging authorization code for an access token and refresh token',
     );
     const token = await exchangeForTokens(req.sessionID, authCodeProof);
+    console.log('token ', token);
     if (token.message) {
       return res.redirect(`/error?msg=${token.message}`);
     }
@@ -70,10 +71,12 @@ export class AuthController {
     // Once the tokens have been retrieved, use them to make a query
     // to the HubSpot API
     res.redirect(
-      `/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
+      'https://app.hubspot.com/dashboard-library/22582686',
+      //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
     );
   }
 }
+
 const NodeCache = require('node-cache');
 const request = require('request-promise-native');
 const refreshTokenStore = {};
