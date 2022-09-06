@@ -421,7 +421,7 @@ export class TransactionService {
     }
     walletStatsResponse.transactionCount = transfers.total;
 
-    const ethVal = ethers.utils.formatEther(ethReveived.toString());
+    const ethVal = ethers.utils.formatEther(ethSent.toString());
     walletStatsResponse.totalSpent = parseFloat(ethVal).toFixed(6) + ' ETH';
     console.log('ethReveived ', ethReveived);
 
