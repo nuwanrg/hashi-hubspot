@@ -310,8 +310,8 @@ export class TransactionService {
       }
     }
     walletStatsResponse.transactionCount = transfers.total;
-    walletStatsResponse.totalSpent = ethSent;
-    walletStatsResponse.totalReceive = ethReveived;
+    walletStatsResponse.totalSpent = ethSent.toString();
+    walletStatsResponse.totalReceive = ethReveived.toString();
 
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
     walletStatsResponse.balance = balance.balance;
@@ -325,14 +325,17 @@ export class TransactionService {
 
     if (chain === 'eth') {
       const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
-      walletStatsResponse.balance_usd =
-        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice;
+      walletStatsResponse.balance_usd = (
+        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice
+      ).toString();
 
-      walletStatsResponse.totalReceive_usd =
-        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice;
+      walletStatsResponse.totalReceive_usd = (
+        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice
+      ).toString();
 
-      walletStatsResponse.totalSpent_usd =
-        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+      walletStatsResponse.totalSpent_usd = (
+        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice
+      ).toString();
     }
 
     return walletStatsResponse;
@@ -417,16 +420,22 @@ export class TransactionService {
       }
     }
     walletStatsResponse.transactionCount = transfers.total;
-    walletStatsResponse.totalSpent = ethSent;
+
+    const ethVal = ethers.utils.formatEther(ethReveived.toString());
+    walletStatsResponse.totalSpent = parseFloat(ethVal).toFixed(6) + ' ETH';
+    console.log('ethReveived ', ethReveived);
+
     const ethRec = ethers.utils.formatEther(ethReveived.toString());
-    walletStatsResponse.totalReceive = parseFloat(ethRec);
 
+    walletStatsResponse.totalReceive = parseFloat(ethRec).toFixed(6) + ' ETH';
+
+    //get wallet balance
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
-
     const ethValue = ethers.utils.formatEther(balance.balance);
-    walletStatsResponse.balance = parseFloat(ethValue);
-    //fetch usd price
 
+    walletStatsResponse.balance = parseFloat(ethValue).toFixed(6) + ' ETH';
+
+    //fetch usd price
     const usdoptions = {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chain: chain,
@@ -434,14 +443,25 @@ export class TransactionService {
 
     if (chain === 'eth') {
       const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+
       walletStatsResponse.balance_usd =
-        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice;
+        (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
+
+      // const balance_rec_usd: number =
+      //   this.formatVal(ethRec, 18) * price.usdPrice;
+      // console.log(`balance_rec_usd `, balance_rec_usd);
 
       walletStatsResponse.totalReceive_usd =
-        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice;
+        (parseFloat(walletStatsResponse.totalReceive) * price.usdPrice).toFixed(
+          2,
+        ) + ' USD';
 
       walletStatsResponse.totalSpent_usd =
-        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+        (parseFloat(walletStatsResponse.totalSpent) * price.usdPrice).toFixed(
+          2,
+        ) + ' USD';
+
+      //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
     }
     walletStatsResponse.walletID = id;
     walletStatsResponse.objectId = objectId;
