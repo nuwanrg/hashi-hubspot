@@ -54,6 +54,11 @@ export class TransactionController {
     return this.transactionService.getNFTs(chain, id);
   }
 
+  @Get('/getNFTsHub/:chain')
+  async getNFTsHub(@Req() req, @Param('chain') chain: string): Promise<any> {
+    return this.transactionService.getNFTsHub(req, chain);
+  }
+
   @Get('/getBalance/:chain/:id')
   async getBalance(
     @Param('chain') chain: string,
@@ -74,35 +79,13 @@ export class TransactionController {
   //     return this.transactionService.getETHBalance(chain, id);
   //   }
 
-  @Get('/getNativeBalanceHub/:chain/:id')
+  @Get('/getNativeBalanceHub/:chain')
   async getNativeBalance(
     @Req() req,
     @Param('chain') chain: string,
-    @Param('id') id: string,
   ): Promise<any> {
-    console.log(`Req...`, req.query.walletID);
-    console.log(`Requesting ETH balance for the wallet ${id} ......`);
-
-    const res = `{
-      "results": [{
-        "objectId": 101,
-        "walletID": ${req.query.walletID},
-        "email": ${req.query.email},
-        "title": "Wallet Balance",
-        "balance": "0.0017 ETH",
-        "balance_usd": 269.0446810728103,
-        "totalReceive": "0.0017 ETH",
-        "totalSpent": 0,
-        "totalReceive_usd": 269.0446810728103,
-        "totalSpent_usd": 0,
-        "firstBalanceChange": "2022-03-14T00:31:22.000Z",
-        "lastBalanceChange": "2022-05-26T01:43:09.000Z",
-        "transactionCount": 21
-    }]
-    }`;
-
-    //return JSON.stringify(res);
-    return this.transactionService.getNativeBalanceHub(req, chain, id);
+    console.log(`req.query.wallet_address...`, req.query.wallet_address);
+    return this.transactionService.getNativeBalanceHub(req, chain);
   }
 
   @Get()

@@ -16,3 +16,17 @@ export class WalletStatsResponse {
 export class WalletStatsResponseHub {
   results?: WalletStatsResponse[] = [];
 }
+
+export class WalletNFTResponse {
+  walletID?: string = '';
+  title: string = '';
+  objectId?: number = null;
+  token_address?: string = '';
+  name?: string = '';
+  token_uri?: string = '';
+  metadata?: string = '';
+}
+
+export class WalletNFTResponseHub {
+  results?: WalletNFTResponse[] = [];
+}

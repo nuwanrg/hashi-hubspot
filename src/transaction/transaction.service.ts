@@ -3,7 +3,12 @@ import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
-import { WalletStatsResponse, WalletStatsResponseHub } from 'src/types/types';
+import {
+  WalletNFTResponse,
+  WalletNFTResponseHub,
+  WalletStatsResponse,
+  WalletStatsResponseHub,
+} from 'src/types/types';
 const Moralis = require('moralis/node');
 
 let chains = new Map<string, string>([
@@ -372,7 +377,6 @@ export class TransactionService {
   async getNativeBalanceHub(
     @Req() req,
     chain: string,
-    id1: string,
   ): Promise<WalletStatsResponseHub> {
     let id = req.query.wallet_address;
     let objectId = req.query.associatedObjectId;
@@ -445,5 +449,41 @@ export class TransactionService {
       new WalletStatsResponseHub();
     walletStatsResponseHub.results.push(walletStatsResponse);
     return walletStatsResponseHub;
+  }
+
+  async getNFTsHub(@Req() req, chain: string): Promise<WalletNFTResponseHub> {
+    let id = req.query.wallet_address;
+    const options = {
+      chain: chain,
+      address: id,
+    };
+    const nfts = await Moralis.Web3API.account.getNFTs(options);
+    console.log('NFTs results : ', nfts['result']);
+    const obj = nfts['result'];
+
+    const walletNFTResponseHub: WalletNFTResponseHub =
+      new WalletNFTResponseHub();
+
+    for (var key in obj) {
+      console.log(
+        'key: ' + key + ', obj[key].token_address: ' + obj[key].token_address,
+      );
+
+      let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
+      walletNFTResponse.walletID = id;
+      walletNFTResponse.objectId = req.query.associatedObjectId;
+      walletNFTResponse.title = obj[key].name;
+      walletNFTResponse.name = obj[key].name;
+      walletNFTResponse.token_address = obj[key].token_address;
+      walletNFTResponse.token_uri = obj[key].token_uri;
+      walletNFTResponse.metadata = obj[key].metadata;
+
+      //walletNFTResponse.=nfts['result'];
+
+      walletNFTResponseHub.results.push(walletNFTResponse);
+    }
+
+    return walletNFTResponseHub;
+    //return JSON.stringify(nfts);
   }
 }
