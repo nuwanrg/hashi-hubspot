@@ -580,9 +580,9 @@ export class TransactionService {
         'https://etherscan.io/tx/' + transfer.transaction_hash;
 
       if (transfer.from_address.toUpperCase() == id.toUpperCase()) {
-        tokenTransfersResponse.title = 'Sent';
+        tokenTransfersResponse.title = 'Outbound Transaction';
       } else {
-        tokenTransfersResponse.title = 'Received';
+        tokenTransfersResponse.title = 'Inbound Transaction';
       }
       let token_value = '';
       if (transfer.value !== '0') {
