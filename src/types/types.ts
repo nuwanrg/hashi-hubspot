@@ -15,8 +15,23 @@ export class WalletStatsResponse {
   objectId?: number = null;
 }
 
+export class WalletStatsResultHub {
+  balance?: string = '';
+  balance_usd?: string = '';
+  totalReceive?: string = '';
+  totalSpent?: string = '';
+  totalReceive_usd?: string = '';
+  totalSpent_usd?: string = ' ';
+  firstBalanceChangeHub?: string = '';
+  lastBalanceChangeHub?: string = '';
+  transactionCount?: number = null;
+  walletID?: string = null;
+  title: string = 'Wallet Balance';
+  objectId?: number = null;
+}
+
 export class WalletStatsResponseHub {
-  results?: WalletStatsResponse[] = [];
+  results?: WalletStatsResultHub[] = [];
 }
 
 export class WalletNFTResponse {

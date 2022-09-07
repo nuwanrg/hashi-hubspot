@@ -11,6 +11,7 @@ import {
   WalletNFTResponseHub,
   WalletStatsResponse,
   WalletStatsResponseHub,
+  WalletStatsResultHub,
 } from 'src/types/types';
 const Moralis = require('moralis/node');
 
@@ -388,7 +389,7 @@ export class TransactionService {
     let objectId = req.query.associatedObjectId;
     console.log(`Requesting native balance for the wallet ${id} ......`);
 
-    let walletStatsResponse: WalletStatsResponse = new WalletStatsResponse();
+    let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const options = {
       chain: chain,
@@ -414,29 +415,29 @@ export class TransactionService {
       if (transfer.value !== '0') {
         if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
           ethSent = ethSent + Number(transfer.value);
-          if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChangeHub = moment(
+          if (walletStatsResultHub.lastBalanceChangeHub == '') {
+            walletStatsResultHub.lastBalanceChangeHub = moment(
               transfer.block_timestamp,
             )
               .utc()
               .format('YYYY-MM-DD');
           }
 
-          walletStatsResponse.firstBalanceChangeHub = moment(
+          walletStatsResultHub.firstBalanceChangeHub = moment(
             transfer.block_timestamp,
           )
             .utc()
             .format('YYYY-MM-DD');
         } else {
           ethReveived = ethReveived + Number(transfer.value);
-          if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChangeHub = moment(
+          if (walletStatsResultHub.lastBalanceChangeHub == '') {
+            walletStatsResultHub.lastBalanceChangeHub = moment(
               transfer.block_timestamp,
             )
               .utc()
               .format('YYYY-MM-DD');
           }
-          walletStatsResponse.firstBalanceChangeHub = moment(
+          walletStatsResultHub.firstBalanceChangeHub = moment(
             transfer.block_timestamp,
           )
             .utc()
@@ -444,21 +445,21 @@ export class TransactionService {
         }
       }
     }
-    walletStatsResponse.transactionCount = transfers.total;
+    walletStatsResultHub.transactionCount = transfers.total;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
-    walletStatsResponse.totalSpent = parseFloat(ethVal).toFixed(6) + ' ETH';
+    walletStatsResultHub.totalSpent = parseFloat(ethVal).toFixed(6) + ' ETH';
     console.log('ethReveived ', ethReveived);
 
     const ethRec = ethers.utils.formatEther(ethReveived.toString());
 
-    walletStatsResponse.totalReceive = parseFloat(ethRec).toFixed(6) + ' ETH';
+    walletStatsResultHub.totalReceive = parseFloat(ethRec).toFixed(6) + ' ETH';
 
     //get wallet balance
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
     const ethValue = ethers.utils.formatEther(balance.balance);
 
-    walletStatsResponse.balance = parseFloat(ethValue).toFixed(6) + ' ETH';
+    walletStatsResultHub.balance = parseFloat(ethValue).toFixed(6) + ' ETH';
 
     //fetch usd price
     // const usdoptions = {
@@ -469,30 +470,30 @@ export class TransactionService {
     if (chain === 'eth') {
       // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
 
-      walletStatsResponse.balance_usd =
+      walletStatsResultHub.balance_usd =
         (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
       // const balance_rec_usd: number =
       //   this.formatVal(ethRec, 18) * price.usdPrice;
       // console.log(`balance_rec_usd `, balance_rec_usd);
 
-      walletStatsResponse.totalReceive_usd =
-        (parseFloat(walletStatsResponse.totalReceive) * price.usdPrice).toFixed(
-          2,
-        ) + ' USD';
+      walletStatsResultHub.totalReceive_usd =
+        (
+          parseFloat(walletStatsResultHub.totalReceive) * price.usdPrice
+        ).toFixed(2) + ' USD';
 
-      walletStatsResponse.totalSpent_usd =
-        (parseFloat(walletStatsResponse.totalSpent) * price.usdPrice).toFixed(
+      walletStatsResultHub.totalSpent_usd =
+        (parseFloat(walletStatsResultHub.totalSpent) * price.usdPrice).toFixed(
           2,
         ) + ' USD';
 
       //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
     }
-    walletStatsResponse.walletID = id;
-    walletStatsResponse.objectId = objectId;
+    walletStatsResultHub.walletID = id;
+    walletStatsResultHub.objectId = objectId;
     const walletStatsResponseHub: WalletStatsResponseHub =
       new WalletStatsResponseHub();
-    walletStatsResponseHub.results.push(walletStatsResponse);
+    walletStatsResponseHub.results.push(walletStatsResultHub);
     return walletStatsResponseHub;
   }
 
