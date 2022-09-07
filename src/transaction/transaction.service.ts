@@ -4,6 +4,8 @@ import { BigNumber, ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import {
+  TokenTransfersHub,
+  TokenTransfersResponse,
   WalletNFTResponse,
   WalletNFTResponseHub,
   WalletStatsResponse,
@@ -401,6 +403,12 @@ export class TransactionService {
     const transfers = await Moralis.Web3API.account.getTransactions(options);
     let ethSent: number = 0;
     let ethReveived: number = 0;
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+    const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+
     for (const transfer of transfers.result) {
       if (transfer.value !== '0') {
         if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
@@ -436,13 +444,13 @@ export class TransactionService {
     walletStatsResponse.balance = parseFloat(ethValue).toFixed(6) + ' ETH';
 
     //fetch usd price
-    const usdoptions = {
-      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      chain: chain,
-    };
+    // const usdoptions = {
+    //   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    //   chain: chain,
+    // };
 
     if (chain === 'eth') {
-      const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+      // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
 
       walletStatsResponse.balance_usd =
         (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
@@ -505,5 +513,84 @@ export class TransactionService {
 
     return walletNFTResponseHub;
     //return JSON.stringify(nfts);
+  }
+
+  async getAssetTransfersHub(
+    @Req() req,
+    chain: string,
+    limit: string,
+    cursor?: string | number,
+  ): Promise<TokenTransfersHub> {
+    let id = req.query.wallet_address;
+    if (cursor === '0') {
+      cursor = null;
+    }
+
+    const options = {
+      chain: chain,
+      address: id,
+      from_block: '0',
+      limit: limit,
+      cursor: cursor,
+    };
+
+    const transactions = await Moralis.Web3API.account.getTokenTransfers(
+      options,
+    );
+
+    //console.log(transactions);
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+    const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+
+    let transferMetadata: Array<any> = new Array();
+    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
+    for (const transfer of transactions.result) {
+      console.log('transfer value ', transfer.value);
+
+      let tokenTransfersResponse: TokenTransfersResponse =
+        new TokenTransfersResponse();
+      tokenTransfersResponse.walletID = id;
+      tokenTransfersResponse.objectId = req.query.associatedObjectId;
+      tokenTransfersResponse.from_address = transfer.from_address;
+      tokenTransfersResponse.to_address = transfer.to_address;
+      tokenTransfersResponse.created_at = transfer.created_at;
+      tokenTransfersResponse.transaction_hash =
+        'https://etherscan.io/tx/' + transfer.transaction_hash;
+
+      if (transfer.from_address.toUpperCase() == id.toUpperCase()) {
+        tokenTransfersResponse.title = 'Sent';
+      } else {
+        tokenTransfersResponse.title = 'Received';
+      }
+      let token_value = '';
+      if (transfer.value !== '0') {
+        token_value = transfer.value;
+      }
+
+      const ethValue = ethers.utils.formatEther(token_value);
+      console.log('ethValue value ', ethValue);
+      tokenTransfersResponse.value = parseFloat(ethValue).toFixed(6) + ' ETH';
+
+      tokenTransfersResponse.value_usd =
+        (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
+
+      const metadata = await this.getTokenMetadata(chain, transfer.address);
+
+      let temp = transfer;
+      temp['meta'] = metadata[0];
+      transferMetadata.push(metadata);
+      tokenTransfersHub.results.push(tokenTransfersResponse);
+    }
+
+    let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
+    eRC20Transactions.transfers = transactions;
+    eRC20Transactions.metadata = transferMetadata;
+
+    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
+
+    return tokenTransfersHub;
   }
 }

@@ -88,6 +88,24 @@ export class TransactionController {
     return this.transactionService.getNativeBalanceHub(req, chain);
   }
 
+  @Get('/assetTransfersHub/:chain/:limit')
+  async getAssetTransfersHub(
+    @Req() req,
+    @Param('chain') chain: string,
+    @Param('limit') limit: string,
+    @Param('cursor') cursor: string | number,
+  ): Promise<any> {
+    console.log(
+      `Fetching assets tranfers for Hubspot ${req.query.wallet_address} ...`,
+    );
+    return this.transactionService.getAssetTransfersHub(
+      req,
+      chain,
+      limit,
+      cursor,
+    );
+  }
+
   @Get()
   async transaction(): Promise<String> {
     return 'Hello Transaction...';

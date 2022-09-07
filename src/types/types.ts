@@ -25,8 +25,26 @@ export class WalletNFTResponse {
   name?: string = '';
   token_uri?: string = '';
   metadata?: string = '';
+  site_link: string = 'http://d2com83m29wuat.cloudfront.net/';
 }
 
 export class WalletNFTResponseHub {
   results?: WalletNFTResponse[] = [];
+}
+
+export class TokenTransfersResponse {
+  walletID?: string = '';
+  title: string = '';
+  objectId?: number = null;
+  from_address?: string = '';
+  to_address?: string = '';
+  value?: string = '';
+  value_usd?: string = '';
+  created_at?: string = '';
+  transaction_hash?: string = '';
+  site_link: string = 'http://d2com83m29wuat.cloudfront.net/';
+}
+
+export class TokenTransfersHub {
+  results?: TokenTransfersResponse[] = [];
 }
