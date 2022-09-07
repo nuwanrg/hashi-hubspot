@@ -6,7 +6,9 @@ export class WalletStatsResponse {
   totalReceive_usd?: string = '';
   totalSpent_usd?: string = ' ';
   firstBalanceChange?: Date = null;
+  firstBalanceChangeHub?: string = '';
   lastBalanceChange?: Date = null;
+  lastBalanceChangeHub?: string = '';
   transactionCount?: number = null;
   walletID?: string = null;
   title: string = 'Wallet Balance';

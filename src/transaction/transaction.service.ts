@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { TokenBalanceDto } from './tokenBalance.dto';
 import { ERC20Transactions } from './erc20Transactions.dto';
+import * as moment from 'moment';
 import {
   TokenTransfersHub,
   TokenTransfersResponse,
@@ -414,16 +415,32 @@ export class TransactionService {
         if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
           ethSent = ethSent + Number(transfer.value);
           if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+            walletStatsResponse.lastBalanceChangeHub = moment(
+              transfer.block_timestamp,
+            )
+              .utc()
+              .format('YYYY-MM-DD');
           }
 
-          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+          walletStatsResponse.firstBalanceChangeHub = moment(
+            transfer.block_timestamp,
+          )
+            .utc()
+            .format('YYYY-MM-DD');
         } else {
           ethReveived = ethReveived + Number(transfer.value);
           if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
+            walletStatsResponse.lastBalanceChangeHub = moment(
+              transfer.block_timestamp,
+            )
+              .utc()
+              .format('YYYY-MM-DD');
           }
-          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
+          walletStatsResponse.firstBalanceChangeHub = moment(
+            transfer.block_timestamp,
+          )
+            .utc()
+            .format('YYYY-MM-DD');
         }
       }
     }
