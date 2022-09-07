@@ -549,6 +549,7 @@ export class TransactionService {
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
     for (const transfer of transactions.result) {
       console.log('transfer value ', transfer.value);
+      console.log('transfer ', transfer);
 
       let tokenTransfersResponse: TokenTransfersResponse =
         new TokenTransfersResponse();
@@ -556,7 +557,7 @@ export class TransactionService {
       tokenTransfersResponse.objectId = req.query.associatedObjectId;
       tokenTransfersResponse.from_address = transfer.from_address;
       tokenTransfersResponse.to_address = transfer.to_address;
-      tokenTransfersResponse.created_at = transfer.created_at;
+      tokenTransfersResponse.created_at = transfer.block_timestamp;
       tokenTransfersResponse.transaction_hash =
         'https://etherscan.io/tx/' + transfer.transaction_hash;
 
