@@ -407,10 +407,11 @@ export class TransactionService {
     let externalTransactions: string = '';
     let externalReceive = 0;
     let externalSent = 0;
+    let externalTransactionCount = 0;
 
     await axios
       .get(
-        `https://api.etherscan.io/api?module=account&action=txlistinternal&address=${id}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc&apikey=7JADMJRD9WF7M3AR2EYJ99RQ5HW7RUJC6Z`,
+        `https://api.etherscan.io/api?module=account&action=txlistinternal&address=${id}&startblock=0&endblock=99999999&page=1&sort=desc&apikey=7JADMJRD9WF7M3AR2EYJ99RQ5HW7RUJC6Z`,
       )
       .then(async (d) => {
         //console.log(d.data.result, 'aaa');
@@ -423,6 +424,7 @@ export class TransactionService {
       } else {
         externalReceive = externalSent + Number(externalTransaction['value']);
       }
+      externalTransactionCount = externalTransactionCount + 1;
     }
 
     console.log('externalReceive ', externalReceive);
@@ -471,7 +473,8 @@ export class TransactionService {
         }
       }
     }
-    walletStatsResultHub.transactionCount = transfers.total;
+    walletStatsResultHub.transactionCount =
+      transfers.total + externalTransactionCount;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
     // const externalEthSent = ethers.utils.formatEther(externalSent.toString());
