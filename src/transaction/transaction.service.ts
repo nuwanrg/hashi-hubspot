@@ -402,9 +402,35 @@ export class TransactionService {
       receive: 0,
     };
 
+    // get BSC transfers for a given address
+    // with most recent transfers appearing first
+    let externalTransactions: string = '';
+    let externalReceive = 0;
+    let externalSent = 0;
+
+    await axios
+      .get(
+        `https://api.etherscan.io/api?module=account&action=txlistinternal&address=${id}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc&apikey=7JADMJRD9WF7M3AR2EYJ99RQ5HW7RUJC6Z`,
+      )
+      .then(async (d) => {
+        //console.log(d.data.result, 'aaa');
+        externalTransactions = d.data.result;
+      });
+    for (const externalTransaction of externalTransactions) {
+      console.log('externalTransaction[from] ', externalTransaction['from']);
+      if (externalTransaction['from'].toUpperCase() === id.toUpperCase()) {
+        externalSent = externalSent + Number(externalTransaction['value']);
+      } else {
+        externalReceive = externalSent + Number(externalTransaction['value']);
+      }
+    }
+
+    console.log('externalReceive ', externalReceive);
+    console.log('externalSent ', externalSent);
+    console.log('externalTransaction ', externalTransactions);
     const transfers = await Moralis.Web3API.account.getTransactions(options);
-    let ethSent: number = 0;
-    let ethReveived: number = 0;
+    let ethSent: number = externalSent;
+    let ethReveived: number = externalReceive;
     const usdoptions = {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chain: chain,
@@ -448,6 +474,13 @@ export class TransactionService {
     walletStatsResultHub.transactionCount = transfers.total;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
+    // const externalEthSent = ethers.utils.formatEther(externalSent.toString());
+    // const externalEthReceive = ethers.utils.formatEther(
+    //   externalReceive.toString(),
+    // );
+
+    // console.log('externalEthSent ', externalEthSent);
+    // console.log('externalEthReceive ', externalEthReceive);
     walletStatsResultHub.totalSpent =
       parseFloat(ethVal).toFixed(6) +
       ' ETH  ' +
