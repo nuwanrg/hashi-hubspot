@@ -448,18 +448,29 @@ export class TransactionService {
     walletStatsResultHub.transactionCount = transfers.total;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
-    walletStatsResultHub.totalSpent = parseFloat(ethVal).toFixed(6) + ' ETH';
-    console.log('ethReveived ', ethReveived);
+    walletStatsResultHub.totalSpent =
+      parseFloat(ethVal).toFixed(6) +
+      ' ETH  ' +
+      (parseFloat(ethVal) * price.usdPrice).toFixed(2) +
+      ' USD';
 
     const ethRec = ethers.utils.formatEther(ethReveived.toString());
 
-    walletStatsResultHub.totalReceive = parseFloat(ethRec).toFixed(6) + ' ETH';
+    walletStatsResultHub.totalReceive =
+      parseFloat(ethRec).toFixed(6) +
+      ' ETH  ' +
+      (parseFloat(ethRec) * price.usdPrice).toFixed(2) +
+      ' USD';
 
     //get wallet balance
     const balance = await Moralis.Web3API.account.getNativeBalance(options);
     const ethValue = ethers.utils.formatEther(balance.balance);
 
-    walletStatsResultHub.balance = parseFloat(ethValue).toFixed(6) + ' ETH';
+    walletStatsResultHub.balance =
+      parseFloat(ethValue).toFixed(6) +
+      ' ETH  ' +
+      (parseFloat(ethValue) * price.usdPrice).toFixed(2) +
+      ' USD';
 
     //fetch usd price
     // const usdoptions = {
@@ -467,28 +478,27 @@ export class TransactionService {
     //   chain: chain,
     // };
 
-    if (chain === 'eth') {
-      // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+    // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
 
-      walletStatsResultHub.balance_usd =
-        (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
+    walletStatsResultHub.balance_usd =
+      (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
-      // const balance_rec_usd: number =
-      //   this.formatVal(ethRec, 18) * price.usdPrice;
-      // console.log(`balance_rec_usd `, balance_rec_usd);
+    // const balance_rec_usd: number =
+    //   this.formatVal(ethRec, 18) * price.usdPrice;
+    // console.log(`balance_rec_usd `, balance_rec_usd);
 
-      walletStatsResultHub.totalReceive_usd =
-        (
-          parseFloat(walletStatsResultHub.totalReceive) * price.usdPrice
-        ).toFixed(2) + ' USD';
+    walletStatsResultHub.totalReceive_usd =
+      (parseFloat(walletStatsResultHub.totalReceive) * price.usdPrice).toFixed(
+        2,
+      ) + ' USD';
 
-      walletStatsResultHub.totalSpent_usd =
-        (parseFloat(walletStatsResultHub.totalSpent) * price.usdPrice).toFixed(
-          2,
-        ) + ' USD';
+    walletStatsResultHub.totalSpent_usd =
+      (parseFloat(walletStatsResultHub.totalSpent) * price.usdPrice).toFixed(
+        2,
+      ) + ' USD';
 
-      //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
-    }
+    //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+
     walletStatsResultHub.walletID = id;
     walletStatsResultHub.objectId = objectId;
     const walletStatsResponseHub: WalletStatsResponseHub =
