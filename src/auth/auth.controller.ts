@@ -13,7 +13,7 @@ let SCOPES = 'crm.objects.contacts.read';
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
 //const REDIRECT_URI = `https://muffintech.xyz/auth/oauthcallback`;
-const REDIRECT_URI = `http://localhost:3000/auth/oauthcallback`;
+const REDIRECT_URI = `https://muffinwallet.xyz/auth/oauthcallback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
@@ -46,7 +46,7 @@ export class AuthController {
 
   @Get('/oauthcallback')
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    console.log(' oauthcallback ', req.query.code);
+    console.log(' oauthcallback req ', req.query);
     if (req.query.code) {
       console.log('       > Received an authorization token');
     }
