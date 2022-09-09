@@ -621,7 +621,9 @@ export class TransactionService {
       tokenTransfersResponse.objectId = req.query.associatedObjectId;
       tokenTransfersResponse.from_address = transfer.from_address;
       tokenTransfersResponse.to_address = transfer.to_address;
-      tokenTransfersResponse.created_at = transfer.block_timestamp;
+      tokenTransfersResponse.created_at = moment(transfer.block_timestamp)
+        .utc()
+        .format('YYYY-MM-DD');
       tokenTransfersResponse.transaction_hash =
         'https://etherscan.io/tx/' + transfer.transaction_hash;
 
