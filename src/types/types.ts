@@ -43,6 +43,7 @@ export class WalletNFTResponse {
   token_uri?: string = '';
   metadata?: string = '';
   site_link: string = 'http://d2com83m29wuat.cloudfront.net/';
+  nft_image: string = '';
 }
 
 export class WalletNFTResponseHub {

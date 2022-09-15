@@ -567,8 +567,23 @@ export class TransactionService {
       walletNFTResponse.title = obj[key].name;
       walletNFTResponse.name = obj[key].name;
       walletNFTResponse.token_address = obj[key].token_address;
-      walletNFTResponse.token_uri = obj[key].token_uri;
+      //walletNFTResponse.token_uri = obj[key].token_uri;
       walletNFTResponse.metadata = obj[key].metadata;
+
+      //const metadata=  JSON.parse(data);
+      let imgUrl = obj[key].metadata.image;
+
+      if (imgUrl.includes('ipfs://')) {
+        //let index = str.indexOf("ipfs://")
+        imgUrl = imgUrl.substring(imgUrl.indexOf('ipfs://') + 7);
+        //index =index+7;
+        //const dd = imgUrl.ipfs;
+        console.log('imgUrl ', imgUrl);
+        imgUrl = 'https://ipfs.io/ipfs/' + imgUrl;
+        console.log('imgUrl ', imgUrl);
+      }
+
+      walletNFTResponse.token_uri = imgUrl;
 
       //walletNFTResponse.=nfts['result'];
 
