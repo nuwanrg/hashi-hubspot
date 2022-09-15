@@ -571,7 +571,11 @@ export class TransactionService {
       walletNFTResponse.metadata = obj[key].metadata;
 
       //const metadata=  JSON.parse(data);
-      let imgUrl = obj[key].metadata.image;
+
+      const metadata = JSON.parse(obj[key].metadata);
+      console.log('metadata: ', metadata);
+
+      let imgUrl = metadata['image'];
 
       if (imgUrl.includes('ipfs://')) {
         //let index = str.indexOf("ipfs://")
