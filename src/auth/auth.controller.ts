@@ -14,6 +14,7 @@ let SCOPES = 'crm.objects.contacts.read';
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
 //const REDIRECT_URI = `https://muffintech.xyz/auth/oauthcallback`;
 const REDIRECT_URI = `https://muffinwallet.xyz/auth/oauthcallback`;
+const REDIRECT_URI_PIPEDRIVE = `http://localhost:3000/auth/callback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
@@ -72,9 +73,60 @@ export class AuthController {
     // to the HubSpot API
     res.redirect(
       'https://app.hubspot.com/login',
+
       //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
     );
   }
+
+  //Pipedrive start
+  @Get('/callback')
+  async oauthcallbackpipe(@Req() req, @Res() res): Promise<any> {
+    console.log(' oauthcallback req ', req.query);
+    if (req.query.code) {
+      console.log('       > Received an authorization token');
+    }
+
+    //GET https://oauth.pipedrive.com/oauth/authorize?client_id=b4d083d9216986345b32&state=148aHxbdd92&redirect_uri=http://localhost:3000/oauth/callback
+
+    const authCodeProof = {
+      grant_type: 'authorization_code',
+      client_id: process.env.CLIENT_ID_PIPEDRIVE,
+      client_secret: process.env.CLIENT_SECRET_PIPEDRIVE,
+      redirect_uri: REDIRECT_URI_PIPEDRIVE,
+      code: req.query.code,
+    };
+    // Step 4
+    // Exchange the authorization code for an access token and refresh token
+    console.log(
+      'Exchanging authorization code for an access token and refresh token',
+    );
+
+    try {
+      const responseBody = await request.post(
+        'https://oauth.pipedrive.com/oauth/token',
+        {
+          form: authCodeProof,
+        },
+      );
+      const tokens = JSON.parse(responseBody);
+      console.log('> Received an access token and refresh token');
+      //return tokens.access_token;
+    } catch (e) {
+      console.error(
+        `       > Error exchanging ${authCodeProof.grant_type} for access token `,
+        e,
+      );
+      //return JSON.parse(e.response.body);
+    }
+
+    res.redirect(
+      'https://app.pipedrive.com/auth/login',
+
+      //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
+    );
+  }
+
+  //Pipedrive end
 }
 
 const NodeCache = require('node-cache');

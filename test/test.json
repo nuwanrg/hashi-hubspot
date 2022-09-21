@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": ["id", "header"],
+  "properties": {
+    "id": {
+      "$ref": "#/definitions/numerical"
+    },
+    "header": {
+      "$ref": "#/definitions/header"
+    },
+    "balance": {
+      "$ref": "#/definitions/text"
+    },
+    "totalReceive": {
+      "$ref": "#/definitions/text"
+    },
+    "totalSpent": {
+      "$ref": "#/definitions/text"
+    },
+    "firstBalanceChangeHub": {
+      "$ref": "#/definitions/text"
+    },
+    "lastBalanceChangeHub": {
+      "$ref": "#/definitions/text"
+    },
+    "transactionCount": {
+      "$ref": "#/definitions/text"
+    },
+    "walletID": {
+      "$ref": "#/definitions/text"
+    }
+  }
+}
