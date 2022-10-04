@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/stripe/stripe.service';
 
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -51,7 +51,7 @@ export class AuthController {
     await this.stripeService.checkout(req, res);
   }
 
-  @Get('/stripehook') // call from stripe
+  @Post('/stripehook') // call from stripe
   async stripehook(@Req() req, @Res() res): Promise<any> {
     //await this.stripeService.checkout(res);
     //
