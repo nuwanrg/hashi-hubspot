@@ -58,7 +58,7 @@ export class AuthController {
     //res.redirect('https://buy.stripe.com/3csaFA9RxfGcdI4aEI');
 
     //catch payment status here
-    const code = req.lines.data.metadata.code;
+    const code = req.data.object.lines.data[0].metadata.code;
 
     console.log(' oauthcallback req ', req.query);
     if (code /*req.query.code*/) {
