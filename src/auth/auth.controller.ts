@@ -89,14 +89,14 @@ export class AuthController {
     if (token.message) {
       return res.redirect(`/error?msg=${token.message}`);
     }
-
+    res.json({ success: true });
     // Once the tokens have been retrieved, use them to make a query
     // to the HubSpot API
-    res.redirect(
-      'https://app.hubspot.com/login',
+    // res.redirect(
+    //   'https://app.hubspot.com/login',
 
-      //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
-    );
+    //   //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
+    // );
   }
 
   //Pipedrive start
