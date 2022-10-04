@@ -16,6 +16,9 @@ export class StripeService {
     //console.log(this.stripe.VERSION);
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
+      metadata: {
+        code: req.query.code,
+      },
       line_items: [
         {
           /* price_data: {
