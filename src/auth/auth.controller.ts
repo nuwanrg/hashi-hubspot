@@ -63,24 +63,28 @@ export class AuthController {
       req.body.data.object.lines.data[0],
     );
     const code = req.body.data.object.lines.data[0].metadata.code;
+    const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
 
     console.log(' code: ', code);
     if (code /*req.query.code*/) {
-      console.log('Code not found');
+      console.log('Code found');
     }
     const authCodeProof = {
       grant_type: 'authorization_code',
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       redirect_uri: REDIRECT_URI,
-      code: req.query.code,
+      code: code,
     };
     // Step 4
     // Exchange the authorization code for an access token and refresh token
     console.log(
       '===> Step 4: Exchanging authorization code for an access token and refresh token',
     );
-    const token = await exchangeForTokens(req.sessionID, authCodeProof);
+    const token = await exchangeForTokens(
+      sessionID /*req.sessionID*/,
+      authCodeProof,
+    );
     console.log('token ', token);
     if (token.message) {
       return res.redirect(`/error?msg=${token.message}`);
