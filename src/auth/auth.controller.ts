@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { StripeService } from 'src/stripe/stripe.service';
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -27,7 +28,7 @@ const authUrl =
 
 @Controller('auth')
 export class AuthController {
-  constructor() {}
+  constructor(private stripeService: StripeService) {}
 
   //================================//
   //   Running the OAuth 2.0 Flow   //
@@ -45,10 +46,22 @@ export class AuthController {
     console.log('===> Step 2: User is being prompted for consent by HubSpot');
   }
 
-  @Get('/oauthcallback')
+  @Get('/oauthcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
+    await this.stripeService.checkout(req, res);
+  }
+
+  @Get('/stripehook') // call from stripe
+  async stripehook(@Req() req, @Res() res): Promise<any> {
+    //await this.stripeService.checkout(res);
+    //
+    //res.redirect('https://buy.stripe.com/3csaFA9RxfGcdI4aEI');
+
+    //catch payment status here
+    const code = req.data.lines.data.metadata.code;
+
     console.log(' oauthcallback req ', req.query);
-    if (req.query.code) {
+    if (code /*req.query.code*/) {
       console.log('       > Received an authorization token');
     }
     const authCodeProof = {
