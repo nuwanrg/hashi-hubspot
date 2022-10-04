@@ -60,9 +60,9 @@ export class AuthController {
     //catch payment status here
     const code = req.body.data.object.lines.data[0].metadata.code;
 
-    console.log(' oauthcallback req ', req.query);
+    console.log(' oauthcallback req ', req.body);
     if (code /*req.query.code*/) {
-      console.log('       > Received an authorization token');
+      console.log('Code not found');
     }
     const authCodeProof = {
       grant_type: 'authorization_code',
