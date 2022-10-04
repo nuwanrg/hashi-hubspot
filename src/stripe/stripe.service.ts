@@ -29,8 +29,8 @@ export class StripeService {
           quantity: 1,
         },
       ],
-      success_url: 'http://hashibridge.com',
-      cancel_url: 'http://hashibridge.com',
+      success_url: 'https://app.hubspot.com/login',
+      cancel_url: 'https://app.hubspot.com/login',
       subscription_data: {
         metadata: {
           code: req.query.code,
