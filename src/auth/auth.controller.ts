@@ -58,9 +58,13 @@ export class AuthController {
     //res.redirect('https://buy.stripe.com/3csaFA9RxfGcdI4aEI');
 
     //catch payment status here
-    console.log(' req.body.data.object: ', req.body.data.object);
+    console.log(
+      ' req.body.data.object.lines.data[0]: ',
+      req.body.data.object.lines.data[0],
+    );
     const code = req.body.data.object.lines.data[0].metadata.code;
 
+    console.log(' code: ', code);
     if (code /*req.query.code*/) {
       console.log('Code not found');
     }
