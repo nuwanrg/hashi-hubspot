@@ -25,7 +25,7 @@ export class StripeService {
             },
             unit_amount: 2000,
           },*/
-          price: 'price_1LnJWaALa3pUXDKn9sy09cnl',
+          price: 'price_1Ll4ggALa3pUXDKn1pzTPPzm', // test mode: price_1LnJWaALa3pUXDKn9sy09cnl
           quantity: 1,
         },
       ],
@@ -33,7 +33,7 @@ export class StripeService {
       cancel_url: 'https://app.hubspot.com/login',
       subscription_data: {
         metadata: {
-          code: req.query.code,
+          code: req.query.code, //code passed from hubspot
           sessionID: req.sessionID,
         },
       },
