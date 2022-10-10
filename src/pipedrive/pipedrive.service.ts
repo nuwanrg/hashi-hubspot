@@ -161,10 +161,10 @@ export class PipedriveService {
     //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
 
     data.walletID = id;
-    data.id = asociatedObjectId;
+    data.id = parseInt(asociatedObjectId);
     walletStat.data = data;
 
-    console.log('walletStat: ', walletStat);
+    console.log('walletStat: ', JSON.stringify(walletStat));
 
     return walletStat;
   }
