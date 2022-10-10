@@ -8,6 +8,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { TransactionService } from './transaction/transaction.service';
 import { StripeModule } from './stripe/stripe.module';
 import { StripeService } from './stripe/stripe.service';
+import { PipedriveModule } from './pipedrive/pipedrive.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { StripeService } from './stripe/stripe.service';
     }),
     TransactionModule,
     StripeModule,
+    PipedriveModule,
   ],
   controllers: [AppController, TransactionController, AuthController],
   providers: [AppService, TransactionService, StripeService],

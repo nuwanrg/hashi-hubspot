@@ -22,7 +22,7 @@ let chains = new Map<string, string>([
 
 @Injectable()
 export class TransactionService {
-  stats: any;
+  //stats: any;
   constructor() {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;
