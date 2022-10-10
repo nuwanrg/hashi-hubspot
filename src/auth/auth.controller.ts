@@ -107,8 +107,6 @@ export class AuthController {
       console.log('       > Received an authorization token');
     }
 
-    //GET https://oauth.pipedrive.com/oauth/authorize?client_id=b4d083d9216986345b32&state=148aHxbdd92&redirect_uri=http://localhost:3000/oauth/callback
-
     const authCodeProof = {
       grant_type: 'authorization_code',
       client_id: process.env.CLIENT_ID_PIPEDRIVE,

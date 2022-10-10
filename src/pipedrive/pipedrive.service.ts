@@ -24,7 +24,8 @@ export class PipedriveService {
 
     const id = req.query.wallet_address;
     const asociatedObjectId = req.query.asociatedObjectId;
-    console.log(`Requesting native balance for the wallet ${id} ......`);
+    console.log(`Requesting native balance for the wallet ......`);
+    console.log(`req.query : `, req.query);
 
     //let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
@@ -55,7 +56,7 @@ export class PipedriveService {
         externalTransactions = d.data.result;
       });
     for (const externalTransaction of externalTransactions) {
-      console.log('externalTransaction[from] ', externalTransaction['from']);
+      // console.log('externalTransaction[from] ', externalTransaction['from']);
       if (externalTransaction['from'].toUpperCase() === id.toUpperCase()) {
         externalSent = externalSent + Number(externalTransaction['value']);
       } else {
@@ -64,9 +65,9 @@ export class PipedriveService {
       externalTransactionCount = externalTransactionCount + 1;
     }
 
-    console.log('externalReceive ', externalReceive);
-    console.log('externalSent ', externalSent);
-    console.log('externalTransaction ', externalTransactions);
+    // console.log('externalReceive ', externalReceive);
+    // console.log('externalSent ', externalSent);
+    // console.log('externalTransaction ', externalTransactions);
     const transfers = await Moralis.Web3API.account.getTransactions(options);
     let ethSent: number = externalSent;
     let ethReveived: number = externalReceive;
@@ -162,6 +163,8 @@ export class PipedriveService {
     data.walletID = id;
     data.id = asociatedObjectId;
     walletStat.data = data;
+
+    console.log('walletStat: ', walletStat);
 
     return walletStat;
   }
