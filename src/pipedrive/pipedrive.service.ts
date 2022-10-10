@@ -23,7 +23,7 @@ export class PipedriveService {
     let data: Data = new Data();
 
     const id = req.query.wallet_address;
-    const asociatedObjectId = req.query.asociatedObjectId;
+    const asociatedObjectId = req.query.selectedIds;
     console.log(`Requesting native balance for the wallet ......`);
     console.log(`req.query : `, req.query);
 
