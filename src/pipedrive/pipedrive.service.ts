@@ -8,6 +8,10 @@ const Moralis = require('moralis/node');
 
 @Injectable()
 export class PipedriveService {
+  saveWallet(req: any): any {
+    console.log('Save Wallet req : ', req);
+    throw new Error('Method not implemented.');
+  }
   constructor() {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;

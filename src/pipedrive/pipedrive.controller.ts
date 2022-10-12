@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { PipedriveService } from './pipedrive.service';
 
 @Controller('pipedrive')
@@ -9,5 +9,11 @@ export class PipedriveController {
   async getWalletStat(@Req() req, @Param('chain') chain: string): Promise<any> {
     console.log(`req.query.wallet_address...`, req.query.wallet_address);
     return this.pipedriveService.getWalletStat(req, chain);
+  }
+
+  @Post('/saveWallet')
+  async saveWallet(@Req() req): Promise<any> {
+    console.log(`req.query.wallet_address...`, req.query.wallet_address);
+    return this.pipedriveService.saveWallet(req);
   }
 }
