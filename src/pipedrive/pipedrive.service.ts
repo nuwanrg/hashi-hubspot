@@ -1,5 +1,5 @@
 import { Injectable, Req } from '@nestjs/common';
-import { Data, WalletStat } from './types';
+import { Address, Data, Wallet, WalletStat } from './types';
 import { ethers } from 'ethers';
 import * as moment from 'moment';
 import axios from 'axios';
@@ -8,6 +8,13 @@ const Moralis = require('moralis/node');
 
 @Injectable()
 export class PipedriveService {
+  getWallet(req: any): any {
+    console.log(`getWallet req`, req);
+    let wallet: Wallet = new Wallet();
+    let address: Address = new Address();
+    wallet.data = address;
+    return wallet;
+  }
   saveWallet(req: any): any {
     console.log('Save Wallet req : ', req);
     throw new Error('Method not implemented.');

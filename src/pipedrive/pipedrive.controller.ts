@@ -19,10 +19,6 @@ export class PipedriveController {
 
   @Get('/wallet')
   async getWallet(@Req() req): Promise<any> {
-    console.log(
-      `getWallet req.query.wallet_address...`,
-      req.query.wallet_address,
-    );
-    return this.pipedriveService.saveWallet(req);
+    return this.pipedriveService.getWallet(req);
   }
 }
