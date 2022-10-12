@@ -11,9 +11,18 @@ export class PipedriveController {
     return this.pipedriveService.getWalletStat(req, chain);
   }
 
-  @Post('/saveWallet')
+  @Post('/wallet')
   async saveWallet(@Req() req): Promise<any> {
     console.log(`req.query.wallet_address...`, req.query.wallet_address);
+    return this.pipedriveService.saveWallet(req);
+  }
+
+  @Get('/wallet')
+  async getWallet(@Req() req): Promise<any> {
+    console.log(
+      `getWallet req.query.wallet_address...`,
+      req.query.wallet_address,
+    );
     return this.pipedriveService.saveWallet(req);
   }
 }
