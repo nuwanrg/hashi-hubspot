@@ -21,6 +21,6 @@ export class Address {
   wallet_address?: string = '0xC9D0Ef45068474DB7A6321848b41265f51fD280A';
 }
 
-export class Wallet {
+export class WalletAddress {
   data?: Address = null;
 }

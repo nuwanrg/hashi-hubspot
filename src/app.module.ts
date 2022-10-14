@@ -9,11 +9,23 @@ import { TransactionService } from './transaction/transaction.service';
 import { StripeModule } from './stripe/stripe.module';
 import { StripeService } from './stripe/stripe.service';
 import { PipedriveModule } from './pipedrive/pipedrive.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Wallet } from './pipedrive/pipedrive.wallet.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'pipedrive.c3fswzqpyf9j.us-east-1.rds.amazonaws.com',
+      port: 5432,
+      username: 'postgress',
+      password: 'postgress123#',
+      database: 'postgress',
+      entities: [Wallet],
+      synchronize: true,
     }),
     TransactionModule,
     StripeModule,

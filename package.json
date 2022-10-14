@@ -26,17 +26,20 @@
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^9.0.1",
     "axios": "^0.27.2",
     "ethers": "^5.6.9",
     "moment": "^2.29.4",
     "moralis": "^1.10.1",
     "node-cache": "^5.1.2",
     "node-fetch": "^3.2.10",
+    "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "request-promise-native": "^1.0.9",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "stripe": "^10.11.0"
+    "stripe": "^10.11.0",
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

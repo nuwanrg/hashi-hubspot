@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { PipedriveService } from './pipedrive.service';
+import { Wallet } from './pipedrive.wallet.entity';
 
 @Controller('pipedrive')
 export class PipedriveController {
@@ -12,9 +13,17 @@ export class PipedriveController {
   }
 
   @Post('/wallet')
-  async saveWallet(@Req() req): Promise<any> {
-    console.log(`req.query.wallet_address...`, req.query.wallet_address);
-    return this.pipedriveService.saveWallet(req);
+  async saveWallet(@Req() req, @Body() body): Promise<any> {
+    console.log('Saving wallet address');
+    // console.log('Saving wallet address');
+    // console.log('Saving wallet address');
+    const wallet = new Wallet();
+    wallet.companyId = req.query.companyId;
+    wallet.userId = req.query.userId;
+    wallet.personId = req.query.id;
+    wallet.walletAddress = body.wallet_address;
+    console.log('wallet : ', wallet);
+    return this.pipedriveService.create(wallet);
   }
 
   @Get('/wallet')

@@ -1,8 +1,11 @@
 import { Injectable, Req } from '@nestjs/common';
-import { Address, Data, Wallet, WalletStat } from './types';
+import { Address, Data, WalletAddress, WalletStat } from './types';
 import { ethers } from 'ethers';
 import * as moment from 'moment';
 import axios from 'axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Wallet } from './pipedrive.wallet.entity';
 
 const Moralis = require('moralis/node');
 
@@ -10,16 +13,16 @@ const Moralis = require('moralis/node');
 export class PipedriveService {
   getWallet(req: any): any {
     console.log(`getWallet req`, req);
-    let wallet: Wallet = new Wallet();
+    let walletAddress: WalletAddress = new WalletAddress();
     let address: Address = new Address();
-    wallet.data = address;
-    return wallet;
+    walletAddress.data = address;
+    return walletAddress;
   }
-  saveWallet(req: any): any {
-    console.log('Save Wallet req : ', req);
-    throw new Error('Method not implemented.');
-  }
-  constructor() {
+
+  constructor(
+    @InjectRepository(Wallet)
+    private walletRepository: Repository<Wallet>,
+  ) {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;
     Moralis.start({
@@ -28,17 +31,21 @@ export class PipedriveService {
     });
   }
 
+  public async create(wallet: Wallet): Promise<any> {
+    //let wallet: Wallet = new Wallet();
+    return this.walletRepository.save(wallet);
+  }
+
   async getWalletStat(@Req() req, chain: string): Promise<any> {
     let walletStat: WalletStat = new WalletStat();
 
     let data: Data = new Data();
 
     const id = req.query.wallet_address;
+
     const asociatedObjectId = req.query.selectedIds;
     console.log(`Requesting native balance for the wallet ......`);
     console.log(`req.query : `, req.query);
-
-    //let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const options = {
       chain: chain,
