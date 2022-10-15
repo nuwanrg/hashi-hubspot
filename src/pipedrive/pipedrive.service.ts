@@ -36,11 +36,32 @@ export class PipedriveService {
     return this.walletRepository.save(wallet);
   }
 
+  public async getWalletAddress(
+    companyId: number,
+    userId: number,
+    personId: number,
+  ): Promise<Wallet | undefined> {
+    const wallet: Wallet | undefined = await this.walletRepository.findOne({
+      select: ['id', 'walletAddress', 'userId', 'companyId', 'personId'],
+      where: {
+        companyId,
+        userId,
+        personId,
+      },
+    });
+    return wallet;
+  }
+
   async getWalletStat(@Req() req, chain: string): Promise<any> {
     let walletStat: WalletStat = new WalletStat();
 
     let data: Data = new Data();
 
+    const wallet = this.getWalletAddress(
+      req.query.companyId,
+      req.query.userId,
+      req.query.id,
+    );
     const id = req.query.wallet_address;
 
     const asociatedObjectId = req.query.selectedIds;
