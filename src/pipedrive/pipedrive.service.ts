@@ -40,8 +40,8 @@ export class PipedriveService {
     companyId: number,
     userId: number,
     personId: number,
-  ): Promise<Wallet | undefined> {
-    const wallet: Wallet | undefined = await this.walletRepository.findOne({
+  ): Promise<Wallet> {
+    const wallet: Wallet = await this.walletRepository.findOne({
       select: ['id', 'walletAddress', 'userId', 'companyId', 'personId'],
       where: {
         companyId,
@@ -57,12 +57,12 @@ export class PipedriveService {
 
     let data: Data = new Data();
 
-    const wallet = this.getWalletAddress(
+    const wallet = await this.getWalletAddress(
       req.query.companyId,
       req.query.userId,
       req.query.id,
     );
-    const id = req.query.wallet_address;
+    const id: string = wallet.walletAddress; //.query.wallet_address;
 
     const asociatedObjectId = req.query.selectedIds;
     console.log(`Requesting native balance for the wallet ......`);
