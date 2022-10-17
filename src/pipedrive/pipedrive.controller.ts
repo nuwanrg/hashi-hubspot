@@ -14,9 +14,9 @@ export class PipedriveController {
 
   @Post('/wallet')
   async saveWallet(@Req() req, @Body() body): Promise<any> {
-    console.log('Saving wallet address');
-    // console.log('Saving wallet address');
-    // console.log('Saving wallet address');
+    console.log('Saving wallet address req ', req);
+    console.log('Saving wallet address body ', body);
+
     const wallet = new Wallet();
     wallet.companyId = req.query.companyId;
     wallet.userId = req.query.userId;
