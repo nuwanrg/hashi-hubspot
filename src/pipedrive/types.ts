@@ -10,7 +10,7 @@ export class Data {
   transactionCount?: number = null;
   walletID?: string = null;
   header?: string = 'Wallet Stats';
-  id?: number;
+  id: number;
 }
 
 export class WalletStat {
@@ -18,7 +18,7 @@ export class WalletStat {
 }
 
 export class Address {
-  wallet_address?: string = '0xC9D0Ef45068474DB7A6321848b41265f51fD280A';
+  wallet_address?: string = null;
 }
 
 export class WalletAddress {

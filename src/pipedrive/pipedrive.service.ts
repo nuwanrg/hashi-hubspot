@@ -53,9 +53,10 @@ export class PipedriveService {
   }
 
   async getWalletStat(@Req() req, chain: string): Promise<any> {
+    const asociatedObjectId = req.query.selectedIds;
     let walletStat: WalletStat = new WalletStat();
-
     let data: Data = new Data();
+    data.id = parseInt(asociatedObjectId);
     walletStat.data = data;
 
     const wallet = await this.getWalletAddress(
@@ -71,7 +72,6 @@ export class PipedriveService {
       return walletStat;
     }
 
-    const asociatedObjectId = req.query.selectedIds;
     console.log(`Requesting native balance for the wallet ......`);
     console.log(`req.query : `, req.query);
 
@@ -207,7 +207,7 @@ export class PipedriveService {
     //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
 
     data.walletID = id;
-    data.id = parseInt(asociatedObjectId);
+
     //walletStat.data = data;
 
     console.log('walletStat: ', JSON.stringify(walletStat));
