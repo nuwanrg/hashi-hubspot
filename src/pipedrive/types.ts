@@ -18,7 +18,7 @@ export class WalletStat {
 }
 
 export class Address {
-  wallet_address?: string = '';
+  //wallet_address?: string = '';
 }
 
 export class WalletAddress {
