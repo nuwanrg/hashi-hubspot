@@ -16,7 +16,7 @@ export class PipedriveService {
     let walletAddress: WalletAddress = new WalletAddress();
     let address: Address = new Address();
     walletAddress.data = address;
-    return walletAddress;
+    return JSON.stringify(walletAddress);
   }
 
   constructor(
