@@ -56,13 +56,20 @@ export class PipedriveService {
     let walletStat: WalletStat = new WalletStat();
 
     let data: Data = new Data();
+    walletStat.data = data;
 
     const wallet = await this.getWalletAddress(
       req.query.companyId,
       req.query.userId,
       req.query.id,
     );
-    const id: string = wallet.walletAddress; //.query.wallet_address;
+    console.log('wallet : ', wallet);
+    let id: string;
+    if (wallet !== null && wallet.walletAddress !== null) {
+      id = wallet.walletAddress; //.query.wallet_address;
+    } else {
+      return walletStat;
+    }
 
     const asociatedObjectId = req.query.selectedIds;
     console.log(`Requesting native balance for the wallet ......`);
@@ -201,7 +208,7 @@ export class PipedriveService {
 
     data.walletID = id;
     data.id = parseInt(asociatedObjectId);
-    walletStat.data = data;
+    //walletStat.data = data;
 
     console.log('walletStat: ', JSON.stringify(walletStat));
 
