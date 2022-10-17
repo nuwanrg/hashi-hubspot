@@ -23,7 +23,8 @@ export class PipedriveController {
     wallet.personId = req.query.id;
     wallet.walletAddress = body.wallet_address;
     console.log('wallet : ', wallet);
-    return this.pipedriveService.create(wallet);
+    return this.pipedriveService.getWallet(req);
+    //return this.pipedriveService.create(wallet);
   }
 
   @Get('/wallet')
