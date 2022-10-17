@@ -8,7 +8,7 @@ export class Data {
   firstBalanceChangeHub?: string = '';
   lastBalanceChangeHub?: string = '';
   transactionCount?: number = null;
-  walletID?: string = null;
+  walletID?: string = '';
   header?: string = 'Wallet Stats';
   id: number;
 }
