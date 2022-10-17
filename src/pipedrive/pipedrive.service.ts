@@ -12,7 +12,7 @@ const Moralis = require('moralis/node');
 @Injectable()
 export class PipedriveService {
   getWallet(req: any): any {
-    console.log(`getWallet req`, req);
+    console.log('Called getWallet req', req);
     let walletAddress: WalletAddress = new WalletAddress();
     let address: Address = new Address();
     walletAddress.data = address;
@@ -32,6 +32,7 @@ export class PipedriveService {
   }
 
   public async create(wallet: Wallet): Promise<any> {
+    console.log('Called create wallet', wallet);
     //let wallet: Wallet = new Wallet();
     return this.walletRepository.save(wallet);
   }
@@ -53,6 +54,7 @@ export class PipedriveService {
   }
 
   async getWalletStat(@Req() req, chain: string): Promise<any> {
+    console.log('Called getWalletStat req', req);
     const asociatedObjectId = req.query.selectedIds;
     let walletStat: WalletStat = new WalletStat();
     let data: Data = new Data();

@@ -4,7 +4,7 @@ export class Data {
   totalReceive?: string = '';
   totalSpent?: string = '';
   totalReceive_usd?: string = '';
-  totalSpent_usd?: string = ' ';
+  totalSpent_usd?: string = '';
   firstBalanceChangeHub?: string = '';
   lastBalanceChangeHub?: string = '';
   transactionCount?: number = null;
@@ -18,7 +18,7 @@ export class WalletStat {
 }
 
 export class Address {
-  wallet_address?: string = null;
+  wallet_address?: string = '';
 }
 
 export class WalletAddress {
