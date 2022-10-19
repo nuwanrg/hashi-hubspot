@@ -6,6 +6,7 @@ import axios from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet } from './pipedrive.wallet.entity';
+import { WalletNFTResponse, WalletNFTResponseHub } from 'src/types/types';
 
 const Moralis = require('moralis/node');
 
@@ -221,11 +222,71 @@ export class PipedriveService {
 
     data.walletID = id;
 
-    let data2: Data = new Data();
-    data2.id = 3;
-    data2.header = 'ERC-721 (NFT) owned';
-    walletStat.data.push(data2);
+    const nfts = await this.getNFTsHub(id, 'eth');
+
+    for (const nft of nfts.results) {
+      let nftdata: Data = new Data();
+      nftdata.id = parseInt(asociatedObjectId);
+      nftdata.header = 'NFT-' + nft.name;
+      nftdata.name = nft.name;
+      walletStat.data.push(nftdata);
+    }
 
     return walletStat;
+  }
+
+  async getNFTsHub(id: string, chain: string): Promise<WalletNFTResponseHub> {
+    //let id = req.query.wallet_address;
+    const options = {
+      chain: chain,
+      address: id,
+    };
+    const nfts = await Moralis.Web3API.account.getNFTs(options);
+    console.log('NFTs results : ', nfts['result']);
+    const obj = nfts['result'];
+
+    const walletNFTResponseHub: WalletNFTResponseHub =
+      new WalletNFTResponseHub();
+
+    for (var key in obj) {
+      console.log(
+        'key: ' + key + ', obj[key].token_address: ' + obj[key].token_address,
+      );
+
+      let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
+      walletNFTResponse.walletID = id;
+      //walletNFTResponse.objectId = req.query.associatedObjectId;
+      walletNFTResponse.title = obj[key].name;
+      walletNFTResponse.name = obj[key].name;
+      walletNFTResponse.token_address = obj[key].token_address;
+      //walletNFTResponse.token_uri = obj[key].token_uri;
+      walletNFTResponse.metadata = obj[key].metadata;
+
+      //const metadata=  JSON.parse(data);
+
+      const metadata = JSON.parse(obj[key].metadata);
+      console.log('metadata: ', metadata);
+
+      let imgUrl = metadata['image'];
+
+      if (imgUrl.includes('ipfs://')) {
+        //let index = str.indexOf("ipfs://")
+        imgUrl = imgUrl.substring(imgUrl.indexOf('ipfs://') + 7);
+        //index =index+7;
+        //const dd = imgUrl.ipfs;
+        console.log('imgUrl ', imgUrl);
+        imgUrl = 'https://ipfs.io/ipfs/' + imgUrl;
+        console.log('imgUrl ', imgUrl);
+      }
+
+      walletNFTResponse.token_uri = imgUrl;
+
+      //walletNFTResponse.=nfts['result'];
+
+      walletNFTResponseHub.results.push(walletNFTResponse);
+    }
+
+    return walletNFTResponseHub;
+    //return JSON.stringify(nfts);
   }
 }

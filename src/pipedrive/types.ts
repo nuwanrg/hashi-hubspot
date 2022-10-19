@@ -11,6 +11,7 @@ export class Data {
   walletID?: string = null;
   header = 'Wallet Stats';
   id: number;
+  name?: string = null;
 }
 
 export class WalletStat {
