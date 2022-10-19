@@ -14,7 +14,7 @@ export class Data {
 }
 
 export class WalletStat {
-  data: Data = null;
+  data?: Data[] = [];
 }
 
 export class Address {

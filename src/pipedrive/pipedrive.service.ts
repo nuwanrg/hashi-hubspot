@@ -65,12 +65,12 @@ export class PipedriveService {
   }
 
   async getWalletStat(@Req() req, chain: string): Promise<any> {
-    console.log('Called getWalletStat req', req);
+    //console.log('Called getWalletStat req', req);
     const asociatedObjectId = req.query.selectedIds;
     let walletStat: WalletStat = new WalletStat();
     let data: Data = new Data();
     data.id = parseInt(asociatedObjectId);
-    walletStat.data = data;
+    walletStat.data.push(data);
 
     const wallet = await this.getWalletAddress(
       req.query.companyId,
@@ -162,7 +162,7 @@ export class PipedriveService {
         }
       }
     }
-    data.transactionCount = null; //transfers.total + externalTransactionCount;
+    data.transactionCount = transfers.total + externalTransactionCount;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
     // const externalEthSent = ethers.utils.formatEther(externalSent.toString());
