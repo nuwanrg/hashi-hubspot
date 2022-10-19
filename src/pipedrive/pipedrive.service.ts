@@ -34,17 +34,27 @@ export class PipedriveService {
   public async create(wallet: Wallet): Promise<any> {
     console.log('Called create wallet', wallet);
     //let wallet: Wallet = new Wallet();
-    this.walletRepository.save(wallet);
+    const walletExists = this.getWalletAddress(
+      wallet.companyId,
+      wallet.userId,
+      wallet.personId,
+    );
+    if (walletExists === null) {
+      this.walletRepository.save(wallet);
+    } else {
+      (await walletExists).walletAddress = wallet.walletAddress;
+      this.walletRepository.update((await walletExists).id, wallet);
+    }
     let walletAddress: WalletAddress = this.getWallet();
     return walletAddress;
   }
 
-  public async getWalletAddress(
+  async getWalletAddress(
     companyId: number,
     userId: number,
     personId: number,
   ): Promise<Wallet> {
-    const wallet: Wallet = await this.walletRepository.findOne({
+    return this.walletRepository.findOne({
       select: ['id', 'walletAddress', 'userId', 'companyId', 'personId'],
       where: {
         companyId,
@@ -52,7 +62,6 @@ export class PipedriveService {
         personId,
       },
     });
-    return wallet;
   }
 
   async getWalletStat(@Req() req, chain: string): Promise<any> {
