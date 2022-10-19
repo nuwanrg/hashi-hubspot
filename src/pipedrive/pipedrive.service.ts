@@ -204,18 +204,18 @@ export class PipedriveService {
 
     // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
 
-    data.balance_usd =
+    /*data.balance_usd =
       (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
-
+*/
     // const balance_rec_usd: number =
     //   this.formatVal(ethRec, 18) * price.usdPrice;
     // console.log(`balance_rec_usd `, balance_rec_usd);
 
-    data.totalReceive_usd =
+    /* data.totalReceive_usd =
       (parseFloat(data.totalReceive) * price.usdPrice).toFixed(2) + ' USD';
 
     data.totalSpent_usd =
-      (parseFloat(data.totalSpent) * price.usdPrice).toFixed(2) + ' USD';
+      (parseFloat(data.totalSpent) * price.usdPrice).toFixed(2) + ' USD';*/
 
     //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
 
