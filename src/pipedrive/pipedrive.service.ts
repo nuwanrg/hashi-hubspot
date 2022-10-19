@@ -162,7 +162,7 @@ export class PipedriveService {
         }
       }
     }
-    data.transactionCount = transfers.total + externalTransactionCount;
+    data.transactionCount = null; //transfers.total + externalTransactionCount;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
     // const externalEthSent = ethers.utils.formatEther(externalSent.toString());
