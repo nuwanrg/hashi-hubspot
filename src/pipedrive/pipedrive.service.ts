@@ -221,9 +221,10 @@ export class PipedriveService {
 
     data.walletID = id;
 
-    //walletStat.data = data;
-
-    console.log('walletStat: ', JSON.stringify(walletStat));
+    let data2: Data = new Data();
+    data2.id = 3;
+    data2.header = 'ERC-721 (NFT) owned';
+    walletStat.data.push(data2);
 
     return walletStat;
   }

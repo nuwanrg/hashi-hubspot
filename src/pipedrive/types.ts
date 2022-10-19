@@ -1,15 +1,15 @@
 export class Data {
-  balance?: string = '';
-  balance_usd?: string = '';
-  totalReceive?: string = '';
-  totalSpent?: string = '';
-  totalReceive_usd?: string = '';
-  totalSpent_usd?: string = '';
-  firstBalanceChangeHub?: string = '';
-  lastBalanceChangeHub?: string = '';
+  balance?: string = null;
+  balance_usd?: string = null;
+  totalReceive?: string = null;
+  totalSpent?: string = null;
+  totalReceive_usd?: string = null;
+  totalSpent_usd?: string = null;
+  firstBalanceChangeHub?: string = null;
+  lastBalanceChangeHub?: string = null;
   transactionCount?: number = null;
-  walletID?: string = '';
-  header?: string = 'Wallet Stats';
+  walletID?: string = null;
+  header = 'Wallet Stats';
   id: number;
 }
 
