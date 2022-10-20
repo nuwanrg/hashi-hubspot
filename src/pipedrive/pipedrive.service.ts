@@ -6,7 +6,13 @@ import axios from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet } from './pipedrive.wallet.entity';
-import { WalletNFTResponse, WalletNFTResponseHub } from 'src/types/types';
+import {
+  TokenTransfersHub,
+  TokenTransfersResponse,
+  WalletNFTResponse,
+  WalletNFTResponseHub,
+} from 'src/types/types';
+import { ERC20Transactions } from 'src/transaction/erc20Transactions.dto';
 
 const Moralis = require('moralis/node');
 
@@ -222,8 +228,9 @@ export class PipedriveService {
 
     data.walletID = id;
 
-    const nfts = await this.getNFTsHub(id, 'eth');
+    //gets nfts
 
+    const nfts = await this.getNFTsHub(id, 'eth');
     for (const nft of nfts.results) {
       let nftdata: Data = new Data();
       nftdata.id = parseInt(asociatedObjectId);
@@ -233,7 +240,116 @@ export class PipedriveService {
       walletStat.data.push(nftdata);
     }
 
+    //gets transactions
+
+    const transactions = await this.getAssetTransfersHub(id, 'eth', '3');
+    for (const transaction of transactions.results) {
+      let trxdata: Data = new Data();
+      trxdata.id = parseInt(asociatedObjectId);
+      trxdata.header = transaction.title;
+      trxdata.from_address = transaction.from_address;
+      trxdata.to_address = transaction.to_address;
+      trxdata.value = transaction.value;
+      trxdata.value_usd = transaction.value_usd;
+      trxdata.created_at = transaction.created_at;
+      trxdata.transaction_hash = transaction.transaction_hash;
+
+      walletStat.data.push(trxdata);
+    }
+
     return walletStat;
+  }
+
+  async getAssetTransfersHub(
+    id: string,
+    chain: string,
+    limit: string,
+    cursor?: string | number,
+  ): Promise<TokenTransfersHub> {
+    //let id = req.query.wallet_address;
+    if (cursor === '0') {
+      cursor = null;
+    }
+
+    const options = {
+      chain: chain,
+      address: id,
+      from_block: '0',
+      limit: limit,
+      cursor: cursor,
+    };
+
+    const transactions = await Moralis.Web3API.account.getTokenTransfers(
+      options,
+    );
+
+    //console.log(transactions);
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+    const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+
+    let transferMetadata: Array<any> = new Array();
+    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
+    for (const transfer of transactions.result) {
+      console.log('transfer value ', transfer.value);
+      console.log('transfer ', transfer);
+
+      let tokenTransfersResponse: TokenTransfersResponse =
+        new TokenTransfersResponse();
+      tokenTransfersResponse.walletID = id;
+      //tokenTransfersResponse.objectId = parseInt(asociatedObjectId);
+      tokenTransfersResponse.from_address = transfer.from_address;
+      tokenTransfersResponse.to_address = transfer.to_address;
+      tokenTransfersResponse.created_at = moment(transfer.block_timestamp)
+        .utc()
+        .format('YYYY-MM-DD');
+      tokenTransfersResponse.transaction_hash =
+        'https://etherscan.io/tx/' + transfer.transaction_hash;
+
+      if (transfer.from_address.toUpperCase() == id.toUpperCase()) {
+        tokenTransfersResponse.title = 'Outbound Transaction';
+      } else {
+        tokenTransfersResponse.title = 'Inbound Transaction';
+      }
+      let token_value = '';
+      if (transfer.value !== '0') {
+        token_value = transfer.value;
+      }
+
+      const ethValue = ethers.utils.formatEther(token_value);
+      console.log('ethValue value ', ethValue);
+      tokenTransfersResponse.value = parseFloat(ethValue).toFixed(6) + ' ETH';
+
+      tokenTransfersResponse.value_usd =
+        (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
+
+      const metadata = await this.getTokenMetadata(chain, transfer.address);
+
+      let temp = transfer;
+      temp['meta'] = metadata[0];
+      transferMetadata.push(metadata);
+      tokenTransfersHub.results.push(tokenTransfersResponse);
+    }
+
+    let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
+    eRC20Transactions.transfers = transactions;
+    eRC20Transactions.metadata = transferMetadata;
+
+    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
+
+    return tokenTransfersHub;
+  }
+
+  async getTokenMetadata(chain: string, id: string): Promise<any> {
+    const options = {
+      chain: chain,
+      addresses: [id],
+    };
+    const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(options);
+
+    return tokenMetadata;
   }
 
   async getNFTsHub(id: string, chain: string): Promise<WalletNFTResponseHub> {
