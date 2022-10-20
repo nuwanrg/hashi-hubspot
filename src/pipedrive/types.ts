@@ -12,6 +12,7 @@ export class Data {
   header = 'Wallet Stats';
   id: number;
   name?: string = null;
+  token_address?: string = null;
 }
 
 export class WalletStat {

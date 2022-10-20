@@ -229,6 +229,7 @@ export class PipedriveService {
       nftdata.id = parseInt(asociatedObjectId);
       nftdata.header = 'NFT-' + nft.name;
       nftdata.name = nft.name;
+      nftdata.token_address = nft.token_address;
       walletStat.data.push(nftdata);
     }
 
