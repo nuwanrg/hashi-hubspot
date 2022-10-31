@@ -8,7 +8,7 @@ export class PipedriveController {
 
   @Get('/getWalletStat/:chain')
   async getWalletStat(@Req() req, @Param('chain') chain: string): Promise<any> {
-    console.log(`req.query.wallet_address...`, req.query.wallet_address);
+    //console.log(`req.query.wallet_address...`, req.query.wallet_address);
     return this.pipedriveService.getWalletStat(req, chain);
   }
 

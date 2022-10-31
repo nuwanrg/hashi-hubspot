@@ -92,8 +92,8 @@ export class PipedriveService {
       return walletStat;
     }
 
-    console.log(`Requesting native balance for the wallet ......`);
-    console.log(`req.query : `, req.query);
+    //console.log(`Requesting native balance for the wallet ......`);
+    //console.log(`req.query : `, req.query);
 
     const options = {
       chain: chain,
