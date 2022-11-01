@@ -46,6 +46,7 @@ export class PipedriveService {
       wallet.userId,
       wallet.personId,
     );
+    console.log('walletExists :', walletExists);
     if (walletExists === null) {
       this.walletRepository.save(wallet);
     } else {
