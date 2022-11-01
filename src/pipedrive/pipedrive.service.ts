@@ -41,7 +41,7 @@ export class PipedriveService {
   public async create(wallet: Wallet): Promise<any> {
     //console.log('Called create wallet', wallet);
     //let wallet: Wallet = new Wallet();
-    const walletExists = this.getWalletAddress(
+    const walletExists = await this.getWalletAddress(
       wallet.companyId,
       wallet.userId,
       wallet.personId,
