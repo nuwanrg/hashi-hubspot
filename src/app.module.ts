@@ -11,6 +11,8 @@ import { StripeService } from './stripe/stripe.service';
 import { PipedriveModule } from './pipedrive/pipedrive.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wallet } from './pipedrive/pipedrive.wallet.entity';
+import { OauthModule } from './oauth/oauth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { Wallet } from './pipedrive/pipedrive.wallet.entity';
     TransactionModule,
     StripeModule,
     PipedriveModule,
+    OauthModule,
+    UsersModule,
   ],
   controllers: [AppController, TransactionController, AuthController],
   providers: [AppService, TransactionService, StripeService],
