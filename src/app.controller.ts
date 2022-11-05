@@ -29,13 +29,13 @@ export class AppController {
     return this.oauthService.login(req.user);
   }
 
-  @Get('oauth/auth')
+  @Get('oauth/auth/:client_id/:redirect_uri/:response_type/:state')
   async auth(
     @Request() req,
     @Res() res,
     @Param('redirect_uri') redirect_uri: string,
   ) {
-    console.log('zoho req : ', req);
+    //console.log('zoho req : ', req);
     console.log('zoho redirect_uri : ', redirect_uri);
     res.redirect(redirect_uri);
     return this.oauthService.auth(req);
