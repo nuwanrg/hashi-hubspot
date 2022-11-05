@@ -1,4 +1,12 @@
-import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Request,
+  Post,
+  UseGuards,
+  Param,
+  Res,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthService } from './oauth/oauth.service';
@@ -22,7 +30,12 @@ export class AppController {
   }
 
   @Post('oauth/auth')
-  async auth(@Request() req) {
+  async auth(
+    @Request() req,
+    @Res() res,
+    @Param('redirect_uri') redirect_uri: string,
+  ) {
+    res.redirect(redirect_uri);
     return this.oauthService.auth(req);
   }
 }
