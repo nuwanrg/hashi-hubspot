@@ -33,7 +33,10 @@ export class AppController {
   async auth(
     @Request() req,
     @Res() res,
+    @Param('client_id') client_id: string,
     @Param('redirect_uri') redirect_uri: string,
+    @Param('response_type') response_type: string,
+    @Param('state') state: string,
   ) {
     //console.log('zoho req : ', req);
     console.log('zoho redirect_uri : ', redirect_uri);
