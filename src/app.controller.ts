@@ -31,15 +31,17 @@ export class AppController {
 
   @Get('oauth/auth') ///:client_id/:redirect_uri/:response_type/:state
   async auth(
+    @Request() req,
+    @Res() res,
     @Param('client_id') client_id: string,
-    // @Param('redirect_uri') redirect_uri: string,
-    // @Param('response_type') response_type: string,
-    // @Param('state') state: string,
+    @Param('redirect_uri') redirect_uri: string,
+    @Param('response_type') response_type: string,
+    @Param('state') state: string,
   ) {
     //console.log('zoho req : ', req);
     console.log('zoho client_id : ', client_id);
-    //res.redirect(redirect_uri);
+    res.redirect(redirect_uri);
     //return this.oauthService.auth(req);
-    return 'success';
+    //return 'success';
   }
 }
