@@ -53,5 +53,6 @@ export class AppController {
   async token2(@Request() req, @Res() res, @Query() query) {
     //console.log('zoho req : ', req);
     console.log('zoho query post: ', query);
+    console.log('zoho query req: ', req);
   }
 }
