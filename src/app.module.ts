@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wallet } from './pipedrive/pipedrive.wallet.entity';
 import { OauthModule } from './oauth/oauth.module';
 import { UsersModule } from './users/users.module';
+import { OAuth2ServerModule } from '@t00nday/nestjs-oauth2-server';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     PipedriveModule,
     OauthModule,
     UsersModule,
+    OAuth2ServerModule.forRoot({}),
   ],
   controllers: [AppController, TransactionController, AuthController],
   providers: [AppService, TransactionService, StripeService],
