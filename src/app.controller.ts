@@ -50,10 +50,9 @@ export class AppController {
     console.log('zoho query get : ', query);
   }
   @Post('oauth/token') ///:client_id/:redirect_uri/:response_type/:state
-  async token2(@Request() req, @Res() res, @Query() query) {
+  async token2(@Request() req, @Res() res, @Query() query): Promise<any> {
     //console.log('zoho req : ', req);
     console.log('zoho query post: ', query);
-    console.log('zoho query req: ', req);
     const response = {
       access_token:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo',
