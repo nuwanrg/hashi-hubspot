@@ -54,5 +54,13 @@ export class AppController {
     //console.log('zoho req : ', req);
     console.log('zoho query post: ', query);
     console.log('zoho query req: ', req);
+    const response = {
+      access_token: 'f2*********************4f',
+      refresh_token: '12*********************0c',
+      token_type: 'Bearer',
+      expires_in: 3600000,
+    };
+    console.log('zoho query response: ', response);
+    return response;
   }
 }
