@@ -35,7 +35,10 @@ export class AppController {
     //console.log('zoho req : ', req);
     console.log('zoho query : ', query);
     const redirect_uri =
-      query.redirect_uri + '?code=pU2DHOWjSCVh6NJKi1ClhBYNKfuqbZVT';
+      query.redirect_uri +
+      '?state=' +
+      query.state +
+      '&code=pU2DHOWjSCVh6NJKi1ClhBYNKfuqbZVT';
     res.redirect(redirect_uri);
     //return this.oauthService.auth(req);
     //return 'success';
