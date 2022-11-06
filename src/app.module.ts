@@ -35,7 +35,6 @@ import { OAuth2ServerModule } from '@t00nday/nestjs-oauth2-server';
     PipedriveModule,
     OauthModule,
     UsersModule,
-    OAuth2ServerModule.forRoot({}),
   ],
   controllers: [AppController, TransactionController, AuthController],
   providers: [AppService, TransactionService, StripeService],
