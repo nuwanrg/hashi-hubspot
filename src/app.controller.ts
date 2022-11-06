@@ -40,4 +40,15 @@ export class AppController {
     //return this.oauthService.auth(req);
     //return 'success';
   }
+
+  @Get('oauth/token') ///:client_id/:redirect_uri/:response_type/:state
+  async token(@Request() req, @Res() res, @Query() query) {
+    //console.log('zoho req : ', req);
+    console.log('zoho query get : ', query);
+  }
+  @Post('oauth/token') ///:client_id/:redirect_uri/:response_type/:state
+  async token2(@Request() req, @Res() res, @Query() query) {
+    //console.log('zoho req : ', req);
+    console.log('zoho query post: ', query);
+  }
 }
