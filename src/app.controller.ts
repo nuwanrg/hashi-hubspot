@@ -36,8 +36,8 @@ export class AppController {
     console.log('zoho query : ', query);
     const redirect_uri =
       query.redirect_uri +
-      '?state=' +
-      query.state +
+      '?state=PORTAL-nuwan2-US-570258b31c1b111fe6f936cac564982d55e459daf6985e2633367b0503a1373b98a995a7c54902f25a5cbef627567d86-nuwan2' +
+      // query.state +
       '&code=pU2DHOWjSCVh6NJKi1ClhBYNKfuqbZVT';
     res.redirect(redirect_uri);
     //return this.oauthService.auth(req);
