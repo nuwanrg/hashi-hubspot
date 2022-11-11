@@ -38,7 +38,7 @@ export class AppController {
       query.redirect_uri +
       '?state=' +
       query.state +
-      '&code=pU2DHOWjSCVh6NJKi1ClhBYNKfuqbZVT';
+      '&code=pU2DHOWjSCVh6NJKi1ClhBYNKfuqbZVV';
     res.redirect(redirect_uri);
     //return this.oauthService.auth(req);
     //return 'success';
