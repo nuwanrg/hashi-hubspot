@@ -9,6 +9,7 @@ import { TransactionService } from './transaction/transaction.service';
 import { StripeModule } from './stripe/stripe.module';
 import { StripeService } from './stripe/stripe.service';
 import { PipedriveModule } from './pipedrive/pipedrive.module';
+import { ZohoModule } from './zoho/zoho.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wallet } from './pipedrive/pipedrive.wallet.entity';
 import { OauthModule } from './oauth/oauth.module';
@@ -33,6 +34,7 @@ import { UsersModule } from './users/users.module';
     PipedriveModule,
     OauthModule,
     UsersModule,
+    ZohoModule,
   ],
   controllers: [AppController, TransactionController, AuthController],
   providers: [AppService, TransactionService, StripeService],
