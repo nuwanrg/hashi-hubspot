@@ -15,6 +15,7 @@ export class ZohoController {
   @Post('/wallet')
   async saveWallet(@Req() req, @Body() body): Promise<any> {
     console.log('reg body ', body);
+    console.log('reg  ', req);
     const wallet = new Wallet();
     wallet.companyId = body.companyId;
     wallet.userId = body.userId;
