@@ -15,13 +15,13 @@ export class ZohoController {
   @Post('/wallet')
   async saveWallet(@Req() req, @Body() body): Promise<any> {
     const wallet = new Wallet();
-    wallet.companyId = req.query.companyId;
-    wallet.userId = req.query.userId;
-    wallet.personId = req.query.id;
-    wallet.walletAddress = body.wallet_address;
+    wallet.companyId = body.companyId;
+    wallet.userId = body.userId;
+    wallet.personId = body.personId;
+    //wallet.walletAddress = body.wallet_address;
     console.log('wallet : ', wallet);
-    //return this.pipedriveService.getWallet(req);
-    return this.zohoService.create(wallet);
+    return this.zohoService.getWallet(req);
+    //return this.zohoService.create(wallet);
   }
 
   @Get('/wallet')
