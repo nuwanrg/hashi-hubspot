@@ -14,13 +14,18 @@ export class ZohoController {
 
   @Post('/wallet')
   async saveWallet(@Req() req, @Body() body): Promise<any> {
+    console.log('reg body ', body);
     const wallet = new Wallet();
     wallet.companyId = body.companyId;
     wallet.userId = body.userId;
     wallet.personId = body.personId;
     //wallet.walletAddress = body.wallet_address;
     console.log('wallet : ', wallet);
-    return this.zohoService.getWallet(req);
+    return this.zohoService.getWalletAddress(
+      wallet.companyId,
+      wallet.personId,
+      wallet.userId,
+    );
     //return this.zohoService.create(wallet);
   }
 
