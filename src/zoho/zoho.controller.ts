@@ -13,7 +13,8 @@ export class ZohoController {
   }
 
   @Post('/wallet')
-  async saveWallet(@Req() req, @Body() body): Promise<any> {
+  async saveWallet(@Req() req, @Body() body: Wallet): Promise<any> {
+    console.log('wallet body  ', body);
     console.log('req.body ', req.body);
     console.log('req  ', req);
     const wallet = new Wallet();
