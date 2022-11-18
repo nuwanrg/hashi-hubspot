@@ -36,3 +36,13 @@ export class Address {
 export class WalletAddress {
   data?: Address = null;
 }
+
+export class ZohoWallet {
+  userId: string;
+
+  companyId: string;
+
+  personId: string;
+
+  platformId: string;
+}

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ZohoService } from './zoho.service';
-import { Wallet } from './zoho.wallet.entity';
+import { ZohoWallet } from './types';
 
 @Controller('zoho')
 export class ZohoController {
@@ -13,7 +13,7 @@ export class ZohoController {
   }
 
   @Post('/wallet')
-  async saveWallet(@Req() req, @Body() body: Wallet): Promise<any> {
+  async saveWallet(@Req() req, @Body() body: ZohoWallet): Promise<any> {
     console.log('wallet body  ', body);
     console.log('req.body ', req.body);
     console.log('req  ', req);
