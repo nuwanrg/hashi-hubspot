@@ -16,17 +16,11 @@ export class ZohoController {
   async saveWallet(@Req() req, @Body() body: ZohoWallet): Promise<any> {
     console.log('wallet body  ', body);
     console.log('req.body ', req.body);
-    console.log('req  ', req);
-    const wallet = new Wallet();
-    wallet.companyId = body.companyId;
-    wallet.userId = body.userId;
-    wallet.personId = body.personId;
-    //wallet.walletAddress = body.wallet_address;
-    console.log('wallet : ', wallet);
+
     return this.zohoService.getWalletAddress(
-      wallet.companyId,
-      wallet.personId,
-      wallet.userId,
+      parseInt(body.companyId),
+      parseInt(body.personId),
+      parseInt(body.userId),
     );
     //return this.zohoService.create(wallet);
   }
