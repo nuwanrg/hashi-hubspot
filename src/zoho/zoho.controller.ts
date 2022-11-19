@@ -13,15 +13,13 @@ export class ZohoController {
     @Body() zohoWalletDto: ZohoWalletDto,
   ): Promise<any> {
     console.log('zohoWalletDto:', zohoWalletDto);
-    console.log('chain: ', chain);
 
     return this.zohoService.getWalletStat(zohoWalletDto, chain);
   }
 
   @Post('/wallet')
   async getWallet(@Req() req, @Body() body: ZohoWalletDto): Promise<any> {
-    console.log('wallet body  ', body);
-    console.log('req.body ', req.body);
+    console.log('/wallet ZohoWalletDto:  ', body);
 
     return this.zohoService.getWalletAddress(
       body.companyId,

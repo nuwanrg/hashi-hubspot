@@ -38,6 +38,8 @@ export class WalletAddress {
 }
 
 export class ZohoWalletDto {
+  id: number;
+
   userId: string;
 
   companyId: string;
@@ -45,4 +47,6 @@ export class ZohoWalletDto {
   personId: string;
 
   platformId: string;
+
+  walletAddress: string;
 }
