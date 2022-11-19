@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
-export class Wallet {
+export class ZohoWallet {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -8,11 +8,11 @@ export class Wallet {
   walletAddress: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @Column()
-  companyId: number;
+  companyId: string;
 
   @Column()
-  personId: number;
+  personId: string;
 }

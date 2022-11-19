@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ZohoService } from './zoho.service';
-import { ZohoWallet } from './types';
+import { ZohoWalletDto } from './types';
 
 @Controller('zoho')
 export class ZohoController {
@@ -13,20 +13,20 @@ export class ZohoController {
   }
 
   @Post('/wallet')
-  async saveWallet(@Req() req, @Body() body: ZohoWallet): Promise<any> {
+  async getWallet(@Req() req, @Body() body: ZohoWalletDto): Promise<any> {
     console.log('wallet body  ', body);
     console.log('req.body ', req.body);
 
     return this.zohoService.getWalletAddress(
-      parseInt(body.companyId),
-      parseInt(body.personId),
-      parseInt(body.userId),
+      body.companyId,
+      body.personId,
+      body.userId,
     );
     //return this.zohoService.create(wallet);
   }
 
-  @Get('/wallet')
-  async getWallet(@Req() req): Promise<any> {
-    return this.zohoService.getWallet(req);
-  }
+  // @Get('/wallet')
+  // async getWallet(@Req() req): Promise<any> {
+  //   return this.zohoService.getWallet(req);
+  // }
 }

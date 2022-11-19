@@ -14,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Wallet } from './pipedrive/pipedrive.wallet.entity';
 import { OauthModule } from './oauth/oauth.module';
 import { UsersModule } from './users/users.module';
+import { ZohoWallet } from './zoho/zoho.wallet.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,7 +27,7 @@ import { UsersModule } from './users/users.module';
       username: 'postgres',
       password: 'postgres123#',
       database: 'postgres',
-      entities: [Wallet],
+      entities: [Wallet, ZohoWallet],
       synchronize: true,
     }),
     TransactionModule,

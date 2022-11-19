@@ -37,7 +37,7 @@ export class WalletAddress {
   data?: Address = null;
 }
 
-export class ZohoWallet {
+export class ZohoWalletDto {
   userId: string;
 
   companyId: string;

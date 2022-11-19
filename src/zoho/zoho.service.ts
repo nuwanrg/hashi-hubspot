@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import axios from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Wallet } from './zoho.wallet.entity';
+import { ZohoWallet } from './zoho.wallet.entity';
 import {
   TokenTransfersHub,
   TokenTransfersResponse,
@@ -27,8 +27,8 @@ export class ZohoService {
   }
 
   constructor(
-    @InjectRepository(Wallet)
-    private walletRepository: Repository<Wallet>,
+    @InjectRepository(ZohoWallet)
+    private walletRepository: Repository<ZohoWallet>,
   ) {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;
@@ -38,7 +38,7 @@ export class ZohoService {
     });
   }
 
-  public async create(wallet: Wallet): Promise<any> {
+  public async create(wallet: ZohoWallet): Promise<any> {
     //console.log('Called create wallet', wallet);
     //let wallet: Wallet = new Wallet();
     const walletExists = await this.getWalletAddress(
@@ -58,10 +58,10 @@ export class ZohoService {
   }
 
   async getWalletAddress(
-    companyId: number,
-    userId: number,
-    personId: number,
-  ): Promise<Wallet> {
+    companyId: string,
+    userId: string,
+    personId: string,
+  ): Promise<ZohoWallet> {
     return this.walletRepository.findOne({
       select: ['id', 'walletAddress', 'userId', 'companyId', 'personId'],
       where: {
