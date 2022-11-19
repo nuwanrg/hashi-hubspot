@@ -1,5 +1,11 @@
 import { Injectable, Req } from '@nestjs/common';
-import { Address, Data, WalletAddress, WalletStat } from './types';
+import {
+  Address,
+  Data,
+  WalletAddress,
+  WalletStat,
+  ZohoWalletDto,
+} from './types';
 import { ethers } from 'ethers';
 import * as moment from 'moment';
 import axios from 'axios';
@@ -72,20 +78,23 @@ export class ZohoService {
     });
   }
 
-  async getWalletStat(@Req() req, chain: string): Promise<any> {
+  async getWalletStat(
+    zohoWalletDto: ZohoWalletDto,
+    chain: string,
+  ): Promise<any> {
     //console.log('Called getWalletStat req', req);
-    const asociatedObjectId = req.query.selectedIds;
+    //const asociatedObjectId = req.query.selectedIds;
     let walletStat: WalletStat = new WalletStat();
     let data: Data = new Data();
-    data.id = parseInt(asociatedObjectId);
-    walletStat.data.push(data);
+    //data.id = parseInt(asociatedObjectId);
+    walletStat.data = data;
 
     const wallet = await this.getWalletAddress(
-      req.query.companyId,
-      req.query.userId,
-      req.query.id,
+      zohoWalletDto.companyId,
+      zohoWalletDto.userId,
+      zohoWalletDto.personId,
     );
-    console.log('wallet : ', wallet);
+
     let id: string;
     if (wallet !== null && wallet.walletAddress !== null) {
       id = wallet.walletAddress; //.query.wallet_address;

@@ -6,10 +6,16 @@ import { ZohoWalletDto } from './types';
 export class ZohoController {
   constructor(private readonly zohoService: ZohoService) {}
 
-  @Get('/getWalletStat/:chain')
-  async getWalletStat(@Req() req, @Param('chain') chain: string): Promise<any> {
-    //console.log(`req.query.wallet_address...`, req.query.wallet_address);
-    return this.zohoService.getWalletStat(req, chain);
+  @Post('/getWalletStat/:chain')
+  async getWalletStat(
+    @Req() req,
+    @Param('chain') chain: string,
+    @Body() zohoWalletDto: ZohoWalletDto,
+  ): Promise<any> {
+    console.log('zohoWalletDto:', zohoWalletDto);
+    console.log('chain: ', chain);
+
+    return this.zohoService.getWalletStat(zohoWalletDto, chain);
   }
 
   @Post('/wallet')
