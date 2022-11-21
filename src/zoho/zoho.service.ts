@@ -44,7 +44,7 @@ export class ZohoService {
     });
   }
 
-  public async create(wallet: ZohoWallet): Promise<any> {
+  public async create(wallet: ZohoWallet): Promise<ZohoWallet> {
     //console.log('Called create wallet', wallet);
     //let wallet: Wallet = new Wallet();
     const walletExists = await this.getWalletAddress(
@@ -52,15 +52,30 @@ export class ZohoService {
       wallet.userId,
       wallet.personId,
     );
+
+    let returnedWallet: ZohoWallet;
     console.log('walletExists :', walletExists);
     if (walletExists === null) {
-      this.walletRepository.save(wallet);
+      console.log('saving :', wallet);
+      returnedWallet = await this.walletRepository.save(wallet);
+      console.log('returnedWallet :', returnedWallet);
+      return returnedWallet;
     } else {
-      (await walletExists).walletAddress = wallet.walletAddress;
-      this.walletRepository.update((await walletExists).id, wallet);
+      const id: number = walletExists.id;
+
+      //(await walletExists).walletAddress = wallet.walletAddress;
+      await this.walletRepository.update(id, wallet);
+
+      wallet = await this.walletRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      console.log('wallet :', wallet);
+      return wallet;
     }
-    let walletAddress: WalletAddress = this.getWallet();
-    return walletAddress;
+    //let walletAddress: WalletAddress = this.getWallet();
+    //return walletAddress;
   }
 
   async getWalletAddress(
@@ -82,28 +97,30 @@ export class ZohoService {
     zohoWalletDto: ZohoWalletDto,
     chain: string,
   ): Promise<any> {
-    //console.log('Called getWalletStat req', req);
-    //const asociatedObjectId = req.query.selectedIds;
+    let wallet: ZohoWallet = new ZohoWallet();
+
+    wallet.companyId = zohoWalletDto.companyId;
+    wallet.userId = zohoWalletDto.userId;
+    wallet.personId = zohoWalletDto.personId;
+    //wallet.id = zohoWalletDto.id;
+    wallet.walletAddress = zohoWalletDto.walletAddress;
+
+    // console.log('wallet :  ', wallet);
+
+    // if (wallet === null && wallet.walletAddress !== null) {
+    //id = wallet.walletAddress; //.query.wallet_address;
+    // wallet.walletAddress = zohoWalletDto.walletAddress;
+    const zohoWallet = await this.create(wallet);
+    console.log('zohoWallet :  ', wallet);
+    //}
+
+    const id = zohoWallet.walletAddress;
+
+    console.log(`Requesting native balance for the wallet ......`);
+    //console.log(`req.query : `, req.query);
     let walletStat: WalletStat = new WalletStat();
     let data: Data = new Data();
-    //data.id = parseInt(asociatedObjectId);
     walletStat.data = data;
-
-    const wallet = await this.getWalletAddress(
-      zohoWalletDto.companyId,
-      zohoWalletDto.userId,
-      zohoWalletDto.personId,
-    );
-
-    let id: string;
-    if (wallet !== null && wallet.walletAddress !== null) {
-      id = wallet.walletAddress; //.query.wallet_address;
-    } else {
-      return walletStat;
-    }
-
-    //console.log(`Requesting native balance for the wallet ......`);
-    //console.log(`req.query : `, req.query);
 
     const options = {
       chain: chain,
@@ -131,6 +148,8 @@ export class ZohoService {
         //console.log(d.data.result, 'aaa');
         externalTransactions = d.data.result;
       });
+
+    console.log('externalTransactions: ', externalTransactions);
     for (const externalTransaction of externalTransactions) {
       // console.log('externalTransaction[from] ', externalTransaction['from']);
       if (externalTransaction['from'].toUpperCase() === id.toUpperCase()) {

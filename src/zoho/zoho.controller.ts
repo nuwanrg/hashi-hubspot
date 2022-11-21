@@ -23,8 +23,8 @@ export class ZohoController {
 
     return this.zohoService.getWalletAddress(
       body.companyId,
-      body.personId,
       body.userId,
+      body.personId,
     );
     //return this.zohoService.create(wallet);
   }
