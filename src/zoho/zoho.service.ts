@@ -289,24 +289,27 @@ export class ZohoService {
     return walletStat;
   }
 
-  async getAssetTransfersHub(
-    id: string,
+  async getTransaction(
+    zohoWalletDto: ZohoWalletDto,
     chain: string,
-    limit: string,
-    cursor?: string | number,
   ): Promise<TokenTransfersHub> {
-    //let id = req.query.wallet_address;
-    if (cursor === '0') {
-      cursor = null;
-    }
+    let id = zohoWalletDto.walletAddress;
+    // if (cursor === '0') {
+    //   cursor = null;
+    // }
+
+    console.log('chain: ', chain);
+    console.log('zohoWalletDto: ', zohoWalletDto);
 
     const options = {
       chain: chain,
-      address: id,
+      address: zohoWalletDto.walletAddress,
       from_block: '0',
-      limit: limit,
-      cursor: cursor,
+      limit: '10',
+      cursor: null, //cursor,
     };
+
+    console.log('options ', options);
 
     const transactions = await Moralis.Web3API.account.getTokenTransfers(
       options,

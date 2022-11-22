@@ -17,6 +17,15 @@ export class ZohoController {
     return this.zohoService.getWalletStat(zohoWalletDto, chain);
   }
 
+  @Post('/getTransaction/:chain')
+  async getTransaction(
+    @Req() req,
+    @Param('chain') chain: string,
+    @Body() zohoWalletDto: ZohoWalletDto,
+  ): Promise<any> {
+    return this.zohoService.getTransaction(zohoWalletDto, chain);
+  }
+
   @Post('/wallet')
   async getWallet(@Req() req, @Body() body: ZohoWalletDto): Promise<any> {
     console.log('/wallet ZohoWalletDto:  ', body);

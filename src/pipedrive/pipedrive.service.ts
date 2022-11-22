@@ -277,9 +277,9 @@ export class PipedriveService {
       address: id,
       from_block: '0',
       limit: limit,
-      cursor: cursor,
+      cursor: null,
     };
-
+    console.log('options pp: ', options);
     const transactions = await Moralis.Web3API.account.getTokenTransfers(
       options,
     );
@@ -294,8 +294,8 @@ export class PipedriveService {
     let transferMetadata: Array<any> = new Array();
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
     for (const transfer of transactions.result) {
-      console.log('transfer value ', transfer.value);
-      console.log('transfer ', transfer);
+      //console.log('transfer value ', transfer.value);
+      //console.log('transfer ', transfer);
 
       let tokenTransfersResponse: TokenTransfersResponse =
         new TokenTransfersResponse();
@@ -338,7 +338,7 @@ export class PipedriveService {
     eRC20Transactions.transfers = transactions;
     eRC20Transactions.metadata = transferMetadata;
 
-    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
+    //console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
 
     return tokenTransfersHub;
   }
