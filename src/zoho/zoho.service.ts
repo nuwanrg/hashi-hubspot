@@ -384,11 +384,14 @@ export class ZohoService {
     return tokenMetadata;
   }
 
-  async getNFTsHub(id: string, chain: string): Promise<WalletNFTResponseHub> {
+  async getNFTs(
+    zohoWalletDto: ZohoWalletDto,
+    chain: string,
+  ): Promise<WalletNFTResponseHub> {
     //let id = req.query.wallet_address;
     const options = {
       chain: chain,
-      address: id,
+      address: zohoWalletDto.walletAddress,
     };
     const nfts = await Moralis.Web3API.account.getNFTs(options);
     console.log('NFTs results : ', nfts['result']);

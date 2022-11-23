@@ -26,6 +26,15 @@ export class ZohoController {
     return this.zohoService.getTransaction(zohoWalletDto, chain);
   }
 
+  @Post('/getNFT/:chain')
+  async getNFT(
+    @Req() req,
+    @Param('chain') chain: string,
+    @Body() zohoWalletDto: ZohoWalletDto,
+  ): Promise<any> {
+    return this.zohoService.getNFTs(zohoWalletDto, chain);
+  }
+
   @Post('/wallet')
   async getWallet(@Req() req, @Body() body: ZohoWalletDto): Promise<any> {
     console.log('/wallet ZohoWalletDto:  ', body);
