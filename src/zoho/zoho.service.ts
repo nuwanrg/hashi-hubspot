@@ -406,7 +406,7 @@ export class ZohoService {
       );
 
       let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
-      walletNFTResponse.walletID = id;
+      walletNFTResponse.walletID = zohoWalletDto.walletAddress;
       //walletNFTResponse.objectId = req.query.associatedObjectId;
       walletNFTResponse.title = obj[key].name;
       walletNFTResponse.name = obj[key].name;
