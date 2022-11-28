@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/walletgate",
+          "awslogs-group": "/ecs/hashi-hubspot-logs",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/walletgate:latest",
+      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/hashi-hubspot:latest",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -54,15 +54,15 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "walletgate"
+      "name": "hashi-hubspot-container"
     }
   ],
   "placementConstraints": [],
   "memory": "512",
   "taskRoleArn": null,
   "compatibilities": ["EC2", "FARGATE"],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:406042714797:task-definition/walletgate:5",
-  "family": "walletgate",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:406042714797:task-definition/hashi-hubspot:5",
+  "family": "hashi-hubspot",
   "requiresAttributes": [
     {
       "targetId": null,
