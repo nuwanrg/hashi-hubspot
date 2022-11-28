@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/stripe/stripe.service';
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
+//const CLIENT_ID = process.env.CLIENT_ID;
+//const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -13,16 +13,14 @@ let SCOPES = 'crm.objects.contacts.read';
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-//const REDIRECT_URI = `https://muffintech.xyz/auth/oauthcallback`;
-const REDIRECT_URI = `https://muffinwallet.xyz/auth/oauthcallback`;
-const REDIRECT_URI_PIPEDRIVE = `https://muffinwallet.xyz/auth/callback`;
+const REDIRECT_URI = `https://muffinwallet.xyz/auth/hubcallback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
 // to when they choose to install the app
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
-  `?client_id=${encodeURIComponent(CLIENT_ID)}` + // app's client ID
+  `?client_id=${encodeURIComponent(process.env.CLIENT_ID)}` + // app's client ID
   `&scope=${encodeURIComponent(SCOPES)}` + // scopes being requested by the app
   `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`; // where to send the user after the consent page
 
@@ -38,30 +36,17 @@ export class AuthController {
   // the authorization URL
   @Get('/install')
   async install(@Res() res): Promise<any> {
-    console.log('');
     console.log('=== Initiating OAuth 2.0 flow with HubSpot ===');
-    console.log('');
-    console.log("===> Step 1: Redirecting user to your app's OAuth URL");
     res.redirect(authUrl);
-    console.log('===> Step 2: User is being prompted for consent by HubSpot');
   }
 
-  @Get('/oauthcallback') //call from hubspot
+  @Get('/hubcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
     await this.stripeService.checkout(req, res);
   }
 
-  @Post('/stripehook') // call from stripe
+  @Post('/stripecallback') // call from stripe
   async stripehook(@Req() req, @Res() res): Promise<any> {
-    //await this.stripeService.checkout(res);
-    //
-    //res.redirect('https://buy.stripe.com/3csaFA9RxfGcdI4aEI');
-
-    //catch payment status here
-    console.log(
-      ' req.body.data.object.lines.data[0]: ',
-      req.body.data.object.lines.data[0],
-    );
     const code = req.body.data.object.lines.data[0].metadata.code;
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
 
@@ -98,54 +83,6 @@ export class AuthController {
     //   //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
     // );
   }
-
-  //Pipedrive start
-  @Get('/callback')
-  async oauthcallbackpipe(@Req() req, @Res() res): Promise<any> {
-    console.log(' oauthcallback req ', req.query);
-    if (req.query.code) {
-      console.log('       > Received an authorization token');
-    }
-
-    const authCodeProof = {
-      grant_type: 'authorization_code',
-      client_id: process.env.CLIENT_ID_PIPEDRIVE,
-      client_secret: process.env.CLIENT_SECRET_PIPEDRIVE,
-      redirect_uri: REDIRECT_URI_PIPEDRIVE,
-      code: req.query.code,
-    };
-    // Step 4
-    // Exchange the authorization code for an access token and refresh token
-    console.log(
-      'Exchanging authorization code for an access token and refresh token',
-    );
-
-    try {
-      const responseBody = await request.post(
-        'https://oauth.pipedrive.com/oauth/token',
-        {
-          form: authCodeProof,
-        },
-      );
-      const tokens = JSON.parse(responseBody);
-      console.log('> Received an access token and refresh token');
-      //return tokens.access_token;
-    } catch (e) {
-      console.error(
-        `       > Error exchanging ${authCodeProof.grant_type} for access token `,
-        e,
-      );
-      //return JSON.parse(e.response.body);
-    }
-
-    res.redirect(
-      'https://app.pipedrive.com/auth/login',
-
-      //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
-    );
-  }
-
-  //Pipedrive end
 }
 
 const NodeCache = require('node-cache');
@@ -170,11 +107,11 @@ const exchangeForTokens = async (userId, exchangeProof) => {
     //   Math.round(tokens.expires_in * 0.75),
     // );
 
-    console.log('       > Received an access token and refresh token');
+    console.log('Received an access token and refresh token');
     return tokens.access_token;
   } catch (e) {
     console.error(
-      `       > Error exchanging ${exchangeProof.grant_type} for access token`,
+      `Error exchanging ${exchangeProof.grant_type} for access token`,
     );
     return JSON.parse(e.response.body);
   }

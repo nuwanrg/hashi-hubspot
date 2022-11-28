@@ -1,18 +1,8 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
-import {
-  createAlchemyWeb3,
-  AssetTransfersCategory,
-  AssetTransfersResponse,
-  AssetTransfersOrder,
-} from '@alch/alchemy-web3';
-import { ethers } from 'ethers';
-import { TransactionService } from './transaction.service';
-import { WalletStatsResponse } from 'src/types/types';
-const rpcURL = 'https://goerli.prylabs.net/'; //'https://rinkeby.infura.io/';
-const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-//const network =
 
-@Controller('transaction')
+import { TransactionService } from './transaction.service';
+
+@Controller('hub')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
@@ -35,14 +25,6 @@ export class TransactionController {
     console.log(`Fetching assets tranfers ${id} ...`);
     return this.transactionService.getAssetTransfers(chain, id, limit, cursor);
   }
-
-  //Depreciated
-  //   @Get('/getNFTs/:id')
-  //   async getNFTs(@Param('id') id: string): Promise<any> {
-  //     console.log(`Requesting NFTs from the wallet ${id} ......`);
-
-  //     return this.transactionService.getNFTs(id);
-  //   }
 
   @Get('/getNFTs/:chain/:id')
   async getNFTs(
@@ -68,16 +50,6 @@ export class TransactionController {
 
     return this.transactionService.getTokenBalances(chain, id);
   }
-
-  //   @Get('/getETHBalance/:id')
-  //   async getETHBalance(
-  //     @Param('chain') chain: string,
-  //     @Param('id') id: string,
-  //   ): Promise<String> {
-  //     console.log(`Requesting ETH balance for the wallet ${id} ......`);
-
-  //     return this.transactionService.getETHBalance(chain, id);
-  //   }
 
   @Get('/getNativeBalanceHub/:chain')
   async getNativeBalance(

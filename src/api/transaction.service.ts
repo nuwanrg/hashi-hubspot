@@ -1,7 +1,6 @@
 import { Injectable, Req } from '@nestjs/common';
 import axios from 'axios';
-import { BigNumber, ethers } from 'ethers';
-import { TokenBalanceDto } from './tokenBalance.dto';
+import { ethers } from 'ethers';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import * as moment from 'moment';
 import {
@@ -56,16 +55,6 @@ export class TransactionService {
   }
 
   async getNFTs(chain: string, id: string): Promise<any> {
-    // Initialize an alchemy-web3 instance:
-    /*  const web3 = createAlchemyWeb3(process.env.ALCHEMY_RPC_URL);
-
-    const nfts = await web3.alchemy.getNfts({
-      owner: id,
-    });
-
-    console.log(nfts);
-*/
-
     const options = {
       chain: chain,
       address: id,
@@ -77,14 +66,6 @@ export class TransactionService {
   }
 
   async getTokenMetadata(chain: string, id: string): Promise<any> {
-    // const moralis_serverUrl = process.env.moralis_serverUrl;
-    // const moralis_appId = process.env.moralis_appId;
-
-    // await Moralis.start({
-    //   serverUrl: moralis_serverUrl,
-    //   appId: moralis_appId,
-    // });
-
     const options = {
       chain: chain,
       addresses: [id],
