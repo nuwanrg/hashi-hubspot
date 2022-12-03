@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/hashi-hubspot-service",
+          "awslogs-group": "/ecs/hashi-hubspot-cluster",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
