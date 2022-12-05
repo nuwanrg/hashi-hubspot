@@ -71,6 +71,42 @@ export class AuthController {
       authCodeProof,
     );
     console.log('token ', token);
+
+    //create custom filed
+    const hubspot = require('@hubspot/api-client');
+    const hubspotClient = new hubspot.Client({
+      accessToken: token,
+    });
+
+    const PropertyCreate = {
+      name: 'wallet_address',
+      label: 'Wallet Address',
+      type: 'string',
+      fieldType: 'text',
+      groupName: 'contactinformation',
+      options: [],
+      displayOrder: 2,
+      hasUniqueValue: false,
+      hidden: false,
+      formField: true,
+    };
+
+    const objectType = 'objectType';
+
+    try {
+      const apiResponse = await hubspotClient.crm.properties.coreApi.create(
+        objectType,
+        PropertyCreate,
+      );
+      console.log(JSON.stringify(apiResponse.body, null, 2));
+    } catch (e) {
+      e.message === 'HTTP request failed'
+        ? console.error(JSON.stringify(e.response, null, 2))
+        : console.error(e);
+    }
+
+    //end of custom property creation
+
     if (token.message) {
       return res.redirect(`/error?msg=${token.message}`);
     }
