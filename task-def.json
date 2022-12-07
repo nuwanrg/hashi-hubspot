@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/hashi-hubspot-task",
+          "awslogs-group": "/ecs/hashi-hubspot-lg",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/hashi-hubspot:latest",
+      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/hashi-hubspot-image:latest",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -61,8 +61,8 @@
   "memory": "512",
   "taskRoleArn": null,
   "compatibilities": ["EC2", "FARGATE"],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:406042714797:task-definition/hashi-hubspot:5",
-  "family": "hashi-hubspot",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:406042714797:task-definition/hashi-hubspot-task:1",
+  "family": "hashi-hubspot-task",
   "requiresAttributes": [
     {
       "targetId": null,
