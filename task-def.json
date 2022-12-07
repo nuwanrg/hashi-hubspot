@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/hashi-hubspot-image:latest",
+      "image": "406042714797.dkr.ecr.us-east-1.amazonaws.com/hashi-hubspot-ecr:latest",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
