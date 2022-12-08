@@ -13,7 +13,7 @@ let SCOPES = 'crm.objects.contacts.read';
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-const REDIRECT_URI = `https://muffinwallet.xyz/auth/hubcallback`;
+const REDIRECT_URI = `https://muffinwallet.xyz/hub/hubcallback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
