@@ -24,7 +24,7 @@ const authUrl =
   `&scope=${encodeURIComponent(SCOPES)}` + // scopes being requested by the app
   `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`; // where to send the user after the consent page
 
-@Controller('auth')
+@Controller('hub/auth')
 export class AuthController {
   constructor(private stripeService: StripeService) {}
 
