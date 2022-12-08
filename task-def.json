@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/hashi-hubspot-lg",
+          "awslogs-group": "/ecs/hashi-hubspot-task",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -58,7 +58,7 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "512",
+  "memory": "1024",
   "taskRoleArn": null,
   "compatibilities": ["EC2", "FARGATE"],
   "taskDefinitionArn": "arn:aws:ecs:us-east-1:406042714797:task-definition/hashi-hubspot-task:1",
@@ -111,7 +111,7 @@
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
   "runtimePlatform": null,
-  "cpu": "256",
+  "cpu": "512",
   "revision": 5,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
