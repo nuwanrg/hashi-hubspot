@@ -50,7 +50,7 @@ export class AuthController {
     const code = req.body.data.object.lines.data[0].metadata.code;
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
 
-    console.log(' code: ', code);
+    console.log(' authorization code pass through stripe ', code);
     if (code /*req.query.code*/) {
       console.log('Code found');
     }

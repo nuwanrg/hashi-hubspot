@@ -13,6 +13,8 @@ export class StripeService {
 
   async checkout(@Req() req, @Res() res) {
     //console.log(this.stripe.VERSION);
+    console.log('authorization code from hubspot: ', req.query.code);
+    console.log('sessionID: ', req.sessionID);
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
@@ -31,7 +33,7 @@ export class StripeService {
         },
       },
     });
-    console.log('session : ', session);
+    //console.log('session : ', session);
     res.redirect(session.url);
   }
 }
