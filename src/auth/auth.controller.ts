@@ -34,16 +34,16 @@ export class AuthController {
 
   // Redirect the user from the installation page tos
   // the authorization URL
-  // @Get('/install')
-  // async install(@Res() res): Promise<any> {
-  //   console.log('=== Initiating OAuth 2.0 flow with HubSpot ===');
-  //   res.redirect(authUrl);
-  // }
+  @Get('/install')
+  async install(@Res() res): Promise<any> {
+    console.log('=== Initiating OAuth 2.0 flow with HubSpot ===');
+    //res.redirect(authUrl);
+  }
 
-  @Get('/install') //call from hubspot
+  @Get('/hubcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    console.log('install called : ');
-    //await this.stripeService.checkout(req, res);
+    //console.log('install called : ');
+    await this.stripeService.checkout(req, res);
   }
 
   @Post('/stripecallback') // call from stripe
