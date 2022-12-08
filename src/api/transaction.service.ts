@@ -25,10 +25,10 @@ export class TransactionService {
   constructor() {
     const moralis_serverUrl = process.env.moralis_serverUrl;
     const moralis_appId = process.env.moralis_appId;
-    Moralis.start({
-      serverUrl: moralis_serverUrl,
-      appId: moralis_appId,
-    });
+    //Moralis.start({
+    // serverUrl: moralis_serverUrl,
+    // appId: moralis_appId,
+    //});
   }
 
   async getTransactionHistory(id: string, count: string): Promise<any> {
