@@ -48,10 +48,11 @@ export class AuthController {
 
   @Post('/stripecallback') // call from stripe
   async stripehook(@Req() req, @Res() res): Promise<any> {
+    console.log('stripecallback called : ');
     const code = req.body.data.object.lines.data[0].metadata.code;
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
 
-    return res.redirect(authUrl);
+    res.redirect(authUrl);
 
     console.log(' authorization code pass through stripe ', code);
     if (code /*req.query.code*/) {
