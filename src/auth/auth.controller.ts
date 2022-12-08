@@ -13,7 +13,7 @@ let SCOPES = 'crm.objects.contacts.read';
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-const REDIRECT_URI = `https://muffinwallet.xyz/hub/hubcallback`;
+const REDIRECT_URI = `https://muffinwallet.xyz/hub/install`;
 
 // Step 1
 // Build the authorization URL to redirect a user
@@ -40,15 +40,18 @@ export class AuthController {
   //   res.redirect(authUrl);
   // }
 
-  @Get('/hubcallback') //call from hubspot
+  @Get('/install') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    await this.stripeService.checkout(req, res);
+    console.log('install called : ');
+    //await this.stripeService.checkout(req, res);
   }
 
   @Post('/stripecallback') // call from stripe
   async stripehook(@Req() req, @Res() res): Promise<any> {
     const code = req.body.data.object.lines.data[0].metadata.code;
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
+
+    return res.redirect(authUrl);
 
     console.log(' authorization code pass through stripe ', code);
     if (code /*req.query.code*/) {
