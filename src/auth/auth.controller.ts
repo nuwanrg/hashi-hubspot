@@ -46,7 +46,10 @@ export class AuthController {
     console.log('');
     console.log('=== Initiating OAuth 2.0 flow with HubSpot ===');
     console.log('');
-    console.log("===> Step 1: Redirecting user to your app's OAuth URL");
+    console.log(
+      "===> Step 1: Redirecting user to your app's OAuth URL",
+      authUrl,
+    );
     res.redirect(authUrl);
     console.log('===> Step 2: User is being prompted for consent by HubSpot');
   }
