@@ -15,7 +15,7 @@ console.log('SCOPES : ', SCOPES);
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-const REDIRECT_URI = `https://muffinwallet.xyz/hub/install`;
+const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauth-callback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
