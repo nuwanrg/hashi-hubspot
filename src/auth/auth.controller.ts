@@ -22,7 +22,7 @@ const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
 // to when they choose to install the app
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
-  `?client_id=${process.env.CLIENT_ID}` + // app's client ID
+  `?client_id=ce607184-ce86-4b4b-94a6-70df880a9e4f` + // app's client ID
   `&scope=${SCOPES}` + // scopes being requested by the app
   `&redirect_uri=${REDIRECT_URI}`; // where to send the user after the consent page
 
