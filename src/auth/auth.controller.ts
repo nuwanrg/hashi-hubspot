@@ -22,9 +22,9 @@ const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
 // to when they choose to install the app
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
-  `?client_id=${encodeURIComponent(process.env.CLIENT_ID)}` + // app's client ID
-  `&scope=${encodeURIComponent(SCOPES)}` + // scopes being requested by the app
-  `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`; // where to send the user after the consent page
+  `?client_id=${process.env.CLIENT_ID}` + // app's client ID
+  `&scope=${SCOPES}` + // scopes being requested by the app
+  `&redirect_uri=${REDIRECT_URI}`; // where to send the user after the consent page
 
 const NodeCache = require('node-cache');
 const request = require('request-promise-native');
