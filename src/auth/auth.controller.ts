@@ -6,7 +6,7 @@ import { StripeService } from 'src/stripe/stripe.service';
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
-let SCOPES = 'crm.schemas.contacts.write';
+let SCOPES = 'contacts social';
 //if (process.env.SCOPE) {
 //SCOPES = process.env.SCOPE.split(/ |, ?|%20/).join(' ');
 //}
@@ -20,11 +20,17 @@ const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
 // Step 1
 // Build the authorization URL to redirect a user
 // to when they choose to install the app
+// const authUrl =
+//   'https://app.hubspot.com/oauth/authorize' +
+//   `?client_id=ce607184-ce86-4b4b-94a6-70df880a9e4f` + // app's client ID
+//   `&scope=${SCOPES}` + // scopes being requested by the app
+//   `&redirect_uri=${REDIRECT_URI}`; // where to send the user after the consent page
+
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
-  `?client_id=ce607184-ce86-4b4b-94a6-70df880a9e4f` + // app's client ID
-  `&scope=${SCOPES}` + // scopes being requested by the app
-  `&redirect_uri=${REDIRECT_URI}`; // where to send the user after the consent page
+  `?client_id=${encodeURIComponent(process.env.CLIENT_ID)}` +
+  `&scope=${encodeURIComponent(SCOPES)}` +
+  `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 
 const NodeCache = require('node-cache');
 const request = require('request-promise-native');
