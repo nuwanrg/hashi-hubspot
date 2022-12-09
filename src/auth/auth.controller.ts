@@ -6,16 +6,16 @@ import { StripeService } from 'src/stripe/stripe.service';
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
-let SCOPES = 'crm.schemas.contacts.read';
-if (process.env.SCOPE) {
-  SCOPES = process.env.SCOPE.split(/ |, ?|%20/).join(' ');
-}
+let SCOPES = 'crm.schemas.contacts.write';
+//if (process.env.SCOPE) {
+//SCOPES = process.env.SCOPE.split(/ |, ?|%20/).join(' ');
+//}
 
 console.log('SCOPES : ', SCOPES);
 
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
-const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauth-callback`;
+const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
 
 // Step 1
 // Build the authorization URL to redirect a user
@@ -59,7 +59,7 @@ export class AuthController {
   // Step 3
   // Receive the authorization code from the OAuth 2.0 Server,
   // and process it based on the query parameters that are passed
-  @Get('/oauth-callback') //call from hubspot
+  @Get('/oauthcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
     console.log('===> Step 3: Handling the request sent by the server');
 
