@@ -42,13 +42,15 @@ export class AuthController {
 
   @Get('/hubcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    //console.log('install called : ');
+    console.log('res object from hub: ');
+
     await this.stripeService.checkout(req, res);
   }
 
   @Post('/stripecallback') // call from stripe
   async stripehook(@Req() req, @Res() res): Promise<any> {
-    console.log('stripecallback called : ');
+    console.log('stripecallback called : ********** ');
+    console.log('res object from stripe: ');
     const code = req.body.data.object.lines.data[0].metadata.code;
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
 
