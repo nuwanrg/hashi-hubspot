@@ -56,8 +56,8 @@ export class AuthController {
       "===> Step 1: Redirecting user to your app's OAuth URL",
       authUrl,
     );
-    res.redirect(authUrl);
-    console.log('===> Step 2: User is being prompted for consent by HubSpot');
+    return res.redirect(authUrl);
+    // console.log('===> Step 2: User is being prompted for consent by HubSpot');
   }
 
   // Step 2
