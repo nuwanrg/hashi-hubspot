@@ -100,9 +100,11 @@ export class AuthController {
         return res.redirect(`/error?msg=${token.message}`);
       }
 
+      res.json({ success: true });
+
       // Once the tokens have been retrieved, use them to make a query
       // to the HubSpot API
-      res.redirect(`/`);
+      //res.redirect(`/`);
     }
 
     console.log('res object from hub: ');
@@ -119,32 +121,8 @@ export class AuthController {
     const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
   }
 
-  @Post('/con') // call from stripe
-  async con(@Req() req, @Res() res): Promise<any> {
-    const code = req.body.data.object.lines.data[0].metadata.code;
-    const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
-    res.redirect(authUrl);
-
-    console.log(' authorization code pass through stripe ', code);
-    if (code /*req.query.code*/) {
-      console.log('Code found');
-    }
-    const authCodeProof = {
-      grant_type: 'authorization_code',
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code: code,
-    };
-    // Step 4
-    // Exchange the authorization code for an access token and refresh token
-    console.log(
-      '===> Step 4: Exchanging authorization code for an access token and refresh token',
-    );
-    const token = await this.exchangeForTokens(
-      sessionID /*req.sessionID*/,
-      authCodeProof,
-    );
+  //@Post('/con') // call from stripe
+  async createWalletAddr(token: string): Promise<any> {
     console.log('token ', token);
 
     //create custom filed
@@ -181,18 +159,6 @@ export class AuthController {
     }
 
     //end of custom property creation
-
-    if (token.message) {
-      return res.redirect(`/error?msg=${token.message}`);
-    }
-    res.json({ success: true });
-    // Once the tokens have been retrieved, use them to make a query
-    // to the HubSpot API
-    // res.redirect(
-    //   'https://app.hubspot.com/login',
-
-    //   //`/transaction/getBalance/eth/0x1dafF752b4218a759B86FFb48a5B22086eA9F445`,
-    // );
   }
   exchangeForTokens = async (userId, exchangeProof) => {
     try {
