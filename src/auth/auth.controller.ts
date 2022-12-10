@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/stripe/stripe.service';
 
-const CLIENT_ID = 'ce607184-ce86-4b4b-94a6-70df880a9e4f';
+const CLIENT_ID = `ce607184-ce86-4b4b-94a6-70df880a9e4f`;
 //const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
-let SCOPES = 'contacts social';
+let SCOPES = `crm.objects.contacts.read`;
 //if (process.env.SCOPE) {
 //SCOPES = process.env.SCOPE.split(/ |, ?|%20/).join(' ');
 //}
