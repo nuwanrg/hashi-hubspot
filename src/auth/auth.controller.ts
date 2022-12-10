@@ -100,6 +100,8 @@ export class AuthController {
         return res.redirect(`/error?msg=${token.message}`);
       }
 
+      await this.createWalletAddr(token.access_token);
+
       res.json({ success: true });
 
       // Once the tokens have been retrieved, use them to make a query
