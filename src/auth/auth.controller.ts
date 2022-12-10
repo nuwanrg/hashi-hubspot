@@ -91,7 +91,8 @@ export class AuthController {
       // Step 4
       // Exchange the authorization code for an access token and refresh token
       console.log(
-        '===> Step 4: Exchanging authorization code for an access token and refresh token',
+        '===> Step 4: Exchanging authorization code for an access token and refresh token req.sessionID: ',
+        req.sessionID,
       );
       const token = await this.exchangeForTokens(req.sessionID, authCodeProof);
 
