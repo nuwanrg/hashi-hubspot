@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/stripe/stripe.service';
 
-//const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_ID = 'ce607184-ce86-4b4b-94a6-70df880a9e4f';
 //const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
@@ -28,7 +28,7 @@ const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
 
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
-  `?client_id=${encodeURIComponent(process.env.CLIENT_ID)}` +
+  `?client_id=${encodeURIComponent(CLIENT_ID)}` +
   `&scope=${encodeURIComponent(SCOPES)}` +
   `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 
