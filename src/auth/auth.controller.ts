@@ -71,8 +71,8 @@ export class AuthController {
   @Get('/oauthcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
     console.log(
-      '===> Step 3: Handling the request sent by the server req: ',
-      req,
+      '===> Step 3: Handling the request sent by the server req.query: ',
+      req.query,
     );
 
     // Received a user authorization code, so now combine that with the other
