@@ -2,7 +2,7 @@ import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/stripe/stripe.service';
 
 const CLIENT_ID = `ce607184-ce86-4b4b-94a6-70df880a9e4f`;
-//const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const CLIENT_SECRET = `9ea10303-cc39-418c-bd22-4f19641e1388`;
 
 // Scopes for this app will default to `crm.objects.contacts.read`
 // To request others, set the SCOPE environment variable instead
@@ -56,7 +56,7 @@ export class AuthController {
       "===> Step 1: Redirecting user to your app's OAuth URL",
       authUrl,
     );
-    return res.redirect(authUrl);
+    res.redirect(authUrl);
     // console.log('===> Step 2: User is being prompted for consent by HubSpot');
   }
 
@@ -70,7 +70,10 @@ export class AuthController {
   // and process it based on the query parameters that are passed
   @Get('/oauthcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    console.log('===> Step 3: Handling the request sent by the server');
+    console.log(
+      '===> Step 3: Handling the request sent by the server req: ',
+      req,
+    );
 
     // Received a user authorization code, so now combine that with the other
     // required values and exchange both for an access token and a refresh token
@@ -79,8 +82,8 @@ export class AuthController {
       console.log('       > Received an authorization token');
       const authCodeProof = {
         grant_type: 'authorization_code',
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
         redirect_uri: REDIRECT_URI,
         code: req.query.code,
       };
