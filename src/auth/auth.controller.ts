@@ -146,7 +146,7 @@ export class AuthController {
       formField: true,
     };
 
-    const objectType = 'objectType';
+    const objectType = 'contact';
 
     try {
       const apiResponse = await hubspotClient.crm.properties.coreApi.create(
