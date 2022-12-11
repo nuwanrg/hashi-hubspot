@@ -184,7 +184,7 @@ export class AuthController {
         '       > Received an access token and refresh token',
         tokens,
       );
-      return tokens.access_token;
+      return tokens;
     } catch (e) {
       console.error(
         `Error exchanging ${exchangeProof.grant_type} for access token`,
