@@ -14,7 +14,7 @@ export class StripeService {
   async checkout(@Req() req, @Res() res) {
     //console.log('req from hubspot: ', req);
     console.log('authorization code from hubspot: ', req.query.code);
-    //console.log('sessionID: ', req.sessionID);
+    console.log('sessionID: ', req.sessionID);
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
@@ -29,7 +29,7 @@ export class StripeService {
       subscription_data: {
         metadata: {
           code: req.query.code, //code passed from hubspot
-          sessionID: req.query.sessionID,
+          sessionID: req.sessionID,
         },
       },
     });
