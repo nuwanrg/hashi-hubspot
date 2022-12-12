@@ -11,20 +11,9 @@ let SCOPES = `crm.objects.contacts.read`;
 //SCOPES = process.env.SCOPE.split(/ |, ?|%20/).join(' ');
 //}
 
-console.log('SCOPES : ', SCOPES);
-
 // On successful install, users will be redirected to /oauth-callback
 //const REDIRECT_URI = `http://localhost:${PORT}/oauthcallback`;
 const REDIRECT_URI = `https://muffinwallet.xyz/hub/oauthcallback`;
-
-// Step 1
-// Build the authorization URL to redirect a user
-// to when they choose to install the app
-// const authUrl =
-//   'https://app.hubspot.com/oauth/authorize' +
-//   `?client_id=ce607184-ce86-4b4b-94a6-70df880a9e4f` + // app's client ID
-//   `&scope=${SCOPES}` + // scopes being requested by the app
-//   `&redirect_uri=${REDIRECT_URI}`; // where to send the user after the consent page
 
 const authUrl =
   'https://app.hubspot.com/oauth/authorize' +
@@ -68,33 +57,39 @@ export class AuthController {
   // Step 3
   // Receive the authorization code from the OAuth 2.0 Server,
   // and process it based on the query parameters that are passed
+
   @Get('/oauthcallback') //call from hubspot
   async oauthcallback(@Req() req, @Res() res): Promise<any> {
-    console.log(
-      '===> Step 3: Handling the request sent by the server req.query: ',
-      req.query,
-    );
+    await this.stripeService.checkout(req, res);
+  }
+
+  @Post('/stripecallback') //call from hubspot
+  async stripecallback(@Req() req, @Res() res): Promise<any> {
+    const code = req.body.data.object.lines.data[0].metadata.code;
+    const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
+
+    console.log('code, sessionID : ', code, sessionID);
 
     // Received a user authorization code, so now combine that with the other
     // required values and exchange both for an access token and a refresh token
 
-    if (req.query.code) {
+    if (code) {
       console.log('       > Received an authorization token');
       const authCodeProof = {
         grant_type: 'authorization_code',
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
         redirect_uri: REDIRECT_URI,
-        code: req.query.code,
+        code: code,
       };
 
       // Step 4
       // Exchange the authorization code for an access token and refresh token
       console.log(
         '===> Step 4: Exchanging authorization code for an access token and refresh token req.sessionID: ',
-        req.sessionID,
+        sessionID,
       );
-      const token = await this.exchangeForTokens(req.sessionID, authCodeProof);
+      const token = await this.exchangeForTokens(sessionID, authCodeProof);
 
       if (token.message) {
         return res.redirect(`/error?msg=${token.message}`);
@@ -108,19 +103,7 @@ export class AuthController {
       // to the HubSpot API
       //res.redirect(`/`);
     }
-
-    console.log('res object from hub: ');
-
-    //await this.stripeService.checkout(req, res);
     console.log('After stripe payment is done: ');
-  }
-
-  @Post('/stripecallback') // call from stripe
-  async stripehook(@Req() req, @Res() res): Promise<any> {
-    console.log('stripecallback called : ********** ');
-    console.log('res object from stripe: ');
-    const code = req.body.data.object.lines.data[0].metadata.code;
-    const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
   }
 
   //@Post('/con') // call from stripe
