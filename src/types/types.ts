@@ -1,9 +1,9 @@
 export class WalletStatsResultHub {
   balance_eth?: string = '';
   balance_btc?: string = '';
-  btc_total_received?: string;
-  btc_n_tx?: string;
-  btc_total_sent?: string;
+  btc_total_received?: string = '';
+  btc_n_tx?: string = '';
+  btc_total_sent?: string = '';
   balance_usd?: string = '';
   totalReceive?: string = '';
   totalSpent?: string = '';
@@ -13,7 +13,7 @@ export class WalletStatsResultHub {
   lastBalanceChangeHub?: string = '';
   transactionCount?: number = null;
   walletID?: string = null;
-  title: string = 'Wallet Balance';
+  title: string = 'Wallet Details';
   objectId?: number = null;
 }
 
