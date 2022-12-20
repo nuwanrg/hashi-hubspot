@@ -429,8 +429,8 @@ export class TransactionService {
 
 
 
-    walletStatsResultHub.walletID = id;
-    walletStatsResultHub.objectId = objectId;*/
+    walletStatsResultHub.walletID = id;*/
+    walletStatsResultHub.objectId = objectId;
     const walletStatsResponseHub: WalletStatsResponseHub =
       new WalletStatsResponseHub();
     walletStatsResponseHub.results.push(walletStatsResultHub);
