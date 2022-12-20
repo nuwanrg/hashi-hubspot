@@ -291,9 +291,10 @@ export class TransactionService {
     console.log('btcresponse : ', btcwallet.data);
     walletStatsResultHub.balance_btc =
       sb.toBitcoin(btcwallet.data.final_balance) + ' BTC';
-    walletStatsResultHub.btc_n_tx = btcwallet.data.n_tx;
-    walletStatsResultHub.btc_total_received = btcwallet.data.total_received;
-    walletStatsResultHub.btc_total_sent = btcwallet.data.total_sent;
+    walletStatsResultHub.btc_n_tx = btcwallet.data.n_tx.toString();
+    walletStatsResultHub.btc_total_received =
+      btcwallet.data.total_received.toString();
+    walletStatsResultHub.btc_total_sent = btcwallet.data.total_sent.toString();
 
     /*
     let id = req.query.wallet_address;
