@@ -7,12 +7,6 @@ export class WalletStatsResultHub {
   balance_usd?: string = '';
   totalReceive?: string = '';
   totalSpent?: string = '';
-  totalReceive_usd?: string = '';
-  totalSpent_usd?: string = ' ';
-  firstBalanceChangeHub?: string = '';
-  lastBalanceChangeHub?: string = '';
-  transactionCount?: number = null;
-  walletID?: string = null;
   title: string = 'Wallet Details';
   objectId?: number = null;
 }
