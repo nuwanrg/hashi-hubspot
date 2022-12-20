@@ -1,22 +1,9 @@
-export class WalletStatsResponse {
-  balance?: string = '';
-  balance_usd?: string = '';
-  totalReceive?: string = '';
-  totalSpent?: string = '';
-  totalReceive_usd?: string = '';
-  totalSpent_usd?: string = ' ';
-  firstBalanceChange?: Date = null;
-  firstBalanceChangeHub?: string = '';
-  lastBalanceChange?: Date = null;
-  lastBalanceChangeHub?: string = '';
-  transactionCount?: number = null;
-  walletID?: string = null;
-  title: string = 'Wallet Balance';
-  objectId?: number = null;
-}
-
 export class WalletStatsResultHub {
-  balance?: string = '';
+  balance_eth?: string = '';
+  balance_btc?: string = '';
+  btc_total_received?: string;
+  btc_n_tx?: string;
+  btc_total_sent?: string;
   balance_usd?: string = '';
   totalReceive?: string = '';
   totalSpent?: string = '';

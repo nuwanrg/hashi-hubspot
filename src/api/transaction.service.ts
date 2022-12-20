@@ -1,5 +1,6 @@
-import { Injectable, Req } from '@nestjs/common';
-import axios from 'axios';
+import { ForbiddenException, Injectable, Req } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import axios, { AxiosResponse } from 'axios';
 import { ethers } from 'ethers';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import * as moment from 'moment';
@@ -8,12 +9,13 @@ import {
   TokenTransfersResponse,
   WalletNFTResponse,
   WalletNFTResponseHub,
-  WalletStatsResponse,
   WalletStatsResponseHub,
   WalletStatsResultHub,
 } from 'src/types/types';
 import Moralis from 'moralis';
 import { EvmChain } from '@moralisweb3/evm-utils';
+import { map, catchError } from 'rxjs';
+var sb = require('satoshi-bitcoin');
 
 const startServer = async () => {
   await Moralis.start({
@@ -25,7 +27,7 @@ const startServer = async () => {
 
 @Injectable()
 export class TransactionService {
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     this.startMoralisServer();
   }
 
@@ -250,10 +252,19 @@ export class TransactionService {
     return stats;
   }
 */
+
+  async getBitcoinWallet(btc_address): Promise<AxiosResponse> {
+    console.log('BTC Address : ', btc_address);
+    return this.httpService.axiosRef.get(
+      `https://blockchain.info/rawaddr/${btc_address}?limit=5`,
+    );
+  }
+
   async getWalletBalance(@Req() req): Promise<WalletStatsResponseHub> {
     let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const address = req.query.eth_address;
+    const btc_address = req.query.btc_address;
     const objectId = req.query.associatedObjectId;
     const chain = EvmChain.GOERLI;
 
@@ -261,21 +272,28 @@ export class TransactionService {
       address,
       chain,
     });
-    console.log('Eth(Native) Balance : ', nativeBalance.result.balance.value);
-    console.log(
-      'Eth(Native) Balance : ',
-      Moralis.Units.FromWei(nativeBalance.result.balance.value, 6),
+    console.log('Eth(Native) Balance : ', nativeBalance.raw.balance);
+    let balance: number = parseFloat(
+      ethers.utils.formatEther(nativeBalance.raw.balance),
     );
-    // walletStatsResultHub.balance = ethers.utils.formatEther(
-    //   nativeBalance.ResponseAdapter.jsonResponse.balance,
-    // );
+    walletStatsResultHub.balance_eth = balance.toFixed(5) + ' ETH';
 
-    const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
+    /*const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
       address,
       chain,
-    });
+    });*/
 
-    //console.log('tokenBalances : ', tokenBalances);
+    //BTC balance
+    const btcwallet = await this.getBitcoinWallet(btc_address);
+    /*this.httpService.get(
+      'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
+    );*/
+    console.log('btcresponse : ', btcwallet.data);
+    walletStatsResultHub.balance_btc =
+      sb.toBitcoin(btcwallet.data.final_balance) + ' BTC';
+    walletStatsResultHub.btc_n_tx = btcwallet.data.n_tx;
+    walletStatsResultHub.btc_total_received = btcwallet.data.total_received;
+    walletStatsResultHub.btc_total_sent = btcwallet.data.total_sent;
 
     /*
     let id = req.query.wallet_address;
