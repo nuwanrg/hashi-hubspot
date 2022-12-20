@@ -12,57 +12,31 @@ import {
   WalletStatsResponseHub,
   WalletStatsResultHub,
 } from 'src/types/types';
-const Moralis = require('moralis/node');
+import Moralis from 'moralis';
+import { EvmChain } from '@moralisweb3/evm-utils';
 
-let chains = new Map<string, string>([
-  ['eth', 'value1'],
-  ['bsc', 'value2'],
-]);
+const startServer = async () => {
+  await Moralis.start({
+    //serverUrl: 'https://shzzwqifgpc8.usemoralis.com:2053/server',
+    apiKey: 'rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD',
+  });
+};
+//startServer();
 
 @Injectable()
 export class TransactionService {
-  //stats: any;
   constructor() {
-    const moralis_serverUrl = process.env.moralis_serverUrl;
-    const moralis_appId = process.env.moralis_appId;
-    //Moralis.start({
-    // serverUrl: moralis_serverUrl,
-    // appId: moralis_appId,
-    //});
+    this.startMoralisServer();
   }
 
-  async getTransactionHistory(id: string, count: string): Promise<any> {
-    console.log(
-      `Requesting ${count} of latest transactions from the wallet ${id} ......`,
-    );
-    let provider = new ethers.providers.EtherscanProvider(
-      process.env.NETWORK,
-      process.env.API_KEY,
-    );
+  //Start Morali SDK
+  async startMoralisServer() {
+    const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
 
-    let transactions = await provider.getHistory(id);
-
-    //transactions.forEach(async (value, index) => {
-    let transactionReceipt = await provider.getTransaction(
-      '0xa5110e71657c8b3ae395303ed54f4b9cbf587ab1c6a8e81eb5f0abb5d9e7f010',
-    );
-    console.log('transactionReceipt', transactionReceipt);
-    //});
-
-    // console.log(transactions);
-
-    return transactions;
-  }
-
-  async getNFTs(chain: string, id: string): Promise<any> {
-    const options = {
-      chain: chain,
-      address: id,
-    };
-    const nfts = await Moralis.Web3API.account.getNFTs(options);
-    console.log('NFTs : ', nfts);
-
-    return JSON.stringify(nfts);
+    console.log('Starting Moralis...', MORALIS_API_KEY);
+    await Moralis.start({
+      apiKey: MORALIS_API_KEY,
+    });
   }
 
   async getTokenMetadata(chain: string, id: string): Promise<any> {
@@ -70,11 +44,12 @@ export class TransactionService {
       chain: chain,
       addresses: [id],
     };
-    const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(options);
+    const tokenMetadata = await Moralis.EvmApi.token.getTokenMetadata(options);
 
     return tokenMetadata;
   }
 
+  /*
   async getTokenBalances(chain: string, id: string): Promise<any> {
     const contract_addresses = JSON.parse(process.env.CONTRACT_ADDRESSES);
     console.log('contract_addresses ', contract_addresses);
@@ -90,13 +65,14 @@ export class TransactionService {
       chain: chain,
       address: id,
     };
-    const balances = await Moralis.Web3API.account.getTokenBalances(options);
+    const balances = await Moralis.EvmApi.token.getTokenBalances(options);
 
     console.log('balances ', balances);
 
     return balances;
-  }
+  }*/
 
+  /*
   async getAssetTransfers(
     chain: string,
     id: string,
@@ -125,7 +101,7 @@ export class TransactionService {
       cursor: cursor,
     };
 
-    // const transactions = await Moralis.Web3API.account.getTransactions({
+    // const transactions = await Moralis.EvmApi.account.getTransactions({
     //   chain: chain,
     //   address: id,
     //   from_block: '0',
@@ -133,7 +109,7 @@ export class TransactionService {
     //   cursor: cursor,
     // });
 
-    const transactions = await Moralis.Web3API.account.getTokenTransfers(
+    const transactions = await Moralis.EvmApi.account.getTokenTransfers(
       options,
     );
 
@@ -238,99 +214,11 @@ export class TransactionService {
     return ethers.utils.formatEther(balance);
   }
 
-  async getNativeBalance(
-    chain: string,
-    id: string,
-  ): Promise<WalletStatsResponse> {
-    console.log(`Requesting native balance for the wallet ${id} ......`);
-    // const moralis_serverUrl = process.env.moralis_serverUrl;
-    // const moralis_appId = process.env.moralis_appId;
-
-    // await Moralis.start({
-    //   serverUrl: moralis_serverUrl,
-    //   appId: moralis_appId,
-    // });
-
-    // export class WalletStatsResponse {
-    //   balance?: number = 0;
-    //   totalReceive?: number = 0;
-    //   totalSpent?: number = 0;
-    //   firstBalanceChange?: Date = null;
-    //   lastBalanceChange?: Date = null;
-    //   transactionCount?: number = null;
-    // }
-
-    let walletStatsResponse: WalletStatsResponse = new WalletStatsResponse();
-
-    const options = {
-      chain: chain,
-      address: id,
-      from_block: '0',
-    };
-
-    let stats = {
-      sent: 0,
-      receive: 0,
-    };
-
-    const transfers = await Moralis.Web3API.account.getTransactions(options);
-    let ethSent: number = 0;
-    let ethReveived: number = 0;
-    for (const transfer of transfers.result) {
-      if (transfer.value !== '0') {
-        if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
-          ethSent = ethSent + Number(transfer.value);
-          if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
-          }
-
-          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
-        } else {
-          ethReveived = ethReveived + Number(transfer.value);
-          if (walletStatsResponse.lastBalanceChange == null) {
-            walletStatsResponse.lastBalanceChange = transfer.block_timestamp;
-          }
-          walletStatsResponse.firstBalanceChange = transfer.block_timestamp;
-        }
-      }
-    }
-    walletStatsResponse.transactionCount = transfers.total;
-    walletStatsResponse.totalSpent = ethSent.toString();
-    walletStatsResponse.totalReceive = ethReveived.toString();
-
-    const balance = await Moralis.Web3API.account.getNativeBalance(options);
-    walletStatsResponse.balance = balance.balance;
-
-    //fetch usd price
-
-    const usdoptions = {
-      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      chain: chain,
-    };
-
-    if (chain === 'eth') {
-      const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
-      walletStatsResponse.balance_usd = (
-        this.formatVal(walletStatsResponse.balance, 18) * price.usdPrice
-      ).toString();
-
-      walletStatsResponse.totalReceive_usd = (
-        this.formatVal(walletStatsResponse.totalReceive, 18) * price.usdPrice
-      ).toString();
-
-      walletStatsResponse.totalSpent_usd = (
-        this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice
-      ).toString();
-    }
-
-    return walletStatsResponse;
-  }
-
   formatVal(e, decimals) {
     let divisor = 10 ** decimals;
     return e / divisor;
   }
-
+  /*
   async getAllTransfers(chain: string, id: string): Promise<any> {
     const options = {
       chain: chain,
@@ -343,7 +231,7 @@ export class TransactionService {
       receive: 0,
     };
 
-    const transfers = await Moralis.Web3API.account.getTransactions(options);
+    const transfers = await Moralis.EvmApi.account.getTransactions(options);
     let ethSent: number = 0;
     let ethReveived: number = 0;
 
@@ -361,16 +249,40 @@ export class TransactionService {
     console.log('stats ', JSON.stringify(stats));
     return stats;
   }
+*/
+  async getWalletBalance(@Req() req): Promise<WalletStatsResponseHub> {
+    let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
-  async getNativeBalanceHub(
-    @Req() req,
-    chain: string,
-  ): Promise<WalletStatsResponseHub> {
+    const address = req.query.eth_address;
+    const objectId = req.query.associatedObjectId;
+    const chain = EvmChain.GOERLI;
+
+    const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({
+      address,
+      chain,
+    });
+    console.log('Eth(Native) Balance : ', nativeBalance.result.balance.value);
+    console.log(
+      'Eth(Native) Balance : ',
+      Moralis.Units.FromWei(nativeBalance.result.balance.value, 6),
+    );
+    // walletStatsResultHub.balance = ethers.utils.formatEther(
+    //   nativeBalance.ResponseAdapter.jsonResponse.balance,
+    // );
+
+    const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
+      address,
+      chain,
+    });
+
+    //console.log('tokenBalances : ', tokenBalances);
+
+    /*
     let id = req.query.wallet_address;
     let objectId = req.query.associatedObjectId;
     console.log(`Requesting native balance for the wallet ${id} ......`);
 
-    let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
+
 
     const options = {
       chain: chain,
@@ -408,17 +320,15 @@ export class TransactionService {
       externalTransactionCount = externalTransactionCount + 1;
     }
 
-    console.log('externalReceive ', externalReceive);
-    console.log('externalSent ', externalSent);
-    console.log('externalTransaction ', externalTransactions);
-    const transfers = await Moralis.Web3API.account.getTransactions(options);
+
+    const transfers = await Moralis.EvmApi.account.getTransactions(options);
     let ethSent: number = externalSent;
     let ethReveived: number = externalReceive;
     const usdoptions = {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chain: chain,
     };
-    const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+    const price = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
 
     for (const transfer of transfers.result) {
       if (transfer.value !== '0') {
@@ -458,13 +368,7 @@ export class TransactionService {
       transfers.total + externalTransactionCount;
 
     const ethVal = ethers.utils.formatEther(ethSent.toString());
-    // const externalEthSent = ethers.utils.formatEther(externalSent.toString());
-    // const externalEthReceive = ethers.utils.formatEther(
-    //   externalReceive.toString(),
-    // );
 
-    // console.log('externalEthSent ', externalEthSent);
-    // console.log('externalEthReceive ', externalEthReceive);
     walletStatsResultHub.totalSpent =
       parseFloat(ethVal).toFixed(6) +
       ' ETH  ' +
@@ -480,7 +384,7 @@ export class TransactionService {
       ' USD';
 
     //get wallet balance
-    const balance = await Moralis.Web3API.account.getNativeBalance(options);
+    const balance = await Moralis.EvmApi.account.getNativeBalance(options);
     const ethValue = ethers.utils.formatEther(balance.balance);
 
     walletStatsResultHub.balance =
@@ -489,20 +393,11 @@ export class TransactionService {
       (parseFloat(ethValue) * price.usdPrice).toFixed(2) +
       ' USD';
 
-    //fetch usd price
-    // const usdoptions = {
-    //   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    //   chain: chain,
-    // };
 
-    // const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
 
     walletStatsResultHub.balance_usd =
       (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
-    // const balance_rec_usd: number =
-    //   this.formatVal(ethRec, 18) * price.usdPrice;
-    // console.log(`balance_rec_usd `, balance_rec_usd);
 
     walletStatsResultHub.totalReceive_usd =
       (parseFloat(walletStatsResultHub.totalReceive) * price.usdPrice).toFixed(
@@ -514,23 +409,23 @@ export class TransactionService {
         2,
       ) + ' USD';
 
-    //  this.formatVal(walletStatsResponse.totalSpent, 18) * price.usdPrice;
+
 
     walletStatsResultHub.walletID = id;
-    walletStatsResultHub.objectId = objectId;
+    walletStatsResultHub.objectId = objectId;*/
     const walletStatsResponseHub: WalletStatsResponseHub =
       new WalletStatsResponseHub();
     walletStatsResponseHub.results.push(walletStatsResultHub);
     return walletStatsResponseHub;
   }
 
-  async getNFTsHub(@Req() req, chain: string): Promise<WalletNFTResponseHub> {
+  /*async getNFTsHub(@Req() req, chain: string): Promise<WalletNFTResponseHub> {
     let id = req.query.wallet_address;
     const options = {
       chain: chain,
       address: id,
     };
-    const nfts = await Moralis.Web3API.account.getNFTs(options);
+    const nfts = await Moralis.EvmApi.account.getNFTs(options);
     console.log('NFTs results : ', nfts['result']);
     const obj = nfts['result'];
 
@@ -598,7 +493,7 @@ export class TransactionService {
       cursor: cursor,
     };
 
-    const transactions = await Moralis.Web3API.account.getTokenTransfers(
+    const transactions = await Moralis.EvmApi.account.getTokenTransfers(
       options,
     );
 
@@ -607,7 +502,7 @@ export class TransactionService {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chain: chain,
     };
-    const price = await Moralis.Web3API.token.getTokenPrice(usdoptions);
+    const price = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
 
     let transferMetadata: Array<any> = new Array();
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
@@ -659,5 +554,5 @@ export class TransactionService {
     console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
 
     return tokenTransfersHub;
-  }
+  }*/
 }

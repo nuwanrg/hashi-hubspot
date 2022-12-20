@@ -110,15 +110,15 @@ export class AuthController {
   async createWalletAddr(token: string): Promise<any> {
     console.log('token ', token);
 
-    //create custom filed
+    //create Ethereum Wallet Address
     const hubspot = require('@hubspot/api-client');
     const hubspotClient = new hubspot.Client({
       accessToken: token,
     });
 
     const PropertyCreate = {
-      name: 'wallet_address',
-      label: 'Wallet Address',
+      name: 'eth_address',
+      label: 'ETH Wallet Address',
       type: 'string',
       fieldType: 'text',
       groupName: 'contactinformation',
@@ -136,15 +136,41 @@ export class AuthController {
         objectType,
         PropertyCreate,
       );
-      console.log(JSON.stringify(apiResponse.body, null, 2));
+      //console.log(JSON.stringify(apiResponse.body, null, 2));
     } catch (e) {
       e.message === 'HTTP request failed'
         ? console.error(JSON.stringify(e.response, null, 2))
         : console.error(e);
     }
 
+    //Creat BTC Wallet
+    const BTCPropertyCreate = {
+      name: 'btc_address',
+      label: 'BTC Wallet Address',
+      type: 'string',
+      fieldType: 'text',
+      groupName: 'contactinformation',
+      options: [],
+      displayOrder: 2,
+      hasUniqueValue: false,
+      hidden: false,
+      formField: true,
+    };
+
+    try {
+      const apiResponse = await hubspotClient.crm.properties.coreApi.create(
+        objectType,
+        BTCPropertyCreate,
+      );
+      //console.log(JSON.stringify(apiResponse.body, null, 2));
+    } catch (e) {
+      e.message === 'HTTP request failed'
+        ? console.error(JSON.stringify(e.response, null, 2))
+        : console.error(e);
+    }
     //end of custom property creation
   }
+
   exchangeForTokens = async (userId, exchangeProof) => {
     try {
       const responseBody = await request.post(

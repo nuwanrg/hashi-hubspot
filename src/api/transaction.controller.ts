@@ -5,7 +5,7 @@ import { TransactionService } from './transaction.service';
 @Controller('hub')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
-
+  /*
   @Get('/transactionHistory/:id/:count')
   async getTransactionHistory(
     @Param('id') id: string,
@@ -25,7 +25,7 @@ export class TransactionController {
     console.log(`Fetching assets tranfers ${id} ...`);
     return this.transactionService.getAssetTransfers(chain, id, limit, cursor);
   }
-
+  
   @Get('/getNFTs/:chain/:id')
   async getNFTs(
     @Param('chain') chain: string,
@@ -35,10 +35,10 @@ export class TransactionController {
 
     return this.transactionService.getNFTs(chain, id);
   }
-
+*/
   @Get('/getNFTsHub/:chain')
   async getNFTsHub(@Req() req, @Param('chain') chain: string): Promise<any> {
-    return this.transactionService.getNFTsHub(req, chain);
+    //return this.transactionService.getNFTsHub(req, chain);
   }
 
   @Get('/getBalance/:chain/:id')
@@ -48,16 +48,13 @@ export class TransactionController {
   ): Promise<any> {
     console.log(`Requesting balance for the wallet ${id} ......`);
 
-    return this.transactionService.getTokenBalances(chain, id);
+    //return this.transactionService.getTokenBalances(chain, id);
   }
 
-  @Get('/getNativeBalanceHub/:chain')
-  async getNativeBalance(
-    @Req() req,
-    @Param('chain') chain: string,
-  ): Promise<any> {
-    console.log(`req.query.wallet_address...`, req.query.wallet_address);
-    return this.transactionService.getNativeBalanceHub(req, chain);
+  @Get('/getWalletBalance')
+  async getNativeBalance(@Req() req): Promise<any> {
+    console.log(`req.query.wallet_address...`, req.query.eth_address);
+    return this.transactionService.getWalletBalance(req);
   }
 
   @Get('/assetTransfersHub/:chain/:limit')
@@ -70,12 +67,12 @@ export class TransactionController {
     console.log(
       `Fetching assets tranfers for Hubspot ${req.query.wallet_address} ...`,
     );
-    return this.transactionService.getAssetTransfersHub(
+    /*return this.transactionService.getAssetTransfersHub(
       req,
       chain,
       limit,
       cursor,
-    );
+    );*/
   }
 
   @Get()
