@@ -6,7 +6,7 @@ export class WalletStatsResultHub {
   btc_total_sent?: string = '';
   totalReceive?: string = '';
   totalSpent?: string = '';
-  //title: string = 'Wallet Details';
+  title = 'ETH Wallet';
   objectId?: number = null;
 }
 
