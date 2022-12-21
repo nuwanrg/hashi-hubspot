@@ -262,9 +262,9 @@ export class TransactionService {
 
   async getBTCWalletBalance(@Req() req): Promise<WalletStatsResponseHub> {
     let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
-    walletStatsResultHub.title = 'BTC Wallet';
 
     const btc_address = req.query.btc_address;
+    walletStatsResultHub.title = 'Address: ' + btc_address;
     const objectId = req.query.associatedObjectId;
 
     //BTC balance
@@ -290,7 +290,8 @@ export class TransactionService {
     let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const address = req.query.eth_address;
-    const btc_address = req.query.btc_address;
+    walletStatsResultHub.title = 'Address: ' + address;
+    //const btc_address = req.query.btc_address;
     const objectId = req.query.associatedObjectId;
     const chain = EvmChain.GOERLI;
 
@@ -308,19 +309,6 @@ export class TransactionService {
       address,
       chain,
     });*/
-
-    //BTC balance
-    const btcwallet = await this.getBitcoinWallet(btc_address);
-    /*this.httpService.get(
-      'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
-    );*/
-    console.log('btcresponse : ', btcwallet.data);
-    walletStatsResultHub.balance_btc =
-      sb.toBitcoin(btcwallet.data.final_balance) + ' BTC';
-    walletStatsResultHub.btc_n_tx = btcwallet.data.n_tx.toString();
-    walletStatsResultHub.btc_total_received =
-      btcwallet.data.total_received.toString();
-    walletStatsResultHub.btc_total_sent = btcwallet.data.total_sent.toString();
 
     /*
     let id = req.query.wallet_address;
