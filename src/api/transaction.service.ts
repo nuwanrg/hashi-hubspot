@@ -264,7 +264,7 @@ export class TransactionService {
     let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const btc_address = req.query.btc_address;
-    walletStatsResultHub.title = 'Address: ' + btc_address;
+    walletStatsResultHub.title = 'Addr:' + btc_address;
     const objectId = req.query.associatedObjectId;
 
     //BTC balance
@@ -290,7 +290,7 @@ export class TransactionService {
     let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
 
     const address = req.query.eth_address;
-    walletStatsResultHub.title = 'Address: ' + address;
+    walletStatsResultHub.title = 'Addr:' + address;
     //const btc_address = req.query.btc_address;
     const objectId = req.query.associatedObjectId;
     const chain = EvmChain.GOERLI;
