@@ -53,8 +53,12 @@ export class TransactionController {
 
   @Get('/getWalletBalance')
   async getNativeBalance(@Req() req): Promise<any> {
-    console.log(`req.query.wallet_address...`, req.query.eth_address);
     return this.transactionService.getWalletBalance(req);
+  }
+
+  @Get('/getBTCWalletBalance')
+  async getBTCNativeBalance(@Req() req): Promise<any> {
+    return this.transactionService.getBTCWalletBalance(req);
   }
 
   @Get('/assetTransfersHub/:chain/:limit')
