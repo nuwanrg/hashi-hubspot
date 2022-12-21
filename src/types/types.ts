@@ -4,7 +4,6 @@ export class WalletStatsResultHub {
   btc_total_received?: string = '';
   btc_n_tx?: string = '';
   btc_total_sent?: string = '';
-  balance_usd?: string = '';
   totalReceive?: string = '';
   totalSpent?: string = '';
   //title: string = 'Wallet Details';
