@@ -36,9 +36,9 @@ export class TransactionController {
     return this.transactionService.getNFTs(chain, id);
   }
 */
-  @Get('/getNFTsHub/:chain')
-  async getNFTsHub(@Req() req, @Param('chain') chain: string): Promise<any> {
-    //return this.transactionService.getNFTsHub(req, chain);
+  @Get('/getNFTsHub')
+  async getNFTsHub(@Req() req): Promise<any> {
+    return this.transactionService.getNFTsHub(req);
   }
 
   @Get('/getBalance/:chain/:id')

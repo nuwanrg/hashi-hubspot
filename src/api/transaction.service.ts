@@ -452,32 +452,30 @@ export class TransactionService {
     return walletStatsResponseHub;
   }
 
-  /*async getNFTsHub(@Req() req, chain: string): Promise<WalletNFTResponseHub> {
-    let id = req.query.wallet_address;
+  async getNFTsHub(@Req() req): Promise<WalletNFTResponseHub> {
+    let address = req.query.eth_address;
     const options = {
-      chain: chain,
-      address: id,
+      chain: EvmChain.ETHEREUM,
+      address: address,
     };
-    const nfts = await Moralis.EvmApi.account.getNFTs(options);
-    console.log('NFTs results : ', nfts['result']);
+    const nfts = await Moralis.EvmApi.nft.getWalletNFTs(options);
+    console.log('NFTs results : ', nfts.result);
     const obj = nfts['result'];
 
     const walletNFTResponseHub: WalletNFTResponseHub =
       new WalletNFTResponseHub();
 
     for (var key in obj) {
-      console.log(
-        'key: ' + key + ', obj[key].token_address: ' + obj[key].token_address,
-      );
+      console.log('key: ' + key + ', obj[key].token_address: ' + obj[key]);
 
       let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
-      walletNFTResponse.walletID = id;
+      walletNFTResponse.walletID = address;
       walletNFTResponse.objectId = req.query.associatedObjectId;
       walletNFTResponse.title = obj[key].name;
       walletNFTResponse.name = obj[key].name;
-      walletNFTResponse.token_address = obj[key].token_address;
+      //walletNFTResponse.token_address = obj[key].token_address;
       //walletNFTResponse.token_uri = obj[key].token_uri;
-      walletNFTResponse.metadata = obj[key].metadata;
+      /*walletNFTResponse.metadata = obj[key].metadata;
 
       //const metadata=  JSON.parse(data);
 
@@ -498,7 +496,7 @@ export class TransactionService {
 
       walletNFTResponse.token_uri = imgUrl;
 
-      //walletNFTResponse.=nfts['result'];
+      //walletNFTResponse.=nfts['result'];*/
 
       walletNFTResponseHub.results.push(walletNFTResponse);
     }
@@ -506,7 +504,7 @@ export class TransactionService {
     return walletNFTResponseHub;
     //return JSON.stringify(nfts);
   }
-
+  /*
   async getAssetTransfersHub(
     @Req() req,
     chain: string,
