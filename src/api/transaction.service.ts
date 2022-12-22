@@ -466,15 +466,20 @@ export class TransactionService {
       new WalletNFTResponseHub();
 
     for (var key in obj) {
-      console.log('key: ' + key + ', obj[key].token_address: ' + obj[key]);
+      console.log(
+        'key: ' +
+          key +
+          ', obj[key].token_address: ' +
+          obj[key].tokenAddress.lowercase,
+      );
 
       let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
       walletNFTResponse.walletID = address;
       walletNFTResponse.objectId = req.query.associatedObjectId;
       walletNFTResponse.title = obj[key].name;
       walletNFTResponse.name = obj[key].name;
-      //walletNFTResponse.token_address = obj[key].token_address;
-      //walletNFTResponse.token_uri = obj[key].token_uri;
+      walletNFTResponse.token_address = obj[key].tokenAddress.lowercase;
+      walletNFTResponse.token_uri = obj[key].tokenUri;
       /*walletNFTResponse.metadata = obj[key].metadata;
 
       //const metadata=  JSON.parse(data);
