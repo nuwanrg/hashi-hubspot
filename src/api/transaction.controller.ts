@@ -41,16 +41,6 @@ export class TransactionController {
     return this.transactionService.getNFTsHub(req);
   }
 
-  @Get('/getBalance/:chain/:id')
-  async getBalance(
-    @Param('chain') chain: string,
-    @Param('id') id: string,
-  ): Promise<any> {
-    console.log(`Requesting balance for the wallet ${id} ......`);
-
-    //return this.transactionService.getTokenBalances(chain, id);
-  }
-
   @Get('/getWalletBalance')
   async getNativeBalance(@Req() req): Promise<any> {
     return this.transactionService.getWalletBalance(req);
@@ -61,22 +51,16 @@ export class TransactionController {
     return this.transactionService.getBTCWalletBalance(req);
   }
 
-  @Get('/assetTransfersHub/:chain/:limit')
+  @Get('/assetTransfersHub/:limit')
   async getAssetTransfersHub(
     @Req() req,
-    @Param('chain') chain: string,
-    @Param('limit') limit: string,
-    @Param('cursor') cursor: string | number,
+    @Param('limit') limit: number,
+    @Param('cursor') cursor: string,
   ): Promise<any> {
     console.log(
       `Fetching assets tranfers for Hubspot ${req.query.wallet_address} ...`,
     );
-    /*return this.transactionService.getAssetTransfersHub(
-      req,
-      chain,
-      limit,
-      cursor,
-    );*/
+    return this.transactionService.getAssetTransfersHub(req, limit, cursor);
   }
 
   @Get()

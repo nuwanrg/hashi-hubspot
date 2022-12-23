@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, Req } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import axios, { AxiosResponse } from 'axios';
-import { ethers } from 'ethers';
+import { BigNumberish, ethers } from 'ethers';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import * as moment from 'moment';
 import {
@@ -466,74 +466,65 @@ export class TransactionService {
       new WalletNFTResponseHub();
 
     for (var key in obj) {
-      console.log(
-        'key: ' +
-          key +
-          ', obj[key].token_address: ' +
-          obj[key].tokenAddress.lowercase,
-      );
+      // console.log(
+      //   'key: ' +
+      //     key +
+      //     ', obj[key].token_address: ' +
+      //     obj[key].tokenAddress.lowercase,
+      // );
 
       let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
       walletNFTResponse.walletID = address;
       walletNFTResponse.objectId = req.query.associatedObjectId;
       walletNFTResponse.title = obj[key].name;
-      walletNFTResponse.name = obj[key].name;
+      walletNFTResponse.name = 'NFT Name: ' + obj[key].name;
       walletNFTResponse.token_address = obj[key].tokenAddress.lowercase;
       walletNFTResponse.token_uri = obj[key].tokenUri;
-      /*walletNFTResponse.metadata = obj[key].metadata;
 
-      //const metadata=  JSON.parse(data);
-
-      const metadata = JSON.parse(obj[key].metadata);
-      console.log('metadata: ', metadata);
+      const metadata = obj[key].metadata;
+      //console.log('metadata: ', metadata);
 
       let imgUrl = metadata['image'];
 
       if (imgUrl.includes('ipfs://')) {
-        //let index = str.indexOf("ipfs://")
         imgUrl = imgUrl.substring(imgUrl.indexOf('ipfs://') + 7);
-        //index =index+7;
-        //const dd = imgUrl.ipfs;
-        console.log('imgUrl ', imgUrl);
         imgUrl = 'https://ipfs.io/ipfs/' + imgUrl;
-        console.log('imgUrl ', imgUrl);
+        //console.log('imgUrl ', imgUrl);
       }
 
-      walletNFTResponse.token_uri = imgUrl;
-
-      //walletNFTResponse.=nfts['result'];*/
-
+      walletNFTResponse.nft_image = imgUrl;
       walletNFTResponseHub.results.push(walletNFTResponse);
     }
 
     return walletNFTResponseHub;
-    //return JSON.stringify(nfts);
   }
-  /*
+
   async getAssetTransfersHub(
     @Req() req,
-    chain: string,
-    limit: string,
-    cursor?: string | number,
+    limit: number,
+    cursor?: string,
   ): Promise<TokenTransfersHub> {
-    let id = req.query.wallet_address;
+    let address = req.query.eth_address;
     if (cursor === '0') {
       cursor = null;
     }
 
+    const chain = EvmChain.ETHEREUM;
+
     const options = {
       chain: chain,
-      address: id,
-      from_block: '0',
+      address: address,
       limit: limit,
-      cursor: cursor,
     };
 
-    const transactions = await Moralis.EvmApi.account.getTokenTransfers(
+    const transactions = await Moralis.EvmApi.token.getWalletTokenTransfers(
       options,
     );
 
-    //console.log(transactions);
+    console.log(transactions);
+
+    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
+
     const usdoptions = {
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       chain: chain,
@@ -541,41 +532,48 @@ export class TransactionService {
     const price = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
 
     let transferMetadata: Array<any> = new Array();
-    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
+
     for (const transfer of transactions.result) {
       console.log('transfer value ', transfer.value);
       console.log('transfer ', transfer);
 
       let tokenTransfersResponse: TokenTransfersResponse =
         new TokenTransfersResponse();
-      tokenTransfersResponse.walletID = id;
+      tokenTransfersResponse.walletID = address;
       tokenTransfersResponse.objectId = req.query.associatedObjectId;
-      tokenTransfersResponse.from_address = transfer.from_address;
-      tokenTransfersResponse.to_address = transfer.to_address;
-      tokenTransfersResponse.created_at = moment(transfer.block_timestamp)
+      tokenTransfersResponse.from_address = transfer.fromAddress.lowercase;
+      tokenTransfersResponse.to_address = transfer.toAddress.lowercase;
+      tokenTransfersResponse.created_at = moment(transfer.blockTimestamp)
         .utc()
         .format('YYYY-MM-DD');
       tokenTransfersResponse.transaction_hash =
-        'https://etherscan.io/tx/' + transfer.transaction_hash;
+        'https://etherscan.io/tx/' + transfer.transactionHash;
 
-      if (transfer.from_address.toUpperCase() == id.toUpperCase()) {
+      if (transfer.fromAddress.lowercase == address.toLowerCase()) {
         tokenTransfersResponse.title = 'Outbound Transaction';
       } else {
         tokenTransfersResponse.title = 'Inbound Transaction';
       }
-      let token_value = '';
-      if (transfer.value !== '0') {
-        token_value = transfer.value;
-      }
 
-      const ethValue = ethers.utils.formatEther(token_value);
+      /*let token_value = '';
+      if (transfer.value !== 0) {
+        token_value = transfer.value;
+      }*/
+
+      console.log('transfer.value : ', transfer.value);
+      const ethValue = ethers.utils.formatEther(transfer.value.toString());
       console.log('ethValue value ', ethValue);
       tokenTransfersResponse.value = parseFloat(ethValue).toFixed(6) + ' ETH';
 
-      tokenTransfersResponse.value_usd =
-        (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
+      // tokenTransfersResponse.value_usd =
+      //  (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
-      const metadata = await this.getTokenMetadata(chain, transfer.address);
+      const options = {
+        chain: chain,
+        addresses: [address],
+      };
+
+      const metadata = await Moralis.EvmApi.token.getTokenMetadata(options);
 
       let temp = transfer;
       temp['meta'] = metadata[0];
@@ -590,5 +588,5 @@ export class TransactionService {
     console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
 
     return tokenTransfersHub;
-  }*/
+  }
 }
