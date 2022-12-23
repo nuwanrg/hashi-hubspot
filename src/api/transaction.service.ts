@@ -523,6 +523,8 @@ export class TransactionService {
 
     console.log(transactions);
 
+    //const totalTxns = transactions['pagination'].total;
+
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
 
     const usdoptions = {
@@ -534,8 +536,8 @@ export class TransactionService {
     let transferMetadata: Array<any> = new Array();
 
     for (const transfer of transactions.result) {
-      console.log('transfer value ', transfer.value);
       console.log('transfer ', transfer);
+      //console.log('transfer.address ', transfer.address);
 
       let tokenTransfersResponse: TokenTransfersResponse =
         new TokenTransfersResponse();
@@ -560,20 +562,26 @@ export class TransactionService {
         token_value = transfer.value;
       }*/
 
-      console.log('transfer.value : ', transfer.value);
-      const ethValue = ethers.utils.formatEther(transfer.value.toString());
-      console.log('ethValue value ', ethValue);
-      tokenTransfersResponse.value = parseFloat(ethValue).toFixed(6) + ' ETH';
-
-      // tokenTransfersResponse.value_usd =
-      //  (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
-
+      //get sysmbol
       const options = {
         chain: chain,
-        addresses: [address],
+        addresses: [transfer.address.lowercase],
       };
 
       const metadata = await Moralis.EvmApi.token.getTokenMetadata(options);
+      console.log('metadata :', metadata['jsonResponse']['0']);
+      const symbol = metadata['jsonResponse']['0'].symbol;
+
+      // console.log('transfer.value : ', transfer.value);
+      const value = transfer.value;
+      const decimals = parseInt(metadata['jsonResponse']['0'].decimals);
+      console.log(' value/decimals ', value, decimals);
+      let tokenValue: any = 0;
+      tokenValue = Number(transfer.value) / 10 ** decimals;
+      tokenTransfersResponse.value = tokenValue + ' ' + symbol;
+
+      // tokenTransfersResponse.value_usd =
+      //  (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
       let temp = transfer;
       temp['meta'] = metadata[0];
@@ -585,7 +593,7 @@ export class TransactionService {
     eRC20Transactions.transfers = transactions;
     eRC20Transactions.metadata = transferMetadata;
 
-    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
+    //console.log('tokenTransfersHub: ', tokenTransfersHub);
 
     return tokenTransfersHub;
   }

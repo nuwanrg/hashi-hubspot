@@ -37,6 +37,7 @@ export class TokenTransfersResponse {
   from_address?: string = '';
   to_address?: string = '';
   value?: string = '';
+  symbol?: string;
   value_usd?: string = '';
   created_at?: string = '';
   transaction_hash?: string = '';
