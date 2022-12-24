@@ -121,6 +121,11 @@ export class TransactionService {
     );
   }
 
+  async getBTCExchangeRate(): Promise<AxiosResponse> {
+    console.log('BTC Address : ');
+    return this.httpService.axiosRef.get(`https://blockchain.info/ticker`);
+  }
+
   async getBTCWalletDetails(@Req() req): Promise<BTCWalletDetals> {
     let bTCWalletDetalResults: BTCWalletDetalResults =
       new BTCWalletDetalResults();
@@ -135,14 +140,33 @@ export class TransactionService {
       'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
     );*/
     console.log('btcresponse : ', btcwallet.data);
-    bTCWalletDetalResults.btc_balance =
-      sb.toBitcoin(btcwallet.data.final_balance) + ' BTC';
-    bTCWalletDetalResults.btc_n_tx = btcwallet.data.n_tx.toString();
-    bTCWalletDetalResults.btc_total_received =
-      sb.toBitcoin(btcwallet.data.total_received) + ' BTC';
+    //btc exchange rate
+    const btcRates = await this.getBTCExchangeRate();
+    console.log('final_balance_usd ', btcRates.data.USD.last);
 
+    //btc_balance
+    const btc_balance = sb.toBitcoin(btcwallet.data.final_balance);
+    const usd_balance =
+      sb.toBitcoin(btcwallet.data.final_balance) * btcRates.data.USD.last;
+    bTCWalletDetalResults.btc_balance =
+      btc_balance.toFixed(6) + ' BTC | ' + usd_balance.toFixed(6) + ' USD';
+
+    //btc_received
+    const btc_received = sb.toBitcoin(btcwallet.data.total_received);
+    const usd_received =
+      sb.toBitcoin(btcwallet.data.total_received) * btcRates.data.USD.last;
+    bTCWalletDetalResults.btc_total_received =
+      btc_received.toFixed(6) + ' BTC | ' + usd_received.toFixed(6) + ' USD';
+
+    //btc_total_sent
+    const btc_sent = sb.toBitcoin(btcwallet.data.total_sent);
+    const usd_sent =
+      sb.toBitcoin(btcwallet.data.total_sent) * btcRates.data.USD.last;
     bTCWalletDetalResults.btc_total_sent =
-      sb.toBitcoin(btcwallet.data.total_sent) + ' BTC';
+      btc_sent.toFixed(6) + ' BTC | ' + usd_sent.toFixed(6) + ' USD';
+
+    bTCWalletDetalResults.btc_n_tx = btcwallet.data.n_tx.toString();
+
     bTCWalletDetalResults.objectId = objectId;
     const bTCWalletDetals: BTCWalletDetals = new BTCWalletDetals();
     bTCWalletDetals.results.push(bTCWalletDetalResults);
@@ -157,15 +181,28 @@ export class TransactionService {
     eTHWalletDetalResults.title = 'Addr:' + address;
     const objectId = req.query.associatedObjectId;
 
+    //ETH BALANCE
     const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({
       address,
       chain,
     });
-    console.log('Eth(Native) Balance : ', nativeBalance.raw.balance);
-    let balance: number = parseFloat(
+    const ethBalance: number = parseFloat(
       ethers.utils.formatEther(nativeBalance.raw.balance),
     );
-    eTHWalletDetalResults.eth_balance = balance.toFixed(5) + ' ETH';
+
+    //ETH EXCHANGE RATE
+    const usdoptions = {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      chain: chain,
+    };
+    const tokenPrice = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
+
+    // console.log('TokenPrice : ', tokenPrice.result.usdPrice);
+    const ethPrice = tokenPrice.result.usdPrice;
+    const usdValue = ethPrice * ethBalance;
+
+    eTHWalletDetalResults.eth_balance =
+      ethBalance.toFixed(6) + ' ETH | ' + usdValue.toFixed(6) + ' USD';
 
     //get token balances
     const walletTokenBalances =
@@ -176,17 +213,17 @@ export class TransactionService {
     //console.log('walletTokenBalances : ', walletTokenBalances);
 
     for (const token of walletTokenBalances.result) {
-      console.log('token : ', token);
+      //console.log('token : ', token);
       //USDT
       if (token.token.symbol === 'USDT') {
-        console.log('token : ', token.amount);
+        //console.log('token : ', token.amount);
         eTHWalletDetalResults.usdt_balance =
           Number(token.amount) / 10 ** token.decimals + ' USDT';
       }
 
       //USDC
       if (token.token.symbol === 'USDC') {
-        console.log('token : ', token.amount);
+        //console.log('token : ', token.amount);
         eTHWalletDetalResults.usdc_balance =
           Number(token.amount) / 10 ** token.decimals + ' USDC';
       }
@@ -411,11 +448,12 @@ export class TransactionService {
 
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
 
-    const usdoptions = {
-      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      chain: chain,
-    };
-    const price = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
+    // const usdoptions = {
+    //   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    //   chain: chain,
+    // };
+    // const tokenPrice = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
+    // console.log('TokenPrice : ', tokenPrice);
 
     let transferMetadata: Array<any> = new Array();
 
