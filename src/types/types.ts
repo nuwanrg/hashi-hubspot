@@ -2,6 +2,11 @@ export class ETHWalletDetalResults {
   eth_balance?: string = '';
   usdt_balance?: string = '0.0 USDT';
   usdc_balance?: string = '0.0 USDC';
+  usdt_received?: string = '0.0 USDT';
+  usdt_spent?: string = '0.0 USDT';
+  usdc_received?: string = '0.0 USDC';
+  usdc_spent?: string = '0.0 USDC';
+
   totalReceive?: string = '';
   totalSpent?: string = '';
   title = 'ETH Wallet';

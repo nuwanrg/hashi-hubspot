@@ -28,6 +28,12 @@ const startServer = async () => {
 };
 //startServer();
 let chain: EvmChain = EvmChain.ETHEREUM;
+const USDT_CONTRACT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+const USDC_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const BUSD_CONTRACT_ADDRESS = '0xe9e7cea3dedca5984780bafc599bd69add087d56';
+const USDT_CONTRACT_DECIMAL = 6;
+const USDC_CONTRACT_DECIMAL = 6;
+const BUSD_CONTRACT_DECIMAL = 18;
 
 @Injectable()
 export class TransactionService {
@@ -56,24 +62,6 @@ export class TransactionService {
     const tokenMetadata = await Moralis.EvmApi.token.getTokenMetadata(options);
 
     return tokenMetadata;
-  }
-
-  async getETHBalance(chain: string, id: string): Promise<String> {
-    console.log(`Requesting balance for the wallet ${id} ......`);
-
-    // const provider = new ethers.providers.JsonRpcProvider(
-    //   'https://goerli.prylabs.net/',
-    // );
-    console.log(process.env.rpcURL);
-    const provider = new ethers.providers.JsonRpcProvider(process.env.rpcURL);
-
-    const balance: ethers.BigNumber = await provider.getBalance(id);
-
-    console.log(
-      `Balance of the wallet ${id} is `,
-      ethers.utils.formatEther(balance),
-    );
-    return ethers.utils.formatEther(balance);
   }
 
   formatVal(e, decimals) {
@@ -228,6 +216,94 @@ export class TransactionService {
           Number(token.amount) / 10 ** token.decimals + ' USDC';
       }
     }
+
+    //get total received and sent
+
+    const options = {
+      chain: chain,
+      address: address,
+    };
+
+    const walletTokenTransfers =
+      await Moralis.EvmApi.token.getWalletTokenTransfers(options);
+
+    let usdt_spent = 0;
+    let usdt_received = 0;
+    let usdc_spent = 0;
+    let usdc_received = 0;
+
+    // walletTransfer :  Erc20Transfer {
+    //   _data: {
+    //     transactionHash: '0xeee0c531f4d2f1be872981ab03b1b46c2c05468e4fa6caef744a5fc5505c83e5',
+    //     address: EvmAddress {
+    //       config: [Config],
+    //       _value: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+    //     },
+    //     blockTimestamp: 2022-11-07T00:10:11.000Z,
+    //     blockNumber: BigNumber { value: 15914471n },
+    //     blockHash: '0x743bff9022c28c8211a01872d7630972e9eb63661f19067d680b160b370647a7',
+    //     toAddress: EvmAddress {
+    //       config: [Config],
+    //       _value: '0xD11cE31CAe4b72DdECAc74fc532151F417f055fE'
+    //     },
+    //     fromAddress: EvmAddress {
+    //       config: [Config],
+    //       _value: '0x1dafF752b4218a759B86FFb48a5B22086eA9F445'
+    //     },
+    //     value: BigNumber { value: 1965447169n },
+    //     transactionIndex: 138,
+    //     logIndex: 254,
+    //     chain: EvmChain {
+    //       config: [Config],
+    //       _value: '0x1',
+    //       _chainlistData: [Object]
+    //     }
+
+    for (const walletTransfer of walletTokenTransfers.result) {
+      //console.log('walletTransfer : ', walletTransfer);
+      if (
+        walletTransfer.address.lowercase === USDT_CONTRACT_ADDRESS.toLowerCase()
+      ) {
+        if (walletTransfer.fromAddress.lowercase === address.toLowerCase()) {
+          usdt_spent =
+            usdt_spent +
+            Number(walletTransfer.value) / 10 ** USDT_CONTRACT_DECIMAL;
+        } else if (
+          walletTransfer.toAddress.lowercase === address.toLowerCase()
+        ) {
+          usdt_received =
+            usdt_received +
+            Number(walletTransfer.value) / 10 ** USDT_CONTRACT_DECIMAL;
+        }
+      } else if (
+        walletTransfer.address.lowercase === USDC_CONTRACT_ADDRESS.toLowerCase()
+      ) {
+        if (walletTransfer.fromAddress.lowercase === address.toLowerCase()) {
+          usdc_spent =
+            usdc_spent +
+            Number(walletTransfer.value) / 10 ** USDC_CONTRACT_DECIMAL;
+        } else if (
+          walletTransfer.toAddress.lowercase === address.toLowerCase()
+        ) {
+          usdc_received =
+            usdc_received +
+            Number(walletTransfer.value) / 10 ** USDC_CONTRACT_DECIMAL;
+        }
+      }
+    }
+
+    console.log('usdt_spent /usdt_RECEIVED: ', usdt_spent - usdt_received);
+    console.log(
+      'usdc_spent /usdc_RECEIVED/balance: ',
+      usdc_spent,
+      usdc_received,
+      usdc_received - usdc_spent,
+    );
+
+    eTHWalletDetalResults.usdt_received = usdt_received.toFixed(6) + ' USDT';
+    eTHWalletDetalResults.usdt_spent = usdt_spent.toFixed(6) + ' USDT';
+    eTHWalletDetalResults.usdc_received = usdc_received.toFixed(6) + ' USDC';
+    eTHWalletDetalResults.usdc_spent = usdc_spent.toFixed(6) + ' USDC';
 
     /*const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
       address,
