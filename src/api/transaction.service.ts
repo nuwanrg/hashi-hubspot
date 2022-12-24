@@ -5,16 +5,19 @@ import { BigNumberish, ethers } from 'ethers';
 import { ERC20Transactions } from './erc20Transactions.dto';
 import * as moment from 'moment';
 import {
+  BTCWalletDetalResults,
+  BTCWalletDetals,
   TokenTransfersHub,
   TokenTransfersResponse,
   WalletNFTResponse,
   WalletNFTResponseHub,
-  WalletStatsResponseHub,
-  WalletStatsResultHub,
+  ETHWalletDetalResults,
+  ETHWalletDetals,
 } from 'src/types/types';
 import Moralis from 'moralis';
 import { EvmChain } from '@moralisweb3/evm-utils';
 import { map, catchError } from 'rxjs';
+import UsersDiscovery from '@hubspot/api-client/lib/src/discovery/settings/users/UsersDiscovery';
 var sb = require('satoshi-bitcoin');
 
 const startServer = async () => {
@@ -24,6 +27,7 @@ const startServer = async () => {
   });
 };
 //startServer();
+let chain: EvmChain = EvmChain.ETHEREUM;
 
 @Injectable()
 export class TransactionService {
@@ -33,6 +37,9 @@ export class TransactionService {
 
   //Start Morali SDK
   async startMoralisServer() {
+    if (process.env.EVM_CHAIN === 'GOERLI') {
+      chain = EvmChain.GOERLI;
+    }
     const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
 
     console.log('Starting Moralis...', MORALIS_API_KEY);
@@ -50,153 +57,6 @@ export class TransactionService {
 
     return tokenMetadata;
   }
-
-  /*
-  async getTokenBalances(chain: string, id: string): Promise<any> {
-    const contract_addresses = JSON.parse(process.env.CONTRACT_ADDRESSES);
-    console.log('contract_addresses ', contract_addresses);
-    // const moralis_serverUrl = process.env.moralis_serverUrl;
-    // const moralis_appId = process.env.moralis_appId;
-
-    // await Moralis.start({
-    //   serverUrl: moralis_serverUrl,
-    //   appId: moralis_appId,
-    // });
-
-    const options = {
-      chain: chain,
-      address: id,
-    };
-    const balances = await Moralis.EvmApi.token.getTokenBalances(options);
-
-    console.log('balances ', balances);
-
-    return balances;
-  }*/
-
-  /*
-  async getAssetTransfers(
-    chain: string,
-    id: string,
-    limit: string,
-    cursor?: string | number,
-  ): Promise<any> {
-    //moraliz api key rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD
-
-    // const moralis_serverUrl = process.env.moralis_serverUrl;
-    // const moralis_appId = process.env.moralis_appId;
-
-    // await Moralis.start({
-    //   serverUrl: moralis_serverUrl,
-    //   appId: moralis_appId,
-    // });
-
-    if (cursor === '0') {
-      cursor = null;
-    }
-
-    const options = {
-      chain: chain,
-      address: id,
-      from_block: '0',
-      limit: limit,
-      cursor: cursor,
-    };
-
-    // const transactions = await Moralis.EvmApi.account.getTransactions({
-    //   chain: chain,
-    //   address: id,
-    //   from_block: '0',
-    //   limit: limit,
-    //   cursor: cursor,
-    // });
-
-    const transactions = await Moralis.EvmApi.account.getTokenTransfers(
-      options,
-    );
-
-    //console.log(transactions);
-    let transferMetadata: Array<any> = new Array();
-    for (const transfer of transactions.result) {
-      const metadata = await this.getTokenMetadata(chain, transfer.address);
-
-      let temp = transfer;
-      temp['meta'] = metadata[0];
-      transferMetadata.push(metadata);
-      //console.log('transferMetadata: ', transferMetadata);
-    }
-
-    let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
-    eRC20Transactions.transfers = transactions;
-    eRC20Transactions.metadata = transferMetadata;
-
-    console.log('eRC20Transactions: ', JSON.stringify(eRC20Transactions));
-
-    return eRC20Transactions;
-  }
-
-  /*   async getAssetTransfers(id: string): Promise<any> {
-    // Replace with your Alchemy api key:
-    //const apiKey = '9VwBM-ZeGsWH7Qghe6CUed0XMStv8Hm2';
-
-    // Initialize an alchemy-web3 instance:
-    // const web3 = createAlchemyWeb3(
-    //   `https://eth-goerli.alchemyapi.io/v2/${apiKey}`,
-    // );
-
-    var data = JSON.stringify({
-      jsonrpc: '2.0',
-      id: 0,
-      method: 'alchemy_getAssetTransfers',
-      params: [
-        {
-          fromBlock: '0x0',
-          //"toBlock": "0xA97CAC",
-          fromAddress: id,
-          //contractAddresses: [id],
-          //maxCount: '0x20',
-          excludeZeroValue: false,
-          category: ['ERC20'],
-          withMetadata: true,
-        },
-      ],
-    });
-    var config = {
-      method: 'post',
-      url: process.env.ALCHEMY_RPC_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    };
-
-    let transfers;
-    await axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        transfers = JSON.stringify(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    return transfers;
-    // const data = await web3.alchemy.getAssetTransfers({
-    //   fromBlock: '0x0',
-    //   //order: AssetTransfersOrder.DESCENDING,
-    //   fromAddress: id,
-    //   maxCount: 10,
-    //   category: [
-    //     AssetTransfersCategory.EXTERNAL,
-    //     AssetTransfersCategory.INTERNAL,
-    //     AssetTransfersCategory.ERC20,
-    //   ],
-    // });
-
-    // // Print response:
-    // console.log(data);
-    // return data;
-  } */
 
   async getETHBalance(chain: string, id: string): Promise<String> {
     console.log(`Requesting balance for the wallet ${id} ......`);
@@ -220,6 +80,7 @@ export class TransactionService {
     let divisor = 10 ** decimals;
     return e / divisor;
   }
+
   /*
   async getAllTransfers(chain: string, id: string): Promise<any> {
     const options = {
@@ -260,12 +121,13 @@ export class TransactionService {
     );
   }
 
-  async getBTCWalletBalance(@Req() req): Promise<WalletStatsResponseHub> {
-    let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
+  async getBTCWalletDetails(@Req() req): Promise<BTCWalletDetals> {
+    let bTCWalletDetalResults: BTCWalletDetalResults =
+      new BTCWalletDetalResults();
 
     const btc_address = req.query.btc_address;
-    walletStatsResultHub.title = 'Addr:' + btc_address;
     const objectId = req.query.associatedObjectId;
+    bTCWalletDetalResults.title = 'Addr:' + btc_address;
 
     //BTC balance
     const btcwallet = await this.getBitcoinWallet(btc_address);
@@ -273,27 +135,27 @@ export class TransactionService {
       'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
     );*/
     console.log('btcresponse : ', btcwallet.data);
-    walletStatsResultHub.balance_btc =
+    bTCWalletDetalResults.btc_balance =
       sb.toBitcoin(btcwallet.data.final_balance) + ' BTC';
-    walletStatsResultHub.btc_n_tx = btcwallet.data.n_tx.toString();
-    walletStatsResultHub.btc_total_received =
-      btcwallet.data.total_received.toString();
-    walletStatsResultHub.btc_total_sent = btcwallet.data.total_sent.toString();
-    walletStatsResultHub.objectId = objectId;
-    const walletStatsResponseHub: WalletStatsResponseHub =
-      new WalletStatsResponseHub();
-    walletStatsResponseHub.results.push(walletStatsResultHub);
-    return walletStatsResponseHub;
+    bTCWalletDetalResults.btc_n_tx = btcwallet.data.n_tx.toString();
+    bTCWalletDetalResults.btc_total_received =
+      sb.toBitcoin(btcwallet.data.total_received) + ' BTC';
+
+    bTCWalletDetalResults.btc_total_sent =
+      sb.toBitcoin(btcwallet.data.total_sent) + ' BTC';
+    bTCWalletDetalResults.objectId = objectId;
+    const bTCWalletDetals: BTCWalletDetals = new BTCWalletDetals();
+    bTCWalletDetals.results.push(bTCWalletDetalResults);
+    return bTCWalletDetals;
   }
 
-  async getWalletBalance(@Req() req): Promise<WalletStatsResponseHub> {
-    let walletStatsResultHub: WalletStatsResultHub = new WalletStatsResultHub();
+  async getETHWalletDetails(@Req() req): Promise<ETHWalletDetals> {
+    const eTHWalletDetalResults: ETHWalletDetalResults =
+      new ETHWalletDetalResults();
 
     const address = req.query.eth_address;
-    walletStatsResultHub.title = 'Addr:' + address;
-    //const btc_address = req.query.btc_address;
+    eTHWalletDetalResults.title = 'Addr:' + address;
     const objectId = req.query.associatedObjectId;
-    const chain = EvmChain.GOERLI;
 
     const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({
       address,
@@ -303,7 +165,32 @@ export class TransactionService {
     let balance: number = parseFloat(
       ethers.utils.formatEther(nativeBalance.raw.balance),
     );
-    walletStatsResultHub.balance_eth = balance.toFixed(5) + ' ETH';
+    eTHWalletDetalResults.eth_balance = balance.toFixed(5) + ' ETH';
+
+    //get token balances
+    const walletTokenBalances =
+      await Moralis.EvmApi.token.getWalletTokenBalances({
+        address,
+        chain,
+      });
+    //console.log('walletTokenBalances : ', walletTokenBalances);
+
+    for (const token of walletTokenBalances.result) {
+      console.log('token : ', token);
+      //USDT
+      if (token.token.symbol === 'USDT') {
+        console.log('token : ', token.amount);
+        eTHWalletDetalResults.usdt_balance =
+          Number(token.amount) / 10 ** token.decimals + ' USDT';
+      }
+
+      //USDC
+      if (token.token.symbol === 'USDC') {
+        console.log('token : ', token.amount);
+        eTHWalletDetalResults.usdc_balance =
+          Number(token.amount) / 10 ** token.decimals + ' USDC';
+      }
+    }
 
     /*const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
       address,
@@ -441,21 +328,18 @@ export class TransactionService {
       (parseFloat(walletStatsResultHub.totalSpent) * price.usdPrice).toFixed(
         2,
       ) + ' USD';
-
-
-
     walletStatsResultHub.walletID = id;*/
-    walletStatsResultHub.objectId = objectId;
-    const walletStatsResponseHub: WalletStatsResponseHub =
-      new WalletStatsResponseHub();
-    walletStatsResponseHub.results.push(walletStatsResultHub);
-    return walletStatsResponseHub;
+
+    eTHWalletDetalResults.objectId = objectId;
+    const eTHWalletDetals: ETHWalletDetals = new ETHWalletDetals();
+    eTHWalletDetals.results.push(eTHWalletDetalResults);
+    return eTHWalletDetals;
   }
 
   async getNFTsHub(@Req() req): Promise<WalletNFTResponseHub> {
     let address = req.query.eth_address;
     const options = {
-      chain: EvmChain.ETHEREUM,
+      chain: chain,
       address: address,
     };
     const nfts = await Moralis.EvmApi.nft.getWalletNFTs(options);
@@ -509,7 +393,7 @@ export class TransactionService {
       cursor = null;
     }
 
-    const chain = EvmChain.ETHEREUM;
+    //const chain = EvmChain.ETHEREUM;
 
     const options = {
       chain: chain,

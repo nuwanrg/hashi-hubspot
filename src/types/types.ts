@@ -1,17 +1,28 @@
-export class WalletStatsResultHub {
-  balance_eth?: string = '';
-  balance_btc?: string = '';
-  btc_total_received?: string = '';
-  btc_n_tx?: string = '';
-  btc_total_sent?: string = '';
+export class ETHWalletDetalResults {
+  eth_balance?: string = '';
+  usdt_balance?: string = '0.0 USDT';
+  usdc_balance?: string = '0.0 USDC';
   totalReceive?: string = '';
   totalSpent?: string = '';
   title = 'ETH Wallet';
   objectId?: number = null;
 }
 
-export class WalletStatsResponseHub {
-  results?: WalletStatsResultHub[] = [];
+export class ETHWalletDetals {
+  results?: ETHWalletDetalResults[] = [];
+}
+
+export class BTCWalletDetals {
+  results?: BTCWalletDetalResults[] = [];
+}
+
+export class BTCWalletDetalResults {
+  btc_balance?: string = '';
+  btc_total_received?: string = '';
+  btc_n_tx?: string = '';
+  btc_total_sent?: string = '';
+  title = 'ETH Wallet';
+  objectId?: number = null;
 }
 
 export class WalletNFTResponse {

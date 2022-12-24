@@ -41,14 +41,14 @@ export class TransactionController {
     return this.transactionService.getNFTsHub(req);
   }
 
-  @Get('/getWalletBalance')
-  async getNativeBalance(@Req() req): Promise<any> {
-    return this.transactionService.getWalletBalance(req);
+  @Get('/getETHWalletDetails')
+  async getETHWalletDetails(@Req() req): Promise<any> {
+    return this.transactionService.getETHWalletDetails(req);
   }
 
-  @Get('/getBTCWalletBalance')
-  async getBTCNativeBalance(@Req() req): Promise<any> {
-    return this.transactionService.getBTCWalletBalance(req);
+  @Get('/getBTCWalletDetails')
+  async getBTCWalletDetails(@Req() req): Promise<any> {
+    return this.transactionService.getBTCWalletDetails(req);
   }
 
   @Get('/assetTransfersHub/:limit')
