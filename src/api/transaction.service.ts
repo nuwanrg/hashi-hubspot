@@ -164,6 +164,8 @@ export class TransactionService {
   async getETHWalletDetails(@Req() req): Promise<ETHWalletDetals> {
     const eTHWalletDetalResults: ETHWalletDetalResults =
       new ETHWalletDetalResults();
+    let totalBalance: number = 0;
+    let a: number = 9;
 
     const address = req.query.eth_address;
     eTHWalletDetalResults.title = 'Addr:' + address;
@@ -187,10 +189,13 @@ export class TransactionService {
 
     // console.log('TokenPrice : ', tokenPrice.result.usdPrice);
     const ethPrice = tokenPrice.result.usdPrice;
-    const usdValue = ethPrice * ethBalance;
+    const usdValue: number = ethPrice * ethBalance;
 
     eTHWalletDetalResults.eth_balance =
       ethBalance.toFixed(6) + ' ETH | ' + usdValue.toFixed(6) + ' USD';
+    totalBalance = totalBalance + usdValue;
+
+    //console.log(totalBalance);
 
     //get token balances
     const walletTokenBalances =
@@ -207,6 +212,11 @@ export class TransactionService {
         //console.log('token : ', token.amount);
         eTHWalletDetalResults.usdt_balance =
           Number(token.amount) / 10 ** token.decimals + ' USDT';
+
+        totalBalance =
+          totalBalance + Number(token.amount) / 10 ** token.decimals;
+
+        //console.log('sdf ', totalBalance);
       }
 
       //USDC
@@ -214,8 +224,12 @@ export class TransactionService {
         //console.log('token : ', token.amount);
         eTHWalletDetalResults.usdc_balance =
           Number(token.amount) / 10 ** token.decimals + ' USDC';
+        totalBalance =
+          totalBalance + Number(token.amount) / 10 ** token.decimals;
       }
     }
+
+    eTHWalletDetalResults.totalBalance = totalBalance.toFixed(6) + ' USD';
 
     //get total received and sent
 
@@ -292,13 +306,13 @@ export class TransactionService {
       }
     }
 
-    console.log('usdt_spent /usdt_RECEIVED: ', usdt_spent - usdt_received);
-    console.log(
-      'usdc_spent /usdc_RECEIVED/balance: ',
-      usdc_spent,
-      usdc_received,
-      usdc_received - usdc_spent,
-    );
+    // console.log('usdt_spent /usdt_RECEIVED: ', usdt_spent - usdt_received);
+    // console.log(
+    //   'usdc_spent /usdc_RECEIVED/balance: ',
+    //   usdc_spent,
+    //   usdc_received,
+    //   usdc_received - usdc_spent,
+    // );
 
     eTHWalletDetalResults.usdt_received = usdt_received.toFixed(6) + ' USDT';
     eTHWalletDetalResults.usdt_spent = usdt_spent.toFixed(6) + ' USDT';

@@ -9,6 +9,7 @@ export class ETHWalletDetalResults {
 
   totalReceive?: string = '';
   totalSpent?: string = '';
+  totalBalance?: string;
   title = 'ETH Wallet';
   objectId?: number = null;
 }
