@@ -58,7 +58,7 @@ export class TransactionController {
     @Param('cursor') cursor: string,
   ): Promise<any> {
     console.log(
-      `Fetching assets tranfers for Hubspot ${req.query.wallet_address} ...`,
+      `Fetching assets tranfers for Hubspot ${req.query.eth_address} ...`,
     );
     return this.transactionService.getAssetTransfersHub(req, limit, cursor);
   }

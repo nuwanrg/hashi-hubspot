@@ -511,14 +511,14 @@ export class TransactionService {
     const options = {
       chain: chain,
       address: address,
-      limit: limit,
+      //limit: limit,
     };
 
     const transactions = await Moralis.EvmApi.token.getWalletTokenTransfers(
       options,
     );
 
-    console.log(transactions);
+    //console.log(transactions);
 
     //const totalTxns = transactions['pagination'].total;
 
@@ -531,10 +531,11 @@ export class TransactionService {
     // const tokenPrice = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
     // console.log('TokenPrice : ', tokenPrice);
 
-    let transferMetadata: Array<any> = new Array();
+    //let transferMetadata: Array<any> = new Array();
 
+    let tnxCount = 0;
     for (const transfer of transactions.result) {
-      console.log('transfer ', transfer);
+      //console.log('transfer ', transfer);
       //console.log('transfer.address ', transfer.address);
 
       let tokenTransfersResponse: TokenTransfersResponse =
@@ -567,29 +568,36 @@ export class TransactionService {
       };
 
       const metadata = await Moralis.EvmApi.token.getTokenMetadata(options);
-      console.log('metadata :', metadata['jsonResponse']['0']);
+      //console.log('metadata :', metadata['jsonResponse']['0']);
       const symbol = metadata['jsonResponse']['0'].symbol;
 
       // console.log('transfer.value : ', transfer.value);
-      const value = transfer.value;
-      const decimals = parseInt(metadata['jsonResponse']['0'].decimals);
-      console.log(' value/decimals ', value, decimals);
-      let tokenValue: any = 0;
-      tokenValue = Number(transfer.value) / 10 ** decimals;
-      tokenTransfersResponse.value = tokenValue + ' ' + symbol;
+
+      if (symbol === 'USDT' || symbol === 'USDC' || symbol === 'BUSD') {
+        const value = transfer.value;
+        const decimals = parseInt(metadata['jsonResponse']['0'].decimals);
+        //console.log(' value/decimals ', value, decimals);
+        let tokenValue: any = 0;
+        tokenValue = Number(transfer.value) / 10 ** decimals;
+        tokenTransfersResponse.value = tokenValue + ' ' + symbol;
+        tokenTransfersHub.results.push(tokenTransfersResponse);
+        tnxCount = tnxCount + 1;
+        if (tnxCount == 10) {
+          break;
+        }
+      }
 
       // tokenTransfersResponse.value_usd =
       //  (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
 
-      let temp = transfer;
-      temp['meta'] = metadata[0];
-      transferMetadata.push(metadata);
-      tokenTransfersHub.results.push(tokenTransfersResponse);
+      // let temp = transfer;
+      // temp['meta'] = metadata[0];
+      // transferMetadata.push(metadata);
     }
 
     let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
     eRC20Transactions.transfers = transactions;
-    eRC20Transactions.metadata = transferMetadata;
+    //eRC20Transactions.metadata = transferMetadata;
 
     //console.log('tokenTransfersHub: ', tokenTransfersHub);
 
