@@ -17,11 +17,13 @@ export class StripeService {
     //console.log('req from hubspot: ', req);
     console.log('authorization code from hubspot: ', req.query.code);
     console.log('sessionID: ', req.sessionID);
+    console.log('STRIPE_HASHI_PRICE: ', STRIPE_HASHI_PRICE);
+
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
         {
-          price: STRIPE_HASHI_PRICE, // prod
+          price: 'price_1MK3KjALa3pUXDKnwqRxaen5', //STRIPE_HASHI_PRICE, // prod
           //price: 'price_1LnJWaALa3pUXDKn9sy09cnl', // test
           quantity: 1,
         },
