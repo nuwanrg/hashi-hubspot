@@ -1,23 +1,25 @@
 import { Injectable, Req, Res } from '@nestjs/common';
 import Stripe from 'stripe';
 
-const STRIPE_HASHI_PRICE = process.env.STRIPE_HASHI_PRICE;
-
 @Injectable()
 export class StripeService {
+  STRIPE_HASHI_PRICE = process.env.STRIPE_HASHI_PRICE;
   private stripe;
 
   constructor() {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2022-08-01',
-    });
+    this.stripe = new Stripe(
+      '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',
+      {
+        apiVersion: '2022-08-01',
+      },
+    );
   }
 
   async checkout(@Req() req, @Res() res) {
     //console.log('req from hubspot: ', req);
     console.log('authorization code from hubspot: ', req.query.code);
     console.log('sessionID: ', req.sessionID);
-    console.log('STRIPE_HASHI_PRICE: ', STRIPE_HASHI_PRICE);
+    console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);
 
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
