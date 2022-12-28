@@ -5,6 +5,6 @@ export const options = {
   duration: '30s',
 };
 export default  () =>{
-  http.get('https://muffinwallet.xyz/hub/getETHWalletDetails?asociatedObjectId=101&eth_address=0x1dafF752b4218a759B86FFb48a5B22086eA9F445');
+  http.get('https://muffinwallet.xyz/hub/assetTransfersHub/10?sociatedObjectId=101&eth_address=0x1dafF752b4218a759B86FFb48a5B22086eA9F445');
   sleep(1);
 };
