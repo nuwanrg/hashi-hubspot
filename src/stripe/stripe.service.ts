@@ -1,6 +1,8 @@
 import { Injectable, Req, Res } from '@nestjs/common';
 import Stripe from 'stripe';
 
+const STRIPE_HASHI_PRICE = process.env.STRIPE_HASHI_PRICE;
+
 @Injectable()
 export class StripeService {
   private stripe;
@@ -19,8 +21,8 @@ export class StripeService {
       mode: 'subscription',
       line_items: [
         {
-          //price: 'price_1Ll4ggALa3pUXDKn1pzTPPzm', // prod
-          price: 'price_1LnJWaALa3pUXDKn9sy09cnl', // test
+          price: STRIPE_HASHI_PRICE, // prod
+          //price: 'price_1LnJWaALa3pUXDKn9sy09cnl', // test
           quantity: 1,
         },
       ],

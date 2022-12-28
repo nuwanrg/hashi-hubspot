@@ -110,7 +110,7 @@ export class TransactionService {
   }
 
   async getBTCExchangeRate(): Promise<AxiosResponse> {
-    console.log('BTC Address : ');
+    //console.log('BTC Address : ');
     return this.httpService.axiosRef.get(`https://blockchain.info/ticker`);
   }
 
@@ -127,10 +127,10 @@ export class TransactionService {
     /*this.httpService.get(
       'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
     );*/
-    console.log('btcresponse : ', btcwallet.data);
+    //console.log('btcresponse : ', btcwallet.data);
     //btc exchange rate
     const btcRates = await this.getBTCExchangeRate();
-    console.log('final_balance_usd ', btcRates.data.USD.last);
+    //console.log('final_balance_usd ', btcRates.data.USD.last);
 
     //btc_balance
     const btc_balance = sb.toBitcoin(btcwallet.data.final_balance);
@@ -158,6 +158,7 @@ export class TransactionService {
     bTCWalletDetalResults.objectId = objectId;
     const bTCWalletDetals: BTCWalletDetals = new BTCWalletDetals();
     bTCWalletDetals.results.push(bTCWalletDetalResults);
+    console.log('BTC Wallet fetched ', btc_address);
     return bTCWalletDetals;
   }
 
