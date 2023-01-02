@@ -20,13 +20,6 @@ import { map, catchError } from 'rxjs';
 import UsersDiscovery from '@hubspot/api-client/lib/src/discovery/settings/users/UsersDiscovery';
 var sb = require('satoshi-bitcoin');
 
-const startServer = async () => {
-  await Moralis.start({
-    //serverUrl: 'https://shzzwqifgpc8.usemoralis.com:2053/server',
-    apiKey: 'rcgt9o9fPORVL4fZvDR8i9by5khR8HZRrTyBMhfdMxQ09gWCpmMuCiznTpMb8DSD',
-  });
-};
-//startServer();
 let chain: EvmChain = EvmChain.ETHEREUM;
 const USDT_CONTRACT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 const USDC_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -69,39 +62,6 @@ export class TransactionService {
     return e / divisor;
   }
 
-  /*
-  async getAllTransfers(chain: string, id: string): Promise<any> {
-    const options = {
-      chain: chain,
-      address: id,
-      from_block: '0',
-    };
-
-    let stats = {
-      sent: 0,
-      receive: 0,
-    };
-
-    const transfers = await Moralis.EvmApi.account.getTransactions(options);
-    let ethSent: number = 0;
-    let ethReveived: number = 0;
-
-    for (const transfer of transfers.result) {
-      if (transfer.from_address == id) {
-        ethSent = ethSent + Number(transfer.value);
-      } else {
-        ethReveived = ethReveived + Number(transfer.value);
-      }
-    }
-    //convert to usdt
-    stats.sent = ethSent;
-    stats.receive = ethReveived;
-
-    console.log('stats ', JSON.stringify(stats));
-    return stats;
-  }
-*/
-
   async getBitcoinWallet(btc_address): Promise<AxiosResponse> {
     console.log('BTC Address : ', btc_address);
     return this.httpService.axiosRef.get(
@@ -124,9 +84,6 @@ export class TransactionService {
 
     //BTC balance
     const btcwallet = await this.getBitcoinWallet(btc_address);
-    /*this.httpService.get(
-      'https://blockchain.info/rawaddr/bc1qevr4wsp5kr4dmha20c6klnce262yxt34el9u6w',
-    );*/
     //console.log('btcresponse : ', btcwallet.data);
     //btc exchange rate
     const btcRates = await this.getBTCExchangeRate();
@@ -247,33 +204,6 @@ export class TransactionService {
     let usdc_spent = 0;
     let usdc_received = 0;
 
-    // walletTransfer :  Erc20Transfer {
-    //   _data: {
-    //     transactionHash: '0xeee0c531f4d2f1be872981ab03b1b46c2c05468e4fa6caef744a5fc5505c83e5',
-    //     address: EvmAddress {
-    //       config: [Config],
-    //       _value: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    //     },
-    //     blockTimestamp: 2022-11-07T00:10:11.000Z,
-    //     blockNumber: BigNumber { value: 15914471n },
-    //     blockHash: '0x743bff9022c28c8211a01872d7630972e9eb63661f19067d680b160b370647a7',
-    //     toAddress: EvmAddress {
-    //       config: [Config],
-    //       _value: '0xD11cE31CAe4b72DdECAc74fc532151F417f055fE'
-    //     },
-    //     fromAddress: EvmAddress {
-    //       config: [Config],
-    //       _value: '0x1dafF752b4218a759B86FFb48a5B22086eA9F445'
-    //     },
-    //     value: BigNumber { value: 1965447169n },
-    //     transactionIndex: 138,
-    //     logIndex: 254,
-    //     chain: EvmChain {
-    //       config: [Config],
-    //       _value: '0x1',
-    //       _chainlistData: [Object]
-    //     }
-
     for (const walletTransfer of walletTokenTransfers.result) {
       //console.log('walletTransfer : ', walletTransfer);
       if (
@@ -319,144 +249,6 @@ export class TransactionService {
     eTHWalletDetalResults.usdt_spent = usdt_spent.toFixed(6) + ' USDT';
     eTHWalletDetalResults.usdc_received = usdc_received.toFixed(6) + ' USDC';
     eTHWalletDetalResults.usdc_spent = usdc_spent.toFixed(6) + ' USDC';
-
-    /*const tokenBalances = await Moralis.EvmApi.token.getWalletTokenBalances({
-      address,
-      chain,
-    });*/
-
-    /*
-    let id = req.query.wallet_address;
-    let objectId = req.query.associatedObjectId;
-    console.log(`Requesting native balance for the wallet ${id} ......`);
-
-
-
-    const options = {
-      chain: chain,
-      address: id,
-      from_block: '0',
-    };
-
-    let stats = {
-      sent: 0,
-      receive: 0,
-    };
-
-    // get BSC transfers for a given address
-    // with most recent transfers appearing first
-    let externalTransactions: string = '';
-    let externalReceive = 0;
-    let externalSent = 0;
-    let externalTransactionCount = 0;
-
-    await axios
-      .get(
-        `https://api.etherscan.io/api?module=account&action=txlistinternal&address=${id}&startblock=0&endblock=99999999&page=1&sort=desc&apikey=7JADMJRD9WF7M3AR2EYJ99RQ5HW7RUJC6Z`,
-      )
-      .then(async (d) => {
-        //console.log(d.data.result, 'aaa');
-        externalTransactions = d.data.result;
-      });
-    for (const externalTransaction of externalTransactions) {
-      console.log('externalTransaction[from] ', externalTransaction['from']);
-      if (externalTransaction['from'].toUpperCase() === id.toUpperCase()) {
-        externalSent = externalSent + Number(externalTransaction['value']);
-      } else {
-        externalReceive = externalSent + Number(externalTransaction['value']);
-      }
-      externalTransactionCount = externalTransactionCount + 1;
-    }
-
-
-    const transfers = await Moralis.EvmApi.account.getTransactions(options);
-    let ethSent: number = externalSent;
-    let ethReveived: number = externalReceive;
-    const usdoptions = {
-      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      chain: chain,
-    };
-    const price = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
-
-    for (const transfer of transfers.result) {
-      if (transfer.value !== '0') {
-        if (transfer.from_address.toUpperCase() === id.toUpperCase()) {
-          ethSent = ethSent + Number(transfer.value);
-          if (walletStatsResultHub.lastBalanceChangeHub == '') {
-            walletStatsResultHub.lastBalanceChangeHub = moment(
-              transfer.block_timestamp,
-            )
-              .utc()
-              .format('YYYY-MM-DD');
-          }
-
-          walletStatsResultHub.firstBalanceChangeHub = moment(
-            transfer.block_timestamp,
-          )
-            .utc()
-            .format('YYYY-MM-DD');
-        } else {
-          ethReveived = ethReveived + Number(transfer.value);
-          if (walletStatsResultHub.lastBalanceChangeHub == '') {
-            walletStatsResultHub.lastBalanceChangeHub = moment(
-              transfer.block_timestamp,
-            )
-              .utc()
-              .format('YYYY-MM-DD');
-          }
-          walletStatsResultHub.firstBalanceChangeHub = moment(
-            transfer.block_timestamp,
-          )
-            .utc()
-            .format('YYYY-MM-DD');
-        }
-      }
-    }
-    walletStatsResultHub.transactionCount =
-      transfers.total + externalTransactionCount;
-
-    const ethVal = ethers.utils.formatEther(ethSent.toString());
-
-    walletStatsResultHub.totalSpent =
-      parseFloat(ethVal).toFixed(6) +
-      ' ETH  ' +
-      (parseFloat(ethVal) * price.usdPrice).toFixed(2) +
-      ' USD';
-
-    const ethRec = ethers.utils.formatEther(ethReveived.toString());
-
-    walletStatsResultHub.totalReceive =
-      parseFloat(ethRec).toFixed(6) +
-      ' ETH  ' +
-      (parseFloat(ethRec) * price.usdPrice).toFixed(2) +
-      ' USD';
-
-    //get wallet balance
-    const balance = await Moralis.EvmApi.account.getNativeBalance(options);
-    const ethValue = ethers.utils.formatEther(balance.balance);
-
-    walletStatsResultHub.balance =
-      parseFloat(ethValue).toFixed(6) +
-      ' ETH  ' +
-      (parseFloat(ethValue) * price.usdPrice).toFixed(2) +
-      ' USD';
-
-
-
-    walletStatsResultHub.balance_usd =
-      (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
-
-
-    walletStatsResultHub.totalReceive_usd =
-      (parseFloat(walletStatsResultHub.totalReceive) * price.usdPrice).toFixed(
-        2,
-      ) + ' USD';
-
-    walletStatsResultHub.totalSpent_usd =
-      (parseFloat(walletStatsResultHub.totalSpent) * price.usdPrice).toFixed(
-        2,
-      ) + ' USD';
-    walletStatsResultHub.walletID = id;*/
 
     eTHWalletDetalResults.objectId = objectId;
     const eTHWalletDetals: ETHWalletDetals = new ETHWalletDetals();
@@ -535,18 +327,7 @@ export class TransactionService {
 
     //console.log(transactions);
 
-    //const totalTxns = transactions['pagination'].total;
-
     const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
-
-    // const usdoptions = {
-    //   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    //   chain: chain,
-    // };
-    // const tokenPrice = await Moralis.EvmApi.token.getTokenPrice(usdoptions);
-    // console.log('TokenPrice : ', tokenPrice);
-
-    //let transferMetadata: Array<any> = new Array();
 
     let tnxCount = 0;
     for (const transfer of transactions.result) {
@@ -601,20 +382,10 @@ export class TransactionService {
           break;
         }
       }
-
-      // tokenTransfersResponse.value_usd =
-      //  (parseFloat(ethValue) * price.usdPrice).toFixed(2) + ' USD';
-
-      // let temp = transfer;
-      // temp['meta'] = metadata[0];
-      // transferMetadata.push(metadata);
     }
 
     let eRC20Transactions: ERC20Transactions = new ERC20Transactions();
     eRC20Transactions.transfers = transactions;
-    //eRC20Transactions.metadata = transferMetadata;
-
-    //console.log('tokenTransfersHub: ', tokenTransfersHub);
 
     return tokenTransfersHub;
   }

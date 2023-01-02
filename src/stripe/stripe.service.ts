@@ -25,8 +25,7 @@ export class StripeService {
       mode: 'subscription',
       line_items: [
         {
-          price: 'price_1MK3KjALa3pUXDKnwqRxaen5', //STRIPE_HASHI_PRICE, // prod
-          //price: 'price_1LnJWaALa3pUXDKn9sy09cnl', // test
+          price: 'price_1MK3KjALa3pUXDKnwqRxaen5',
           quantity: 1,
         },
       ],
@@ -41,5 +40,9 @@ export class StripeService {
     });
     //console.log('session : ', session);
     res.redirect(session.url);
+  }
+
+  async checkSubscription(): Promise<Boolean> {
+    return false;
   }
 }
