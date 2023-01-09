@@ -32,6 +32,7 @@ export class StripeService {
       success_url: 'https://app.hubspot.com/login',
       cancel_url: 'https://app.hubspot.com/login',
       subscription_data: {
+        trial_end: 15,
         metadata: {
           code: req.query.code, //code passed from hubspot
           sessionID: req.sessionID,
