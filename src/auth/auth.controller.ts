@@ -65,8 +65,11 @@ export class AuthController {
 
   @Post('/stripecallback') //call from hubspot
   async stripecallback(@Req() req, @Res() res): Promise<any> {
-    const code = req.body.data.object.lines.data[0].metadata.code;
-    const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
+    // const code = req.body.data.object.lines.data[0].metadata.code;
+    // const sessionID = req.body.data.object.lines.data[0].metadata.sessionID;
+
+    const code = req.body.data.object.metadata.code;
+    const sessionID = req.body.data.object.metadata.sessionID;
 
     console.log('code, sessionID : ', code, sessionID);
 
