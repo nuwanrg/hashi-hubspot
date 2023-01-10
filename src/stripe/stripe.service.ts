@@ -8,7 +8,8 @@ export class StripeService {
 
   constructor() {
     this.stripe = new Stripe(
-      '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',
+      //'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',
+      'sk_test_51LiU1TALa3pUXDKnpLhmFwo9kqR8ehLdntVIXqcC0a5agSKKUr1QbvTIKJI1KpcpoR4TGHkbaQvMNDfeadqiK9s700yTU3VIQw',
       {
         apiVersion: '2022-08-01',
       },
