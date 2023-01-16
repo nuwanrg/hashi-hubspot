@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Req } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Req } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import axios, { AxiosResponse } from 'axios';
 import { BigNumberish, ethers } from 'ethers';
@@ -18,6 +18,8 @@ import Moralis from 'moralis';
 import { EvmChain } from '@moralisweb3/evm-utils';
 import { map, catchError } from 'rxjs';
 import UsersDiscovery from '@hubspot/api-client/lib/src/discovery/settings/users/UsersDiscovery';
+import { ConfigService } from '@nestjs/config';
+
 var sb = require('satoshi-bitcoin');
 
 let chain: EvmChain = EvmChain.ETHEREUM;
@@ -30,20 +32,18 @@ const BUSD_CONTRACT_DECIMAL = 18;
 
 @Injectable()
 export class TransactionService {
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private configService: ConfigService,
+  ) {
     this.startMoralisServer();
   }
 
   //Start Morali SDK
   async startMoralisServer() {
-    if (process.env.EVM_CHAIN === 'GOERLI') {
-      chain = EvmChain.GOERLI;
-    }
-    const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
-
-    console.log('Starting Moralis...', MORALIS_API_KEY);
+    console.log('Starting Moralis...');
     await Moralis.start({
-      apiKey: MORALIS_API_KEY,
+      apiKey: this.configService.get('MORALIS_API_KEY'),
     });
   }
 

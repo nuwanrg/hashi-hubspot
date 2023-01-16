@@ -12,7 +12,7 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  console.log('process.env.NETWORK', process.env.NETWORK);
+  //console.log('process.env.NETWORK', process.env.NETWORK);
   await app.listen(3000);
 }
 bootstrap();

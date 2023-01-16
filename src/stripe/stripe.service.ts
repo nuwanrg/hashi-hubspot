@@ -7,6 +7,7 @@ export class StripeService {
   private stripe;
 
   constructor() {
+    console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);
     this.stripe = new Stripe(
       //'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',
       'sk_test_51LiU1TALa3pUXDKnpLhmFwo9kqR8ehLdntVIXqcC0a5agSKKUr1QbvTIKJI1KpcpoR4TGHkbaQvMNDfeadqiK9s700yTU3VIQw',
@@ -17,10 +18,10 @@ export class StripeService {
   }
 
   async checkout(@Req() req, @Res() res) {
-    //console.log('req from hubspot: ', req);
-    console.log('authorization code from hubspot: ', req.query.code);
-    console.log('sessionID: ', req.sessionID);
-    console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);
+    console.log('req from hubspot: ', req);
+    // console.log('authorization code from hubspot: ', req.query.code);
+    // console.log('sessionID: ', req.sessionID);
+    // console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);
 
     const session = await this.stripe.checkout.sessions.create({
       mode: 'subscription',
