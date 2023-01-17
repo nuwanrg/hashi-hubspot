@@ -125,6 +125,8 @@ export class TransactionService {
     let totalBalance: number = 0;
     let a: number = 9;
 
+    console.log('getETHWalletDetails req : ', req);
+
     const address = req.query.eth_address;
     eTHWalletDetalResults.title = 'Addr:' + address;
     const objectId = req.query.associatedObjectId;
