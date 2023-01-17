@@ -161,6 +161,8 @@ export class AuthService {
       // Usually, this token data should be persisted in a database and associated with
       // a user identity.
       const tokens = JSON.parse(responseBody);
+
+      console.log('tokens : ', tokens);
       refreshTokenStore[userId] = tokens.refresh_token;
       accessTokenCache.set(
         userId,
