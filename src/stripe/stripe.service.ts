@@ -18,7 +18,7 @@ export class StripeService {
   }
 
   async checkout(@Req() req, @Res() res) {
-    console.log('req from hubspot: ', req);
+    //console.log('req from hubspot: ', req);
     // console.log('authorization code from hubspot: ', req.query.code);
     // console.log('sessionID: ', req.sessionID);
     // console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);

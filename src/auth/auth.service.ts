@@ -63,6 +63,8 @@ export class AuthService {
       );
       const token = await this.exchangeForTokens(sessionID, authCodeProof);
 
+      console.log('token : ', token);
+
       if (token.message) {
         return res.redirect(`/error?msg=${token.message}`);
       }
