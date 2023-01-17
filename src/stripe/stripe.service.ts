@@ -39,7 +39,7 @@ export class StripeService {
         metadata: {
           code: req.query.code, //code passed from hubspot
           sessionID: req.sessionID,
-          hubspotCustomerID:
+          hubspotCustomerID: 'test',
         },
       },
     });

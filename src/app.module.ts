@@ -11,6 +11,8 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { User } from './model/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { UsersService } from './users/users.service';
 
 const envFilePath: string = getEnvPath(`${__dirname}/environments`);
 
@@ -40,10 +42,10 @@ console.log('entities', entities);
 
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
     TransactionModule,
-    UsersModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, StripeService],
+  providers: [AppService, StripeService, UsersService, AuthService],
 })
 export class AppModule {}
