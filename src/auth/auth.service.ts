@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { User } from 'src/model/user.entity';
@@ -31,7 +32,10 @@ const accessTokenCache = new NodeCache({ deleteOnExpire: true });
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async authenticate(@Req() req, @Res() res): Promise<any> {
     // const code = req.body.data.object.lines.data[0].metadata.code;
@@ -64,6 +68,11 @@ export class AuthService {
       const token = await this.exchangeForTokens(sessionID, authCodeProof);
 
       console.log('token : ', token);
+
+      const accountinfo = this.httpService.axiosRef.get(
+        `https://api.hubapi.com/oauth/access-tokens/${token}`,
+      );
+      console.log('response : ', accountinfo);
 
       if (token.message) {
         return res.redirect(`/error?msg=${token.message}`);
@@ -182,6 +191,7 @@ export class AuthService {
       return JSON.parse(e.response.body);
     }
   };
+
   refreshAccessToken = async (userId) => {
     const refreshTokenProof = {
       grant_type: 'refresh_token',
