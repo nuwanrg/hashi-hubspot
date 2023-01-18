@@ -34,7 +34,7 @@ const accessTokenCache = new NodeCache({ deleteOnExpire: true });
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private readonly httpService: HttpService,
+    private httpService: HttpService,
   ) {}
 
   async authenticate(@Req() req, @Res() res): Promise<any> {
