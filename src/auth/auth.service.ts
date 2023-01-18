@@ -69,7 +69,7 @@ export class AuthService {
 
       console.log('token : ', token);
 
-      const accountinfo = this.httpService.axiosRef.get(
+      const accountinfo = await this.httpService.axiosRef.get(
         `https://api.hubapi.com/oauth/access-tokens/${token}`,
       );
       console.log('response : ', accountinfo);
