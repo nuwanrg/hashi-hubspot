@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
+import { Observable } from 'rxjs';
 import { User } from 'src/model/user.entity';
 import { StripeService } from 'src/stripe/stripe.service';
 import { UsersService } from 'src/users/users.service';
@@ -74,7 +76,9 @@ export class AuthService {
         'https://api.hubapi.com/oauth/v1/access-tokens/' + access_token;
       console.log('getUserInfoUri : ', getUserInfoUri);
 
-      const accountinfo = this.httpService.get(getUserInfoUri);
+      const accountinfo = await this.getHubAccount(getUserInfoUri);
+
+      //const accountinfo = await this.httpService.get(getUserInfoUri);
 
       console.log('response : ', accountinfo);
 
@@ -96,6 +100,10 @@ export class AuthService {
       //res.redirect(`/`);
     }
     console.log('After stripe payment is done: ');
+  }
+
+  getHubAccount(uri): Promise<AxiosResponse> {
+    return this.httpService.axiosRef.get(uri);
   }
 
   //@Post('/con') // call from stripe
