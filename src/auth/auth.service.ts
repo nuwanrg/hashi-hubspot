@@ -69,9 +69,13 @@ export class AuthService {
 
       console.log('token.access_token : ', token.access_token);
 
-      const accountinfo = await this.httpService.axiosRef.get(
-        `https://api.hubapi.com/oauth/v1/access-tokens/${token.access_token}`,
-      );
+      const access_token = token.access_token;
+      const getUserInfoUri =
+        'https://api.hubapi.com/oauth/v1/access-tokens/' + access_token;
+      console.log('getUserInfoUri : ', getUserInfoUri);
+
+      const accountinfo = await this.httpService.axiosRef.get(getUserInfoUri);
+
       console.log('response : ', accountinfo);
 
       if (token.message) {
@@ -171,7 +175,6 @@ export class AuthService {
       // a user identity.
       const tokens = JSON.parse(responseBody);
 
-      console.log('tokens : ', tokens);
       refreshTokenStore[userId] = tokens.refresh_token;
       accessTokenCache.set(
         userId,
