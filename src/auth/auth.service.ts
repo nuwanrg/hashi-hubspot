@@ -74,7 +74,7 @@ export class AuthService {
         'https://api.hubapi.com/oauth/v1/access-tokens/' + access_token;
       console.log('getUserInfoUri : ', getUserInfoUri);
 
-      const accountinfo = await this.httpService.axiosRef.get(getUserInfoUri);
+      const accountinfo = this.httpService.get(getUserInfoUri);
 
       console.log('response : ', accountinfo);
 
