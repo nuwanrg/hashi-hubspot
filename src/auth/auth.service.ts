@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
+import { AxiosError, AxiosResponse } from 'axios';
+import { catchError, firstValueFrom, Observable } from 'rxjs';
 import { User } from 'src/model/user.entity';
 import { StripeService } from 'src/stripe/stripe.service';
 import { UsersService } from 'src/users/users.service';
@@ -102,8 +102,16 @@ export class AuthService {
     console.log('After stripe payment is done: ');
   }
 
-  getHubAccount(uri): Promise<AxiosResponse> {
-    return this.httpService.axiosRef.get(uri);
+  async getHubAccount(uri): Promise<any> {
+    const { data } = await firstValueFrom(
+      this.httpService.get(uri).pipe(
+        catchError((error: AxiosError) => {
+          //this.logger.error(error.response.data);
+          throw 'An error happened!';
+        }),
+      ),
+    );
+    return data;
   }
 
   //@Post('/con') // call from stripe
