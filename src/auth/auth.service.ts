@@ -82,6 +82,21 @@ export class AuthService {
 
       console.log('response : ', accountinfo);
 
+      const user: User = new User();
+      const email = accountinfo.user;
+      const hub_id = accountinfo.hub_id;
+      const user_id = accountinfo.user_id;
+      const app_id = accountinfo.app_id;
+      const expires_in = accountinfo.expires_in;
+
+      user.subscriptionId = req.body.data.object.id;
+      user.user = email;
+      user.hub_id = hub_id;
+      user.user_id = user_id;
+      user.app_id = app_id;
+      user.expires_in = expires_in;
+      this.usersService.create(user);
+
       if (token.message) {
         return res.redirect(`/error?msg=${token.message}`);
       }
@@ -89,9 +104,6 @@ export class AuthService {
       await this.createWalletAddr(token.access_token);
 
       // save customer
-      const user: User = new User();
-      user.subscriptionId = req.body.data.object.id;
-      this.usersService.create(user);
 
       res.json({ success: true });
 
