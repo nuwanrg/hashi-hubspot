@@ -125,11 +125,14 @@ export class TransactionService {
     let totalBalance: number = 0;
     let a: number = 9;
 
-    console.log('getETHWalletDetails req : ', req);
+    //console.log('getETHWalletDetails req : ', req);
 
     const address = req.query.eth_address;
     eTHWalletDetalResults.title = 'Addr:' + address;
     const objectId = req.query.associatedObjectId;
+
+    const portalId = req.query.portalId;
+    console.log('getETHWalletDetails portalId : ', portalId);
 
     //ETH BALANCE
     const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({
