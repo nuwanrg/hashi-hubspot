@@ -91,10 +91,13 @@ export class AuthService {
 
       user.subscriptionId = req.body.data.object.id;
       user.user = email;
+      user.createdBy = email;
       user.hub_id = hub_id;
       user.user_id = user_id;
       user.app_id = app_id;
       user.expires_in = expires_in;
+      user.payment_status = 'active';
+
       this.usersService.create(user);
 
       if (token.message) {

@@ -20,4 +20,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'varchar', length: 300 })
   app_id: string;
+
+  @Column({ type: 'varchar', length: 300 })
+  payment_status: string;
 }
