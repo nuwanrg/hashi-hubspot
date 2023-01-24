@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './model/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
-import { UsersService } from './users/users.service';
+import { UserService } from './users/users.service';
 import { HttpModule } from '@nestjs/axios';
 
 const envFilePath: string = getEnvPath(`${__dirname}/environments`);
@@ -48,6 +48,6 @@ console.log('entities', entities);
     HttpModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, StripeService, UsersService, AuthService],
+  providers: [AppService, StripeService, UserService, AuthService],
 })
 export class AppModule {}

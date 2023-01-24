@@ -19,6 +19,8 @@ import { EvmChain } from '@moralisweb3/evm-utils';
 import { map, catchError } from 'rxjs';
 import UsersDiscovery from '@hubspot/api-client/lib/src/discovery/settings/users/UsersDiscovery';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from 'src/users/users.service';
+import { User } from 'src/model/user.entity';
 
 var sb = require('satoshi-bitcoin');
 
@@ -35,6 +37,7 @@ export class TransactionService {
   constructor(
     private readonly httpService: HttpService,
     private configService: ConfigService,
+    private userService: UserService,
   ) {
     this.startMoralisServer();
   }
@@ -133,6 +136,10 @@ export class TransactionService {
 
     const portalId = req.query.portalId;
     console.log('getETHWalletDetails portalId : ', portalId);
+
+    const user = this.userService.findOneHubId(portalId);
+
+    console.log('user : ', user);
 
     //ETH BALANCE
     const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({

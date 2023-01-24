@@ -4,7 +4,7 @@ import { User } from 'src/model/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -13,5 +13,9 @@ export class UsersService {
   async create(userDto: User): Promise<User> {
     const user = await this.usersRepository.save(userDto);
     return user;
+  }
+
+  async findOneHubId(hub_id: string): Promise<User> {
+    return await this.usersRepository.findOneBy({ hub_id: hub_id });
   }
 }

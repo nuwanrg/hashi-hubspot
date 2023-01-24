@@ -5,7 +5,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { catchError, firstValueFrom, Observable } from 'rxjs';
 import { User } from 'src/model/user.entity';
 import { StripeService } from 'src/stripe/stripe.service';
-import { UsersService } from 'src/users/users.service';
+import { UserService } from 'src/users/users.service';
 
 const CLIENT_ID = `ce607184-ce86-4b4b-94a6-70df880a9e4f`;
 const CLIENT_SECRET = `9ea10303-cc39-418c-bd22-4f19641e1388`;
@@ -35,7 +35,7 @@ const accessTokenCache = new NodeCache({ deleteOnExpire: true });
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private httpService: HttpService,
   ) {}
 
@@ -97,7 +97,7 @@ export class AuthService {
       user.expires_in = expires_in;
       user.payment_status = 'active';
 
-      this.usersService.create(user);
+      this.userService.create(user);
 
       if (token.message) {
         return res.redirect(`/error?msg=${token.message}`);
