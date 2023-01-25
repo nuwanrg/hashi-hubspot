@@ -19,7 +19,7 @@ import { EvmChain } from '@moralisweb3/evm-utils';
 import { map, catchError } from 'rxjs';
 import UsersDiscovery from '@hubspot/api-client/lib/src/discovery/settings/users/UsersDiscovery';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from 'src/users/users.service';
+import { UserService } from 'src/users/user.service';
 import { User } from 'src/model/user.entity';
 
 var sb = require('satoshi-bitcoin');

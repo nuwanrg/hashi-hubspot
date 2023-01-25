@@ -8,11 +8,11 @@ import { StripeService } from './stripe/stripe.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getEnvPath } from './common/env.helper';
 import { join } from 'path';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/user.module';
 import { User } from './model/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
-import { UserService } from './users/users.service';
+import { UserService } from './users/user.service';
 import { HttpModule } from '@nestjs/axios';
 
 const envFilePath: string = getEnvPath(`${__dirname}/environments`);
@@ -44,7 +44,7 @@ console.log('entities', entities);
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
     TransactionModule,
     AuthModule,
-    UsersModule,
+    UserModule,
     HttpModule,
   ],
   controllers: [AppController, AuthController],
