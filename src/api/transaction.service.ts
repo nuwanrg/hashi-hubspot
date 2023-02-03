@@ -96,7 +96,8 @@ export class TransactionService {
 
     if (user.payment_status != 'active') {
       console.log('Payment subscription is not active.');
-      bTCWalletDetalResults.title = 'Invalid Payment Subscription';
+      bTCWalletDetalResults.title =
+        'Your subscription for Hashi is invalid. Please reactivate to see the wallet data.';
       bTCWalletDetals.results.push(bTCWalletDetalResults);
 
       return bTCWalletDetals;
@@ -163,7 +164,8 @@ export class TransactionService {
 
     if (user.payment_status != 'active') {
       console.log('Payment subscription is not active.');
-      eTHWalletDetalResults.title = 'Invalid Payment Subscription';
+      eTHWalletDetalResults.title =
+        'Your subscription for Hashi is invalid. Please reactivate to see the wallet data.';
       eTHWalletDetals.results.push(eTHWalletDetalResults);
 
       return eTHWalletDetals;
@@ -320,7 +322,8 @@ export class TransactionService {
       console.log('Payment subscription is not active.');
       const walletNFTResponseDummy: WalletNFTResponse = new WalletNFTResponse();
       walletNFTResponseDummy.objectId = objectId;
-      walletNFTResponseDummy.title = 'Invalid Payment Subscription';
+      walletNFTResponseDummy.title =
+        'Your subscription for Hashi is invalid. Please reactivate to see the wallet data.';
 
       walletNFTResponseHub.results.push(walletNFTResponseDummy);
 
@@ -383,7 +386,8 @@ export class TransactionService {
       const tokenTransfersResponseDummy: TokenTransfersResponse =
         new TokenTransfersResponse();
       tokenTransfersResponseDummy.objectId = objectId;
-      tokenTransfersResponseDummy.title = 'Invalid Payment Subscription';
+      tokenTransfersResponseDummy.title =
+        'Your subscription for Hashi is invalid. Please reactivate to see the wallet data.';
 
       tokenTransfersHub.results.push(tokenTransfersResponseDummy);
 
