@@ -137,7 +137,7 @@ export class TransactionService {
     const portalId = req.query.portalId;
     console.log('getETHWalletDetails portalId : ', portalId);
 
-    const user = this.userService.findOneHubId(portalId);
+    const user = await this.userService.findOneHubId(portalId);
 
     console.log('user : ', user);
 
