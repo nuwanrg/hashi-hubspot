@@ -144,7 +144,7 @@ export class TransactionService {
     const eTHWalletDetals: ETHWalletDetals = new ETHWalletDetals();
     eTHWalletDetalResults.objectId = objectId;
 
-    if (user.payment_status == 'active') {
+    if (user.payment_status != 'active') {
       eTHWalletDetalResults.title = 'Invalid Payment Subscription';
       eTHWalletDetals.results.push(eTHWalletDetalResults);
 
