@@ -131,7 +131,7 @@ export class TransactionService {
     //console.log('getETHWalletDetails req : ', req);
 
     const address = req.query.eth_address;
-    eTHWalletDetalResults.title = 'Addr:' + address;
+
     const objectId = req.query.associatedObjectId;
 
     const portalId = req.query.portalId;
@@ -140,6 +140,17 @@ export class TransactionService {
     const user = await this.userService.findOneHubId(portalId);
 
     console.log('user : ', user);
+
+    const eTHWalletDetals: ETHWalletDetals = new ETHWalletDetals();
+    eTHWalletDetalResults.objectId = objectId;
+
+    if (user.payment_status == 'active') {
+      eTHWalletDetalResults.title = 'Invalid Payment Subscription';
+      eTHWalletDetals.results.push(eTHWalletDetalResults);
+
+      return eTHWalletDetals;
+    }
+    eTHWalletDetalResults.title = 'Addr:' + address;
 
     //ETH BALANCE
     const nativeBalance = await Moralis.EvmApi.balance.getNativeBalance({
@@ -262,8 +273,6 @@ export class TransactionService {
     eTHWalletDetalResults.usdc_received = usdc_received.toFixed(6) + ' USDC';
     eTHWalletDetalResults.usdc_spent = usdc_spent.toFixed(6) + ' USDC';
 
-    eTHWalletDetalResults.objectId = objectId;
-    const eTHWalletDetals: ETHWalletDetals = new ETHWalletDetals();
     eTHWalletDetals.results.push(eTHWalletDetalResults);
     return eTHWalletDetals;
   }
