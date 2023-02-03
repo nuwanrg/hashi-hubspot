@@ -83,6 +83,25 @@ export class TransactionService {
 
     const btc_address = req.query.btc_address;
     const objectId = req.query.associatedObjectId;
+
+    const portalId = req.query.portalId;
+    console.log('getETHWalletDetails portalId : ', portalId);
+
+    const user = await this.userService.findOneHubId(portalId);
+
+    console.log('user : ', user);
+
+    const bTCWalletDetals: BTCWalletDetals = new BTCWalletDetals();
+    bTCWalletDetalResults.objectId = objectId;
+
+    if (user.payment_status != 'active') {
+      console.log('Payment subscription is not active.');
+      bTCWalletDetalResults.title = 'Invalid Payment Subscription';
+      bTCWalletDetals.results.push(bTCWalletDetalResults);
+
+      return bTCWalletDetals;
+    }
+
     bTCWalletDetalResults.title = 'Addr:' + btc_address;
 
     //BTC balance
@@ -115,8 +134,6 @@ export class TransactionService {
 
     bTCWalletDetalResults.btc_n_tx = btcwallet.data.n_tx.toString();
 
-    bTCWalletDetalResults.objectId = objectId;
-    const bTCWalletDetals: BTCWalletDetals = new BTCWalletDetals();
     bTCWalletDetals.results.push(bTCWalletDetalResults);
     console.log('BTC Wallet fetched ', btc_address);
     return bTCWalletDetals;
@@ -145,6 +162,7 @@ export class TransactionService {
     eTHWalletDetalResults.objectId = objectId;
 
     if (user.payment_status != 'active') {
+      console.log('Payment subscription is not active.');
       eTHWalletDetalResults.title = 'Invalid Payment Subscription';
       eTHWalletDetals.results.push(eTHWalletDetalResults);
 
@@ -290,6 +308,25 @@ export class TransactionService {
     const walletNFTResponseHub: WalletNFTResponseHub =
       new WalletNFTResponseHub();
 
+    const portalId = req.query.portalId;
+    const objectId = req.query.associatedObjectId;
+    console.log('getETHWalletDetails portalId : ', portalId);
+
+    const user = await this.userService.findOneHubId(portalId);
+
+    console.log('user : ', user);
+
+    if (user.payment_status != 'active') {
+      console.log('Payment subscription is not active.');
+      const walletNFTResponseDummy: WalletNFTResponse = new WalletNFTResponse();
+      walletNFTResponseDummy.objectId = objectId;
+      walletNFTResponseDummy.title = 'Invalid Payment Subscription';
+
+      walletNFTResponseHub.results.push(walletNFTResponseDummy);
+
+      return walletNFTResponseHub;
+    }
+
     for (var key in obj) {
       // console.log(
       //   'key: ' +
@@ -298,9 +335,9 @@ export class TransactionService {
       //     obj[key].tokenAddress.lowercase,
       // );
 
-      let walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
+      const walletNFTResponse: WalletNFTResponse = new WalletNFTResponse();
       walletNFTResponse.walletID = address;
-      walletNFTResponse.objectId = req.query.associatedObjectId;
+      walletNFTResponse.objectId = objectId;
       walletNFTResponse.title = obj[key].name;
       walletNFTResponse.name = 'NFT Name: ' + obj[key].name;
       walletNFTResponse.token_address = obj[key].tokenAddress.lowercase;
@@ -329,7 +366,30 @@ export class TransactionService {
     limit: number,
     cursor?: string,
   ): Promise<TokenTransfersHub> {
-    let address = req.query.eth_address;
+    const address = req.query.eth_address;
+
+    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
+
+    const portalId = req.query.portalId;
+    const objectId = req.query.associatedObjectId;
+    console.log('getETHWalletDetails portalId : ', portalId);
+
+    const user = await this.userService.findOneHubId(portalId);
+
+    console.log('user : ', user);
+
+    if (user.payment_status != 'active') {
+      console.log('Payment subscription is not active.');
+      const tokenTransfersResponseDummy: TokenTransfersResponse =
+        new TokenTransfersResponse();
+      tokenTransfersResponseDummy.objectId = objectId;
+      tokenTransfersResponseDummy.title = 'Invalid Payment Subscription';
+
+      tokenTransfersHub.results.push(tokenTransfersResponseDummy);
+
+      return tokenTransfersHub;
+    }
+
     if (cursor === '0') {
       cursor = null;
     }
@@ -348,17 +408,15 @@ export class TransactionService {
 
     //console.log(transactions);
 
-    const tokenTransfersHub: TokenTransfersHub = new TokenTransfersHub();
-
     let tnxCount = 0;
     for (const transfer of transactions.result) {
       //console.log('transfer ', transfer);
       //console.log('transfer.address ', transfer.address);
 
-      let tokenTransfersResponse: TokenTransfersResponse =
+      const tokenTransfersResponse: TokenTransfersResponse =
         new TokenTransfersResponse();
       tokenTransfersResponse.walletID = address;
-      tokenTransfersResponse.objectId = req.query.associatedObjectId;
+      tokenTransfersResponse.objectId = objectId;
       tokenTransfersResponse.from_address = transfer.fromAddress.lowercase;
       tokenTransfersResponse.to_address = transfer.toAddress.lowercase;
       tokenTransfersResponse.created_at = moment(transfer.blockTimestamp)
