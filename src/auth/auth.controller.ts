@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { User } from 'src/model/user.entity';
 import { StripeService } from 'src/stripe/stripe.service';
+import { UserService } from 'src/users/user.service';
 import { AuthService } from './auth.service';
 
 const CLIENT_ID = `ce607184-ce86-4b4b-94a6-70df880a9e4f`;
@@ -32,6 +34,7 @@ export class AuthController {
   constructor(
     private stripeService: StripeService,
     private authService: AuthService,
+    private userService: UserService,
   ) {}
 
   //================================//
@@ -67,8 +70,18 @@ export class AuthController {
     await this.stripeService.checkout(req, res);
   }
 
-  @Post('/stripecallback') //call from hubspot
+  @Post('/stripecallback') //call from stripe
   async stripecallback(@Req() req, @Res() res): Promise<any> {
-    return this.authService.authenticate(req, res);
+    if (req.body.type == 'customer.subscription.deleted') {
+      const subscriptionId = req.body.data.object.id;
+      const user: User = await this.userService.findOnesubscriptionId(
+        subscriptionId,
+      );
+      console.log('update subscription status user found : ', user);
+      user.payment_status = req.body.data.object.status;
+      return this.userService.update(user);
+    } else {
+      return this.authService.authenticate(req, res);
+    }
   }
 }

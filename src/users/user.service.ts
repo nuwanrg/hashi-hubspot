@@ -18,4 +18,15 @@ export class UserService {
   async findOneHubId(hub_id: string): Promise<User> {
     return await this.usersRepository.findOneBy({ hub_id: hub_id });
   }
+
+  async findOnesubscriptionId(subscriptionId: string): Promise<User> {
+    return await this.usersRepository.findOneBy({
+      subscriptionId: subscriptionId,
+    });
+  }
+
+  async update(userDto: User): Promise<User> {
+    await this.usersRepository.update(userDto.id, userDto);
+    return userDto;
+  }
 }
