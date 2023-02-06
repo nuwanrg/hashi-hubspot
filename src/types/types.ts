@@ -1,11 +1,11 @@
 export class ETHWalletDetalResults {
   eth_balance?: string = '';
-  usdt_balance?: string = '0.0 USDT';
-  usdc_balance?: string = '0.0 USDC';
-  usdt_received?: string = '0.0 USDT';
-  usdt_spent?: string = '0.0 USDT';
-  usdc_received?: string = '0.0 USDC';
-  usdc_spent?: string = '0.0 USDC';
+  usdt_balance?: string = '';
+  usdc_balance?: string = '';
+  usdt_received?: string = '';
+  usdt_spent?: string = '';
+  usdc_received?: string = '';
+  usdc_spent?: string = '';
 
   totalReceive?: string = '';
   totalSpent?: string = '';
@@ -27,7 +27,7 @@ export class BTCWalletDetalResults {
   btc_total_received?: string = '';
   btc_n_tx?: string = '';
   btc_total_sent?: string = '';
-  title = 'ETH Wallet';
+  title = 'BTC Wallet';
   objectId?: number = null;
 }
 
