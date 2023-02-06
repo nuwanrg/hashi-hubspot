@@ -80,7 +80,7 @@ export class AuthController {
       console.log('update subscription status user found : ', user);
       user.payment_status = req.body.data.object.status;
       return this.userService.update(user);
-    } else {
+    } else if (req.body.type == 'customer.subscription.created') {
       return this.authService.authenticate(req, res);
     }
   }
