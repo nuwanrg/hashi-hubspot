@@ -9,8 +9,8 @@ export class StripeService {
   constructor() {
     console.log('STRIPE_HASHI_PRICE: ', this.STRIPE_HASHI_PRICE);
     this.stripe = new Stripe(
-      //'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',
-      'sk_test_51LiU1TALa3pUXDKnpLhmFwo9kqR8ehLdntVIXqcC0a5agSKKUr1QbvTIKJI1KpcpoR4TGHkbaQvMNDfeadqiK9s700yTU3VIQw',
+      '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',
+      //'sk_test_51LiU1TALa3pUXDKnpLhmFwo9kqR8ehLdntVIXqcC0a5agSKKUr1QbvTIKJI1KpcpoR4TGHkbaQvMNDfeadqiK9s700yTU3VIQw',
       {
         apiVersion: '2022-08-01',
       },
@@ -27,8 +27,8 @@ export class StripeService {
       mode: 'subscription',
       line_items: [
         {
-          //price: 'price_1MK3KjALa3pUXDKnwqRxaen5',
-          price: 'price_1MOZvyALa3pUXDKnC6775JCT',
+          price: 'price_1MK3KjALa3pUXDKnwqRxaen5',
+          //price: 'price_1MOZvyALa3pUXDKnC6775JCT',
           quantity: 1,
         },
       ],
