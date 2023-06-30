@@ -1,2 +1,0 @@
-# walletgate
-Muffintech internal project
